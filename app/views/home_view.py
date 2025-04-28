@@ -7,6 +7,12 @@ from app.views.projects_view import ProjectsView
 from app.views.statistics_view import StatisticsView
 from app.components.navigation_dropdown import NavigationDropdown
 
+from PySide6.QtCore import QFile
+
+fichier = QFile(":/icons/Arrow_Big_Down.svg")
+print("Existe ?", fichier.exists())
+
+
 class HomeView(QMainWindow):
     def __init__(self):
         super().__init__()

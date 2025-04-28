@@ -1,4 +1,4 @@
 @echo off
-cd /d "P:\Bureau\Studies\STRATE\Projet de diplôme\Application Dev\Application Designer Solarpunk"
+cd /d "C:\Users\origg\Documents\GitHub\Application_Designer_Solarpunk"
 call venv\Scripts\activate.bat
 cmd

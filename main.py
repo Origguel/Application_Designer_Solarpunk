@@ -5,7 +5,9 @@ import sys
 import os
 sys.path.append(os.path.join(os.path.dirname(__file__), "app"))
 
-import resources_rc
+import app.resources_rc
+print("resources_rc imported successfully")
+
 from pathlib import Path
 from PySide6.QtWidgets import QApplication
 from app.views.home_view import HomeView

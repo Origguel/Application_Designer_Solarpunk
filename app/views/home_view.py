@@ -1,17 +1,10 @@
-from PySide6.QtWidgets import (
-    QMainWindow, QWidget, QVBoxLayout, QComboBox, QStackedLayout, QGridLayout
-)
-from PySide6.QtCore import Qt
+# app/views/home_view.py
+from PySide6.QtWidgets import QMainWindow, QWidget, QGridLayout, QStackedLayout
 from app.views.notes_view import NotesView
 from app.views.projects_view import ProjectsView
 from app.views.statistics_view import StatisticsView
 from app.components.navigation_dropdown import NavigationDropdown
-
-from PySide6.QtCore import QFile
-
-fichier = QFile(":/icons/Arrow_Big_Down.svg")
-print("Existe ?", fichier.exists())
-
+from app.components.home_grid import HomeGrid  # Import de la grille
 
 class HomeView(QMainWindow):
     def __init__(self):
@@ -25,12 +18,11 @@ class HomeView(QMainWindow):
         # Nouveau layout principal
         self.grid_layout = QGridLayout(self.central_widget)
         self.grid_layout.setContentsMargins(0, 0, 0, 0)
-        self.grid_layout.setSpacing(0)
+        self.grid_layout.setSpacing(12)  # Espacement entre les cellules (12px)
 
         # Stack de pages
         self.stack_container = QWidget(self.central_widget)
         self.stack_layout = QStackedLayout(self.stack_container)
-        
         self.grid_layout.addWidget(self.stack_container, 0, 0)
 
         # Pages
@@ -44,23 +36,21 @@ class HomeView(QMainWindow):
         self.stack_layout.addWidget(self.projects_page)
         self.stack_layout.addWidget(self.statistics_page)
 
-        # Dropdown par-dessus
+        # Dropdown
         self.dropdown = NavigationDropdown(self.central_widget)
         self.dropdown.currentIndexChanged.connect(self.changer_page)
         self.dropdown.raise_()
 
         self.showMaximized()
-
-    def resizeEvent(self, event):
-        super().resizeEvent(event)
-        # Adapter dynamiquement la position de la dropdown
-        self.dropdown.move(self.width() - self.dropdown.width() - 34, 26)
+        self.stack_layout.setCurrentWidget(self.home_page)  # S'assurer que la grille est la première page affichée
 
     def create_home_page(self):
-        page = QWidget()
-        layout = QVBoxLayout(page)
-        layout.addWidget(QWidget())  # Vide pour l'instant
-        return page
+        """Retourne la page contenant la grille de 5x9 cases"""
+        return HomeGrid()  # Utilisation du composant HomeGrid pour afficher la grille
 
     def changer_page(self, index):
         self.stack_layout.setCurrentIndex(index)
+
+    def resizeEvent(self, event):
+        super().resizeEvent(event)
+        self.dropdown.move(self.width() - self.dropdown.width() - 34, 26)

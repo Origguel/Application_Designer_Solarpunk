@@ -222,6 +222,52 @@ QComboBox#Navigation_Dropdown QAbstractItemView {
 
 
 
+/* Style pour le widget NoteDetailWidget */
+/* Style pour le titre de la note */
+QLabel#NoteTitle {
+    font-size: 18px;
+    font-weight: bold;
+    color: #333333;
+}
+
+/* Style pour le projet de la note */
+QLabel#NoteProject {
+    font-size: 14px;
+    color: #555555;
+}
+
+/* Style pour la date de la note */
+QLabel#NoteDate {
+    font-size: 14px;
+    color: #777777;
+}
+
+/* Style pour les mots-clés */
+QLabel#NoteKeywords {
+    font-size: 14px;
+    color: #777777;
+    font-style: italic;
+}
+
+/* Style pour la description de la note */
+QLabel#NoteDescription {
+    font-size: 14px;
+    color: #333333;
+    margin-top: 10px;
+}
+
+/* Style pour le contenu de la note */
+QLabel#NoteContent {
+    font-size: 14px;
+    color: #333333;
+    margin-top: 20px;
+    background-color: #f9f9f9;
+}
+
+
+
+
+
 
 
 

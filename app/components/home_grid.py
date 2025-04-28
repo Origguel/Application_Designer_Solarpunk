@@ -1,7 +1,13 @@
 # app/components/home_grid.py
-from PySide6.QtWidgets import QWidget, QGridLayout
+from PySide6.QtWidgets import QWidget, QGridLayout, QPushButton, QVBoxLayout, QSizePolicy
+from PySide6.QtCore import Signal
 
 class HomeGrid(QWidget):
+    # Créer un signal pour notifier le changement de page
+    switch_to_notes_page = Signal()
+    switch_to_projects_page = Signal()
+    switch_to_stats_page = Signal()
+
     def __init__(self):
         super().__init__()
 
@@ -22,30 +28,84 @@ class HomeGrid(QWidget):
         cell_projects.setObjectName("Home_Box")
         self.home_layout.addWidget(cell_projects, 0, 0, 2, 6)  # Fusion de 2 lignes x 6 colonnes (positions (0, 0))
 
-        # Ajouter une cellule 2x1 après la 2x1
+        # Ajouter une cellule 2x1 après la 2x6
         cell_notes = QWidget()
         cell_notes.setObjectName("Home_Box")
+        cell_notes_layout = QVBoxLayout(cell_notes)
+        button_notes = QPushButton("Notes", cell_notes)
+        button_notes.setObjectName("Home_Button")
+        button_notes.setFixedSize(150, 80)  # Fixer la taille du bouton pour le rendre plus visible
+        button_notes.clicked.connect(self.on_button_notes_click)
+        cell_notes_layout.addWidget(button_notes)
         self.home_layout.addWidget(cell_notes, 0, 6, 2, 1)  # Positionner la cellule à (0, 6) avec 2 lignes et 1 colonne
 
-        # Ajouter une cellule 2x1 après la 1x2
+        # Ajouter d'autres cellules
         cell_solarpunk = QWidget()
         cell_solarpunk.setObjectName("Home_Box")
         self.home_layout.addWidget(cell_solarpunk, 0, 7, 1, 2)  # Positionner la cellule à (0, 6) avec 2 lignes et 1 colonne
 
-        # Ajouter une cellule 2x1 après la 1x1
+        # Ajouter une cellule 2x1 après la 2x6 pour la gestion des projets
         cell_gestion = QWidget()
         cell_gestion.setObjectName("Home_Box")
+        cell_gestion_layout = QVBoxLayout(cell_gestion)
+        button_gestion = QPushButton("Gestion de Projets", cell_gestion)
+        button_gestion.setObjectName("Home_Button")
+        button_gestion.setFixedSize(150, 80)  # Fixer la taille du bouton pour le rendre plus visible
+        button_gestion.clicked.connect(self.on_button_gestion_click)
+        cell_gestion_layout.addWidget(button_gestion)
         self.home_layout.addWidget(cell_gestion, 1, 7, 1, 1)  # Positionner la cellule à (0, 6) avec 2 lignes et 1 colonne
 
-        # Ajouter une cellule 2x1 après la 1x1
+        # Ajouter une cellule 2x1 après la 2x6 pour les statistiques
         cell_stat = QWidget()
         cell_stat.setObjectName("Home_Box")
+        cell_stat_layout = QVBoxLayout(cell_stat)
+        button_stat = QPushButton("Statistiques", cell_stat)
+        button_stat.setObjectName("Home_Button")
+        button_stat.setFixedSize(150, 80)  # Fixer la taille du bouton pour le rendre plus visible
+        button_stat.clicked.connect(self.on_button_stat_click)
+        cell_stat_layout.addWidget(button_stat)
         self.home_layout.addWidget(cell_stat, 1, 8, 1, 1)  # Positionner la cellule à (0, 6) avec 2 lignes et 1 colonne
 
-        # Ajouter une cellule 2x1 après la 3x9
+        # Ajouter d'autres cellules
         cell_calendrier = QWidget()
         cell_calendrier.setObjectName("Home_Box")
         self.home_layout.addWidget(cell_calendrier, 2, 0, 3, 9)  # Positionner la cellule à (0, 6) avec 2 lignes et 1 colonne
 
         # Applique le layout au widget parent
         self.setLayout(self.home_layout)
+
+    def on_button_notes_click(self):
+        """Méthode appelée lorsqu'on clique sur le bouton 'Notes'"""
+        self.switch_to_notes_page.emit()  # Déclenche l'événement pour changer de page
+        self.change_dropdown_to_notes()
+
+    def on_button_gestion_click(self):
+        """Méthode appelée lorsqu'on clique sur le bouton 'Gestion de Projets'"""
+        self.switch_to_projects_page.emit()  # Déclenche l'événement pour changer de page
+        self.change_dropdown_to_projects()
+
+    def on_button_stat_click(self):
+        """Méthode appelée lorsqu'on clique sur le bouton 'Statistiques'"""
+        self.switch_to_stats_page.emit()  # Déclenche l'événement pour changer de page
+        self.change_dropdown_to_stats()
+
+    def change_dropdown_to_notes(self):
+        """Change l'index de la dropdown pour afficher la page des Notes"""
+        if hasattr(self, 'parent_widget'):
+            self.parent_widget.dropdown.setCurrentIndex(1)  # Notes page
+        else:
+            print("Erreur : parent_widget non défini")
+
+    def change_dropdown_to_projects(self):
+        """Change l'index de la dropdown pour afficher la page des Projets"""
+        if hasattr(self, 'parent_widget'):
+            self.parent_widget.dropdown.setCurrentIndex(2)  # Projects page
+        else:
+            print("Erreur : parent_widget non défini")
+
+    def change_dropdown_to_stats(self):
+        """Change l'index de la dropdown pour afficher la page des Statistiques"""
+        if hasattr(self, 'parent_widget'):
+            self.parent_widget.dropdown.setCurrentIndex(3)  # Stats page
+        else:
+            print("Erreur : parent_widget non défini")

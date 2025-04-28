@@ -4,7 +4,7 @@ from app.views.notes_view import NotesView
 from app.views.projects_view import ProjectsView
 from app.views.statistics_view import StatisticsView
 from app.components.navigation_dropdown import NavigationDropdown
-from app.components.home_grid import HomeGrid  # Import de la grille
+from app.components.home_grid import HomeGrid  # Import du fichier home_grid.py
 
 class HomeView(QMainWindow):
     def __init__(self):
@@ -18,7 +18,7 @@ class HomeView(QMainWindow):
         # Nouveau layout principal
         self.grid_layout = QGridLayout(self.central_widget)
         self.grid_layout.setContentsMargins(0, 0, 0, 0)
-        self.grid_layout.setSpacing(12)  # Espacement entre les cellules (12px)
+        self.grid_layout.setSpacing(0)
 
         # Stack de pages
         self.stack_container = QWidget(self.central_widget)
@@ -41,16 +41,48 @@ class HomeView(QMainWindow):
         self.dropdown.currentIndexChanged.connect(self.changer_page)
         self.dropdown.raise_()
 
+        # Masquer la dropdown immédiatement au démarrage
+        self.hide_dropdown_on_home()
+
         self.showMaximized()
         self.stack_layout.setCurrentWidget(self.home_page)  # S'assurer que la grille est la première page affichée
 
+        # Connecter les signaux pour changer de page
+        self.home_page.switch_to_notes_page.connect(self.switch_to_notes_page)
+        self.home_page.switch_to_projects_page.connect(self.switch_to_projects_page)
+        self.home_page.switch_to_stats_page.connect(self.switch_to_stats_page)
+
+    def switch_to_notes_page(self):
+        """Changer de page vers les notes"""
+        self.stack_layout.setCurrentWidget(self.notes_page)
+
+    def switch_to_projects_page(self):
+        """Changer de page vers les projets"""
+        self.stack_layout.setCurrentWidget(self.projects_page)
+
+    def switch_to_stats_page(self):
+        """Changer de page vers les statistiques"""
+        self.stack_layout.setCurrentWidget(self.statistics_page)
+
     def create_home_page(self):
         """Retourne la page contenant la grille de 5x9 cases"""
-        return HomeGrid()  # Utilisation du composant HomeGrid pour afficher la grille
+        home_grid = HomeGrid()
+        home_grid.parent_widget = self  # Définir le parent de HomeGrid pour accéder à la dropdown
+        return home_grid
 
     def changer_page(self, index):
+        """Changer de page en fonction de l'index sélectionné"""
         self.stack_layout.setCurrentIndex(index)
+        self.hide_dropdown_on_home()  # Masquer ou afficher la dropdown en fonction de la page actuelle
+
+    def hide_dropdown_on_home(self):
+        """Masque la dropdown dans HomeView et la réaffiche sur les autres pages"""
+        if self.stack_layout.currentWidget() == self.home_page:
+            self.dropdown.setVisible(False)  # Masquer la dropdown sur la page d'accueil
+        else:
+            self.dropdown.setVisible(True)  # Afficher la dropdown sur les autres pages
 
     def resizeEvent(self, event):
+        """Adapter la position de la dropdown lors du redimensionnement de la fenêtre"""
         super().resizeEvent(event)
         self.dropdown.move(self.width() - self.dropdown.width() - 34, 26)

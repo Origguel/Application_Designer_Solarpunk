@@ -1,0 +1,10 @@
+{
+    "id": "note_0001",
+    "date": "26/04/2025",
+    "title": "Concept mobilier écologique",
+    "description": "Exploration du design circulaire avec des matériaux recyclés pour mobilier.",
+    "project": "NomDuProjet",
+    "keywords": ["design", "matériaux", "mobilier"],
+    "type": "texte",
+    "contenu": "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vivamus ipsum mi, gravida eget tristique vitae, viverra ac nibh. Suspendisse vel sodales ipsum, nec scelerisque magna. Quisque volutpat, magna ut lacinia efficitur, nunc libero rhoncus sem, nec gravida lectus mauris quis velit. Quisque tincidunt sapien eget eros fringilla, sit amet porta lorem molestie. Mauris ut viverra ex, non viverra quam. Aliquam erat volutpat. Pellentesque habitant morbi tristique senectus et netus et malesuada fames ac turpis egestas. In elementum, tortor in vulputate finibus, ligula neque facilisis diam, ut ultricies velit lorem eget quam."
+}

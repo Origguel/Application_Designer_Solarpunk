@@ -1,0 +1,5 @@
+<RCC>
+    <qresource prefix="/icons">
+        <file>icons/Arrow_Big_Down.svg</file>
+    </qresource>
+</RCC>

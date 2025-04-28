@@ -200,7 +200,7 @@ QComboBox#Navigation_Dropdown::drop-down {
 
 /* Petite flèche de la dropdown */
 QComboBox#Navigation_Dropdown::down-arrow {
-    image: url(:/icons/Arrow_Big_Down.svg); /* optionnel : ton icône personnalisée */
+    image: url(:/icons/Arrow_Big_Down.png); /* optionnel : ton icône personnalisée */
     width: 12px;
     height: 12px;
 }

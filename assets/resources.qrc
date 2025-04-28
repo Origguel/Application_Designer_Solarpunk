@@ -1,5 +1,5 @@
 <RCC>
     <qresource prefix="/icons">
-        <file>icons/Arrow_Big_Down.svg</file>
+        <file>icons/Arrow_Big_Down.png</file>
     </qresource>
 </RCC>

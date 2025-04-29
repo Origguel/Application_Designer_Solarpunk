@@ -4,3 +4,6 @@ venv/
 # Ignorer les fichiers compilés Python
 __pycache__/
 *.pyc
+
+# Ignorer le dossier de données
+data/

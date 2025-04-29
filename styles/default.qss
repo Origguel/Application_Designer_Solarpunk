@@ -15,150 +15,6 @@ QWidget {
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-/* ✍️ Champs de texte */
-QLineEdit, QTextEdit, QComboBox {
-    background-color: #FFFFFF;
-    border: 1px solid #CCCCCC;
-    border-radius: 6px;
-    padding: 3px;
-}
-
-QLineEdit#search_input {
-    border: 1px solid #000000;
-}
-
-
-
-
-
-
-
-
-
-/* 📜 Listes */
-QListWidget {
-    background-color: #F5F5F5;
-    border: 1px solid #CCCCCC;
-}
-
-/* 🎛️ ComboBox style */
-QComboBox {
-    background-color: #FFFFFF;
-    color: #2B2B2B;
-    border: 1px solid #2B2B2B;
-    border-radius: 6px;
-    padding: 5px 12px;
-}
-
-QComboBox:hover {
-    background-color: #DDDDDD;
-}
-
-/* 📋 Menu déroulant ComboBox */
-QComboBox QAbstractItemView {
-    background-color: #FFFFFF;
-    selection-background-color: #EC831E;
-    selection-color: #FFFFFF;
-    border: 1px solid #2B2B2B;
-    border-radius: 6px;
-    outline: 0;
-}
-
-/* 🎯 Hover sur les options */
-QComboBox QAbstractItemView::item:hover {
-    background-color: #DDDDDD;
-    color: #2B2B2B;
-}
-
-/* 🔽 Bouton dropdown */
-QComboBox::drop-down {
-    border-left: 1px solid #2B2B2B;
-    background: #FFFFFF;
-    width: 20px;
-}
-
-/* 🔽 Flèche dropdown */
-QComboBox::down-arrow {
-    image: none;
-    width: 10px;
-    height: 10px;
-}
-
-
-
-
-
-
-
-
-
-/* Navigation Dropdown */
-QComboBox#Navigation_Dropdown {
-    background-color: #FFFFFF;
-    border: 1px solid #2B2B2B;
-    border-radius: 6px;
-    padding: 6px 12px; /* Espace intérieur texte */
-    font-size: 14px;
-    color: #2B2B2B;
-}
-
-/* Hover sur la combobox */
-QComboBox#Navigation_Dropdown:hover {
-    background-color: #F0F0F0;
-    border: 1px solid #1A1A1A;
-}
-
-/* Lorsque la dropdown est ouverte */
-QComboBox#Navigation_Dropdown::drop-down {
-    subcontrol-origin: padding;
-    subcontrol-position: top right;
-    width: 30px;
-    border-left: 1px solid #CCCCCC;
-}
-
-/* Petite flèche de la dropdown */
-QComboBox#Navigation_Dropdown::down-arrow {
-    image: url(:/icons/Arrow_Big_Down.png); /* optionnel : ton icône personnalisée */
-    width: 12px;
-    height: 12px;
-}
-
-/* Liste des éléments */
-QComboBox#Navigation_Dropdown QAbstractItemView {
-    background-color: #FFFFFF;
-    border: 1px solid #2B2B2B;
-    selection-background-color: #D0D0D0;
-    selection-color: #000000;
-    border-radius: 4px;
-    padding: 4px;
-    outline: 0;
-}
-
-
-
-
-
-
-
 /* Style pour le widget NoteDetailWidget */
 /* Style pour le titre de la note */
 QLabel#NoteTitle {
@@ -207,16 +63,12 @@ QLabel#NoteContent {
 
 
 
-
-
 #AddNoteWidget {
     background-color: #FFFFFF; /* Blanc */
     color: #2B2B2B; /* Noir */
     border: 1px solid #2B2B2B;
     border-radius: 6px;
 }
-
-
 
 
 
@@ -238,9 +90,6 @@ QLabel#NoteContent {
     color: #2B2B2B;
     font-size: 10pt;
 }
-
-
-
 
 
 

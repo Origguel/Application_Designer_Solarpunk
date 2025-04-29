@@ -1,5 +1,3 @@
-/* 🖼️ Style spécifique aux frames */
-/* 🌟 Style pour Valider */
 #Button_Primary {
     background-color: #EC831E; /* Orange */
     color: #FFFFFF;
@@ -14,6 +12,8 @@
     background-color: #9C520C; /* Orange foncé */
     color: #FFFFFF;
 }
+
+
 
 /* 🆗 Style pour Annuler */
 #Button_Secondary, #Button_Delete {
@@ -31,24 +31,10 @@
     color: #2B2B2B;
 }
 
-/* 🆗 Style pour + */
-QPushButton#PlusButton {
-    background-color: #FFFFFF; /* Blanc */
-    color: #2B2B2B; /* Noir */
-    border: 1px solid #2B2B2B;
-    border-radius: 6px;
-    padding: 2px 2px;
-    font-size: 14px;
-}
 
-/* Hover pour + */
-QPushButton#PlusButton:hover {
-    background-color: #DDDDDD; /* Gris clair */
-    color: #2B2B2B;
-}
 
 /* Hover pour - */
-QPushButton#Button_Delete:hover {
+#Button_Delete:hover {
     background-color: #ff0000; /* Gris clair */
     color: #ffffff;
 }

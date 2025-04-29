@@ -4,10 +4,7 @@ from PySide6.QtWidgets import QWidget, QVBoxLayout
 from PySide6.QtCore import Qt
 from app.components.graph_widget import GraphWidget
 from app.components.buttons.button_icon import ButtonIcon
-from app.components.plus_button import PlusButton
 from app.components.add_note_widget import AddNoteWidget
-from app.components.delete_button import DeleteButton
-from app.components.resetview_button import ResetViewButton
 from app.handlers.delete_note_handler import confirm_and_delete_note
 from app.components.interactive_ellipse_item import InteractiveEllipseItem
 from PySide6.QtWidgets import QLineEdit

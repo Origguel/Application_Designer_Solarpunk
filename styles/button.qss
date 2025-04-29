@@ -1,32 +1,32 @@
 /* 🖼️ Style spécifique aux frames */
 /* 🌟 Style pour Valider */
-QPushButton#PrimaryButton {
+#Button_Primary {
     background-color: #EC831E; /* Orange */
     color: #FFFFFF;
     border: none;
     border-radius: 6px;
-    padding: 8px 16px;
+    padding: 2px 2px;
     font-size: 14px;
 }
 
 /* Hover pour Valider */
-QPushButton#PrimaryButton:hover {
+#Button_Primary:hover {
     background-color: #9C520C; /* Orange foncé */
     color: #FFFFFF;
 }
 
 /* 🆗 Style pour Annuler */
-QPushButton#SecondaryButton {
+#Button_Secondary, #Button_Delete {
     background-color: #FFFFFF; /* Blanc */
     color: #2B2B2B; /* Noir */
     border: 1px solid #2B2B2B;
     border-radius: 6px;
-    padding: 8px 16px;
+    padding: 2px 2px;
     font-size: 14px;
 }
 
 /* Hover pour Annuler */
-QPushButton#SecondaryButton:hover {
+#Button_Secondary:hover {
     background-color: #DDDDDD; /* Gris clair */
     color: #2B2B2B;
 }
@@ -47,18 +47,8 @@ QPushButton#PlusButton:hover {
     color: #2B2B2B;
 }
 
-/* 🆗 Style pour - */
-QPushButton#DeleteButton {
-    background-color: #FFFFFF; /* Blanc */
-    color: #2B2B2B; /* Noir */
-    border: 1px solid #2B2B2B;
-    border-radius: 6px;
-    padding: 2px 2px;
-    font-size: 14px;
-}
-
 /* Hover pour - */
-QPushButton#DeleteButton:hover {
+QPushButton#Button_Delete:hover {
     background-color: #ff0000; /* Gris clair */
     color: #ffffff;
 }

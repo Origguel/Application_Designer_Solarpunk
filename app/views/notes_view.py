@@ -3,6 +3,7 @@
 from PySide6.QtWidgets import QWidget, QVBoxLayout
 from PySide6.QtCore import Qt
 from app.components.graph_widget import GraphWidget
+from app.components.buttons.button_icon import ButtonIcon
 from app.components.plus_button import PlusButton
 from app.components.add_note_widget import AddNoteWidget
 from app.components.delete_button import DeleteButton
@@ -35,19 +36,19 @@ class NotesView(QWidget):
         self.overlay.setAttribute(Qt.WA_TransparentForMouseEvents, False)
 
         # Bouton add +
-        self.plus_button = PlusButton(self)
+        self.plus_button = ButtonIcon("+", 36, 36, "Button_Secondary", self)
         self.plus_button.move(34, 26)
         self.plus_button.raise_()
         self.plus_button.clicked.connect(self.open_add_note_widget)
 
-        # Bouton delete -
-        self.delete_button = DeleteButton(self)
+        # Bouton delete - 
+        self.delete_button = ButtonIcon("-", 36, 36, "Button_Delete", self)
         self.delete_button.move(34, 66)
         self.delete_button.raise_()
         self.delete_button.clicked.connect(self.on_delete_button_clicked)  # 🆕 Connexion du clic
 
         # Bouton reset r
-        self.resetview_button = ResetViewButton(self)
+        self.resetview_button = ButtonIcon("R", 36, 36, "Button_Secondary", self)
         self.resetview_button.move(34, 106)
         self.resetview_button.raise_()
         self.resetview_button.clicked.connect(self.on_reset_view_button_clicked)  # 🆕 Connexion du clic

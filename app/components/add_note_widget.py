@@ -24,7 +24,7 @@ class AddNoteWidget(QWidget):
         self.setObjectName("AddNoteWidget")
 
         self.layout = QHBoxLayout(self)
-        self.layout.setContentsMargins(34, 34, 34, 34)
+        self.layout.setContentsMargins(36, 36, 36, 36)
         self.layout.setSpacing(48)
 
         self.setup_left_panel()

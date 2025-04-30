@@ -39,7 +39,7 @@ class HomeView(QMainWindow):
         self.stack_layout.addWidget(self.statistics_page)
 
         # Dropdown
-        self.dropdown = Dropdown_Default(style="Dropdown_Default", items=["Accueil", "Notes", "Projets", "Statistiques"], responsive=False, parent=self)
+        self.dropdown = Dropdown_Default(style="Navigation_Dropdown", items=["Accueil", "Notes", "Projets", "Statistiques"], responsive=False, parent=self)
         self.dropdown.currentIndexChanged.connect(self.changer_page)
         self.dropdown.raise_()
 

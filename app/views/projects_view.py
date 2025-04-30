@@ -111,6 +111,10 @@ class ProjectsView(QWidget):
         # Met à jour les données
         self.projets_data = projets
 
+        # Sauvegarder le nom du projet sélectionné
+        selected_data = self.dropdown_projet.get_current_data()
+        selected_nom = selected_data["left"] if selected_data else None
+
         # Recharge la dropdown
         self.dropdown_projet.blockSignals(True)
         self.dropdown_projet.clear()
@@ -118,9 +122,17 @@ class ProjectsView(QWidget):
             self.dropdown_projet.addItem("", {"left": nom, "right": legende})
         self.dropdown_projet.blockSignals(False)
 
-        # Met à jour l'affichage du projet sélectionné
-        self.dropdown_projet.setCurrentIndex(0)
+        # Rétablir la sélection si possible
+        index_to_select = 0
+        for i in range(self.dropdown_projet.count()):
+            data = self.dropdown_projet.itemData(i)
+            if data and data.get("left") == selected_nom:
+                index_to_select = i
+                break
+
+        self.dropdown_projet.setCurrentIndex(index_to_select)
         self.afficher_infos_projet()
+
 
     def afficher_infos_projet(self):
         index = self.dropdown_projet.currentIndex()

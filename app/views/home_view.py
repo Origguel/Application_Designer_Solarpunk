@@ -3,6 +3,8 @@ from PySide6.QtWidgets import QMainWindow, QWidget, QGridLayout, QStackedLayout
 from app.views.notes_view import NotesView
 from app.views.projects_view import ProjectsView
 from app.views.statistics_view import StatisticsView
+
+# Components
 from app.components.dropdowns.dropdown_default import Dropdown_Default
 from app.components.home_grid import HomeGrid  # Import du fichier home_grid.py
 
@@ -37,7 +39,7 @@ class HomeView(QMainWindow):
         self.stack_layout.addWidget(self.statistics_page)
 
         # Dropdown
-        self.dropdown = Dropdown_Default(style="Dropdown_Default", items=["Accueil", "Notes", "Projets", "Statistiques"], responsive=False, parent=self)
+        self.dropdown = Dropdown_Default(style="Navigation_Dropdown", items=["Accueil", "Notes", "Projets", "Statistiques"], responsive=False, parent=self)
         self.dropdown.currentIndexChanged.connect(self.changer_page)
         self.dropdown.raise_()
 

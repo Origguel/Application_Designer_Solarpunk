@@ -53,6 +53,70 @@ QComboBox#Dropdown_Default::down-arrow {
 }
 
 
-#Navigation_Dropdown {
-    /* tu peux rajouter ici des styles spécifiques */
+
+/* === Style commun à tous les dropdowns === */
+QComboBox#Navigation_Dropdown {
+    font-size: 14px;
+    padding: 6px 12px;
+    color: #2B2B2B;
+    background-color: #FFFFFF;
+    border: 1px solid #2B2B2B;
+    border-radius: 6px;
+}
+
+QComboBox#Navigation_Dropdown:hover {
+    background-color: #F0F0F0;
+}
+
+/* === Menu déroulant interne === */
+QComboBox#Navigation_Dropdown QAbstractItemView {
+    background-color: #FFFFFF;
+    border: 1px solid #2B2B2B;
+    border-radius: 6px;
+    outline: 0;
+}
+
+/* Items du menu déroulant */
+QComboBox#Navigation_Dropdown QAbstractItemView::item {
+    height: 16px;
+    padding: 6px 12px;
+    color: #2B2B2B;
+}
+
+/* Hover sur les items */
+QComboBox#Navigation_Dropdown QAbstractItemView::item:hover {
+    background-color: #E6F7FF;
+}
+
+/* Sélection dans le menu déroulant */
+QComboBox#Navigation_Dropdown QAbstractItemView::item:selected {
+    background-color: #EC831E;
+    color: #ffffff;
+}
+
+/* Flèche de dropdown */
+QComboBox#Navigation_Dropdown::drop-down {
+    subcontrol-origin: padding;
+    subcontrol-position: top right;
+    width: 16px;
+    border-left: 1px solid #CCCCCC;
+}
+
+QComboBox#Navigation_Dropdown::down-arrow {
+    image: none;
+    width: 24px;
+    height: 24px;
+}
+
+
+
+
+
+
+#Dropdown_Text_Left {
+    font-weight: bold;
+}
+
+#Dropdown_Text_Right {
+    font-style: italic;
 }

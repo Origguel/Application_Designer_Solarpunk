@@ -3,8 +3,8 @@ from PySide6.QtGui import QPainter, QWheelEvent, QMouseEvent
 from PySide6.QtCore import Qt
 
 from app.utils.graph_logic import GraphLogic
-from app.components.note_detail_widget import NoteDetailWidget
-from app.components.interactive_ellipse_item import InteractiveEllipseItem
+from app.components.note.note_detail_widget import NoteDetailWidget
+from app.components.note.graph.interactive_ellipse_item import InteractiveEllipseItem
 
 class GraphWidget(QGraphicsView):
     def __init__(self, parent=None):
@@ -53,7 +53,7 @@ class GraphWidget(QGraphicsView):
         self.graph_logic.update_text_visibility()
         event.accept()
 
-    from app.components.interactive_ellipse_item import InteractiveEllipseItem
+    from app.components.note.graph.interactive_ellipse_item import InteractiveEllipseItem
 
     def mousePressEvent(self, event: QMouseEvent):
         if event.button() == Qt.LeftButton:

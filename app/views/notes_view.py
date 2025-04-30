@@ -2,10 +2,10 @@
 
 from PySide6.QtWidgets import QWidget, QVBoxLayout
 from PySide6.QtCore import Qt
-from app.components.graph_widget import GraphWidget
-from app.components.add_note_widget import AddNoteWidget
+from app.components.note.graph.graph_widget import GraphWidget
+from app.components.note.add_note_widget import AddNoteWidget
 from app.handlers.delete_note_handler import confirm_and_delete_note
-from app.components.interactive_ellipse_item import InteractiveEllipseItem
+from app.components.note.graph.interactive_ellipse_item import InteractiveEllipseItem
 from PySide6.QtWidgets import QLineEdit
 
 # Componenents

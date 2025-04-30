@@ -7,7 +7,7 @@ from PySide6.QtWidgets import QGraphicsPathItem
 from PySide6.QtGui import QPen, QColor, QPainterPath, QFont
 from PySide6.QtCore import QPointF, QRectF, Qt
 
-from app.components.interactive_ellipse_item import InteractiveEllipseItem  # 👈 LE BON IMPORT
+from app.components.note.graph.interactive_ellipse_item import InteractiveEllipseItem  # 👈 LE BON IMPORT
 
 
 NOTES_DIR = Path("data/notes/")

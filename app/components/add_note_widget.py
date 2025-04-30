@@ -9,6 +9,7 @@ from datetime import datetime
 from app.components.dropdowns.dropdown_default import Dropdown_Default
 from app.components.buttons.button_text import ButtonText
 from app.components.inputs.input_default import Input_Default
+from app.components.inputs.input_multiline import Input_Multiline
 
 
 
@@ -46,7 +47,7 @@ class AddNoteWidget(QWidget):
 
         self.project_selector = Dropdown_Default(style="Dropdown_Default", items=["Projet 1", "Projet 2", "Projet 3", "Projet 4"], responsive=True, parent=self)
 
-        self.description_input = Input_Default(placeholder="Description rapide de la note", x=True, y=True)
+        self.description_input = Input_Multiline(placeholder="Description rapide de la note", x=True, y=True, parent=self)
 
         # Bouton Annuler
         self.cancel_button = ButtonText("Annuler", 120, 36, "Button_Secondary", self)
@@ -76,7 +77,7 @@ class AddNoteWidget(QWidget):
         self.right_layout.setSpacing(12)
         self.setObjectName("AddNoteWidget")
 
-        self.contenu_editor = Input_Default(placeholder="Contenu principal de la note", x=True, y=True)
+        self.contenu_editor = Input_Multiline(placeholder="Contenu principal de la note", x=True, y=True, parent=self)
 
         # Bouton Valider
         self.validate_button = ButtonText("Valider", 120, 36, "Button_Primary", self)

@@ -3,11 +3,14 @@
 from PySide6.QtWidgets import QWidget, QVBoxLayout
 from PySide6.QtCore import Qt
 from app.components.graph_widget import GraphWidget
-from app.components.buttons.button_icon import ButtonIcon
 from app.components.add_note_widget import AddNoteWidget
 from app.handlers.delete_note_handler import confirm_and_delete_note
 from app.components.interactive_ellipse_item import InteractiveEllipseItem
 from PySide6.QtWidgets import QLineEdit
+
+# Componenents
+from app.components.inputs.input_default import Input_Default
+from app.components.buttons.button_icon import ButtonIcon
 
 
 
@@ -50,12 +53,8 @@ class NotesView(QWidget):
         self.resetview_button.raise_()
         self.resetview_button.clicked.connect(self.on_reset_view_button_clicked)  # 🆕 Connexion du clic
 
-        # Barre de recherche
-        self.search_input = QLineEdit(self)
-        self.search_input.setObjectName("search_input")
-        self.search_input.setPlaceholderText("Rechercher une note...")
-        self.search_input.setFixedWidth(400)
-        self.search_input.setFixedHeight(34)
+        # Barre de recherche        
+        self.search_input = Input_Default(placeholder="Rechercher une note...", x=400, y=36, text_position="center-left", parent=self)
         self.search_input.move(74, 26)
         self.search_input.raise_()
         self.search_input.returnPressed.connect(self.on_search_note)

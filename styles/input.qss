@@ -1,27 +1,24 @@
 
-/* ✍️ Champs de texte */
-QLineEdit, QTextEdit, QComboBox {
+
+QLineEdit, #Input_Multiline {
     background-color: #FFFFFF;
-    border: 1px solid #CCCCCC;
+    color: #2B2B2B;
+    border: 1px solid #2B2B2B;
     border-radius: 6px;
-    padding: 3px;
+    padding: 12px 10px;
+    font-size: 14px;
 }
 
-QLineEdit#search_input {
-    border: 1px solid #000000;
+QLineEdit::placeholder {
+    color: #999999;
+    font-style: italic;
+}
+
+QLineEdit:focus , #Input_Multiline:focus {
+    border: 1px solid #2B2B2B;
 }
 
 
 #Input_Default {
-    background-color: #FFFFFF;
-    color: #2B2B2B;
     border: 1px solid #CCCCCC;
-    border-radius: 6px;
-    padding: 6px 10px;
-    font-size: 14px;
-}
-
-#Input_Default::placeholder {
-    color: #999999;
-    font-style: italic;
 }

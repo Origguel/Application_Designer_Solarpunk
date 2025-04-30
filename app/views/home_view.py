@@ -3,6 +3,8 @@ from PySide6.QtWidgets import QMainWindow, QWidget, QGridLayout, QStackedLayout
 from app.views.notes_view import NotesView
 from app.views.projects_view import ProjectsView
 from app.views.statistics_view import StatisticsView
+
+# Components
 from app.components.dropdowns.dropdown_default import Dropdown_Default
 from app.components.home_grid import HomeGrid  # Import du fichier home_grid.py
 

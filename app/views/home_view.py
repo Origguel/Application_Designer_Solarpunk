@@ -6,7 +6,7 @@ from app.views.statistics_view import StatisticsView
 
 # Components
 from app.components.dropdowns.dropdown_default import Dropdown_Default
-from app.components.home_grid import HomeGrid  # Import du fichier home_grid.py
+from app.components.home.home_grid import HomeGrid  # Import du fichier home_grid.py
 
 class HomeView(QMainWindow):
     def __init__(self):

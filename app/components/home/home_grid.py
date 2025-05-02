@@ -1,6 +1,11 @@
 # app/components/home_grid.py
 from PySide6.QtWidgets import QWidget, QGridLayout, QPushButton, QVBoxLayout, QSizePolicy
 from PySide6.QtCore import Signal
+from PySide6.QtCore import Qt
+
+
+# Componenents
+from app.components.buttons.button_text import ButtonText
 
 class HomeGrid(QWidget):
     # Créer un signal pour notifier le changement de page
@@ -32,39 +37,37 @@ class HomeGrid(QWidget):
         cell_notes = QWidget()
         cell_notes.setObjectName("Home_Box")
         cell_notes_layout = QVBoxLayout(cell_notes)
-        button_notes = QPushButton("Notes", cell_notes)
-        button_notes.setObjectName("Home_Button")
-        button_notes.setFixedSize(150, 80)  # Fixer la taille du bouton pour le rendre plus visible
+        button_notes = ButtonText("Notes", x=150, y=80, style="Button_Secondary", parent=cell_notes)
         button_notes.clicked.connect(self.on_button_notes_click)
         cell_notes_layout.addWidget(button_notes)
-        self.home_layout.addWidget(cell_notes, 0, 6, 2, 1)  # Positionner la cellule à (0, 6) avec 2 lignes et 1 colonne
+        cell_notes_layout.setAlignment(Qt.AlignCenter)
+        self.home_layout.addWidget(cell_notes, 0, 6, 2, 1)
 
         # Ajouter d'autres cellules
         cell_solarpunk = QWidget()
         cell_solarpunk.setObjectName("Home_Box")
         self.home_layout.addWidget(cell_solarpunk, 0, 7, 1, 2)  # Positionner la cellule à (0, 6) avec 2 lignes et 1 colonne
 
-        # Ajouter une cellule 2x1 après la 2x6 pour la gestion des projets
+        # Gestion de Projets (utilise ButtonText)
         cell_gestion = QWidget()
         cell_gestion.setObjectName("Home_Box")
         cell_gestion_layout = QVBoxLayout(cell_gestion)
-        button_gestion = QPushButton("Gestion de Projets", cell_gestion)
-        button_gestion.setObjectName("Home_Button")
-        button_gestion.setFixedSize(150, 80)  # Fixer la taille du bouton pour le rendre plus visible
+        button_gestion = ButtonText("Gestion de Projets", x=150, y=80, style="Button_Secondary", parent=cell_gestion)
         button_gestion.clicked.connect(self.on_button_gestion_click)
         cell_gestion_layout.addWidget(button_gestion)
-        self.home_layout.addWidget(cell_gestion, 1, 7, 1, 1)  # Positionner la cellule à (0, 6) avec 2 lignes et 1 colonne
+        cell_gestion_layout.setAlignment(Qt.AlignCenter)
+        self.home_layout.addWidget(cell_gestion, 1, 7, 1, 1)
 
-        # Ajouter une cellule 2x1 après la 2x6 pour les statistiques
+        # Statistiques (utilise ButtonText)
         cell_stat = QWidget()
         cell_stat.setObjectName("Home_Box")
         cell_stat_layout = QVBoxLayout(cell_stat)
-        button_stat = QPushButton("Statistiques", cell_stat)
-        button_stat.setObjectName("Home_Button")
-        button_stat.setFixedSize(150, 80)  # Fixer la taille du bouton pour le rendre plus visible
+        button_stat = ButtonText("Statistiques", x=150, y=80, style="Button_Secondary", parent=cell_stat)
         button_stat.clicked.connect(self.on_button_stat_click)
         cell_stat_layout.addWidget(button_stat)
-        self.home_layout.addWidget(cell_stat, 1, 8, 1, 1)  # Positionner la cellule à (0, 6) avec 2 lignes et 1 colonne
+        cell_stat_layout.setAlignment(Qt.AlignCenter)
+        self.home_layout.addWidget(cell_stat, 1, 8, 1, 1)
+
 
         # Ajouter d'autres cellules
         cell_calendrier = QWidget()

@@ -86,7 +86,7 @@ class GraphLogic:
                     keyword_shared_notes[(kw1, kw2)] += 1
                     keyword_shared_notes[(kw2, kw1)] += 1
 
-        valid_keywords = {k for k, c in keyword_counts.items() if c > 1}
+        valid_keywords = {k for k, c in keyword_counts.items() if c > 4}
         force_layout = {kw: QPointF(random.randint(-200, 200), random.randint(-200, 200)) for kw in valid_keywords}
         velocity = {kw: QPointF(0, 0) for kw in valid_keywords}
 

@@ -32,6 +32,15 @@ CATEGORY_ITERATIONS = 200     # Nombre d’itérations de la simulation
 # --- Positionnement des notes orphelines ---
 ORPHAN_RADIUS = 1200          # Distance par rapport au centre
 ORPHAN_JITTER = 50            # Jitter aléatoire autour de leur cercle
+
+# === Point central (hub) ===
+center_point = QPointF(0, 0)
+hub_radius = 18
+min_cat_dist = 250   # distance minimale du hub (les catégories très utilisées seront au plus près de cette distance)
+max_cat_dist = 900   # distance maximale du hub (les moins utilisées seront autour de ce rayon)
+
+CATEGORY_REPULSION_MAX_FORCE = 10.0  # ou 30.0 selon les tests
+CATEGORY_CENTER_REPULSION_BOOST = 0.1  # boost max de la répulsion selon éloignement
 # ==============================
 
 
@@ -48,6 +57,32 @@ class GraphLogic:
     def draw_graph(self):
         all_data = self.load_notes()
         category_positions, category_links = self.calculate_category_positions(all_data)
+
+        # Cercle orange
+        hub_circle = self.scene.addEllipse(
+            QRectF(center_point.x() - hub_radius, center_point.y() - hub_radius, hub_radius * 2, hub_radius * 2),
+            QPen(Qt.darkRed, 2),
+            QColor("#FFA500")  # orange
+        )
+        hub_circle.setZValue(-3)
+
+        # Lier uniquement la catégorie la plus proche du centre par groupe
+        for group in self.category_groups:
+            best_cat = None
+            best_dist = float("inf")
+            for cat in group:
+                if cat in category_positions:
+                    dist = (category_positions[cat] - center_point).manhattanLength()
+                    if dist < best_dist:
+                        best_dist = dist
+                        best_cat = cat
+            if best_cat:
+                pos = category_positions[best_cat]
+                link = QGraphicsLineItem(center_point.x(), center_point.y(), pos.x(), pos.y())
+                link.setPen(QPen(QColor("#FF8C00"), 1.5))  # orange foncé
+                link.setZValue(-2)
+                self.scene.addItem(link)
+                self.widget.cat_link_items.append(link)
 
         # Lien entre catégories
         for cat1, linked in category_links.items():
@@ -185,6 +220,21 @@ class GraphLogic:
             for kw in valid_categories
         }
 
+        # Calculs pour la distance fluide au centre
+        note_counts_list = [len(keyword_to_notes[kw]) for kw in valid_categories]
+        min_count = min(note_counts_list)
+        max_count = max(note_counts_list)
+
+        def clamp(x, a, b):
+            return max(a, min(x, b))
+
+        def category_distance(note_count):
+            # Applique une interpolation douce (sqrt) pour répartir plus harmonieusement les catégories
+            t = (note_count - min_count) / max(1, (max_count - min_count))
+            t = clamp(t, 0, 1)
+            adjusted = math.sqrt(1 - t)  # Les catégories très fréquentes sont légèrement repoussées
+            return min_cat_dist + adjusted * (max_cat_dist - min_cat_dist)
+
         def hash_seed(key): return hash(key) & 0xffffffff
 
         def get_connected_components(graph):
@@ -204,58 +254,97 @@ class GraphLogic:
             return components
 
         components = get_connected_components(links)
+        group_densities = []
+        for group in components:
+            note_count = sum(len(keyword_to_notes[kw]) for kw in group)
+            category_count = len(group)
+            density = note_count * category_count
+            group_densities.append(density)
+
+        min_density = min(group_densities)
+        max_density = max(group_densities)
         global_positions = {}
 
         cols = math.ceil(math.sqrt(len(components)))
         spacing = 800
         random_offset = random.Random(42)
 
+        total_groups = len(components)
+        angle_total = 2 * math.pi
+        angle_per_group = angle_total / total_groups
+
         for i, group in enumerate(components):
             group = list(group)
-            rnd = random.Random(i)
-            local_pos = {
-                kw: QPointF(rnd.uniform(-100, 100), rnd.uniform(-100, 100))
-                for kw in group
-            }
-            velocity = {kw: QPointF(0, 0) for kw in group}
+            group_center_angle = i * angle_per_group + angle_per_group / 2
+            angle_spread = angle_per_group * 0.8  # éviter chevauchement
+            rnd = random.Random(i + 42)
 
-            for _ in range(CATEGORY_ITERATIONS):
+            # === Identifie la catégorie la plus proche du centre
+            best_cat = None
+            best_value = float('inf')
+            for kw in group:
+                value = len(keyword_to_notes[kw])  # ou une autre heuristique
+                if value < best_value:
+                    best_value = value
+                    best_cat = kw
+
+            for j, kw in enumerate(group):
+                t = (j + 1) / (len(group) + 1)
+                angle = group_center_angle + (t - 0.5) * angle_spread
+
+                # Distance radiale du groupe en fonction de sa densité
+                group_density = group_densities[i]
+                norm_density = (group_density - min_density) / max(1, (max_density - min_density))
+                group_distance = min_cat_dist + norm_density * (max_cat_dist - min_cat_dist)
+
+                # Distance de chaque catégorie du groupe
+                note_count = len(keyword_to_notes[kw])
+                cat_variation = (1 - math.sqrt(note_count / max(1, max_count))) * 80
+                dist = group_distance + cat_variation
+
+                # Facteur d’attraction vers le centre selon la densité de la catégorie
+                # Plus une catégorie est dense, plus elle est attirée vers le centre
+                note_t = (note_count - min_count) / max(1, max_count - min_count)
+                note_t = clamp(note_t, 0, 1)
+                attraction_factor = 1.0 - (0.4 * note_t)  # max -40% pour les plus denses
+                dist *= attraction_factor
+
+                # Si c’est la catégorie centrale, on applique en plus une forte attraction
+                if kw == best_cat:
+                    dist *= 0.6  # ou 0.5 si tu veux que ce soit encore plus proche
+
+
+                x = math.cos(angle) * dist
+                y = math.sin(angle) * dist
+                jitter = QPointF(rnd.uniform(-30, 30), rnd.uniform(-30, 30))
+                global_positions[kw] = QPointF(x, y) + jitter
+
+                # --- Répulsion des catégories entre elles selon leur distance au centre
                 for kw1 in group:
                     for kw2 in group:
-                        if kw1 == kw2:
+                        if kw1 == kw2 or kw1 not in global_positions or kw2 not in global_positions:
                             continue
-                        delta = local_pos[kw1] - local_pos[kw2]
-                        dist = max(1, math.hypot(delta.x(), delta.y()))
+                        p1 = global_positions[kw1]
+                        p2 = global_positions[kw2]
+                        delta = p1 - p2
+                        dist = max(1.0, math.hypot(delta.x(), delta.y()))
                         min_dist = repulsion_radius[kw1] + repulsion_radius[kw2]
+
+                        # Calcul de la force de répulsion avec un boost selon la distance au centre
+                        to_center = (p1 - center_point).manhattanLength()
+                        center_factor = 1 + min(CATEGORY_CENTER_REPULSION_BOOST, to_center / (max_cat_dist * 2))
+
                         if dist < min_dist:
                             direction = delta / dist
-                            force = CATEGORY_REPULSION_FORCE * (min_dist - dist)
-                            velocity[kw1] += direction * force
+                            force = CATEGORY_REPULSION_FORCE * (min_dist - dist) * center_factor
+                            force = min(CATEGORY_REPULSION_FORCE * (min_dist - dist) * center_factor, CATEGORY_REPULSION_MAX_FORCE)
+                            global_positions[kw1] += direction * force
 
-                for kw1 in group:
-                    for kw2 in links[kw1]:
-                        if kw2 not in group:
-                            continue
-                        delta = local_pos[kw2] - local_pos[kw1]
-                        dist = max(10, math.hypot(delta.x(), delta.y()))
-                        direction = delta / dist
-                        attraction = CATEGORY_ATTRACTION * dist
-                        velocity[kw1] += direction * attraction
 
-                for kw in group:
-                    velocity[kw] *= 0.7
-                    local_pos[kw] += velocity[kw]
 
-            row = i // cols
-            col = i % cols
-            base_x = col * spacing
-            base_y = row * spacing
-            jitter_x = random_offset.uniform(-150, 150)
-            jitter_y = random_offset.uniform(-150, 150)
-            offset = QPointF(base_x + jitter_x, base_y + jitter_y)
 
-            for kw in group:
-                global_positions[kw] = local_pos[kw] + offset
+        # Sauvegarder les groupes pour les liens vers le hub
+        self.category_groups = components
 
         return global_positions, links
 
@@ -334,6 +423,3 @@ class GraphLogic:
                     pen = QPen(QColor("black"), width)
                     line.setPen(pen)
                     line.setOpacity(opacity)
-
-
-

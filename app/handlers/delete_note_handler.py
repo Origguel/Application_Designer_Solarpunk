@@ -1,7 +1,9 @@
-# app/handlers/delete_note_handler.py
-
 import os
 from PySide6.QtWidgets import QMessageBox
+
+from app.utils.categorie_manager.category_tree_updater import CategoryTreeUpdater
+
+
 
 def confirm_and_delete_note(parent_view, selected_note_id):
     if not selected_note_id:
@@ -25,5 +27,6 @@ def delete_note_file(note_id):
     if os.path.exists(file_path):
         os.remove(file_path)
         print(f"🗑️ Note ID {note_id} supprimée avec succès.")
+        CategoryTreeUpdater().delete_note(note_id)  # 🆕 mise à jour arbre
     else:
         print(f"❌ Le fichier de la note ID {note_id} est introuvable.")

@@ -8,6 +8,8 @@ from app.components.note.graph.graph_widget import GraphWidget
 from app.components.note.add_note_widget import AddNoteWidget
 from app.handlers.delete_note_handler import confirm_and_delete_note
 from app.components.note.graph.interactive_ellipse_item import InteractiveEllipseItem
+from app.utils.categorie_manager.category_manager import CategoryManager
+from app.components.note.graph.tree_graph_widget import TreeGraphWidget
 
 
 # Componenents
@@ -26,7 +28,7 @@ class NotesView(QWidget):
         self.layout.setSpacing(0)
 
         # Graph principal
-        self.graph_widget = GraphWidget(self)
+        self.graph_widget = TreeGraphWidget(self)
         self.layout.addWidget(self.graph_widget)
 
         # Overlay blanc semi-transparent pour désactiver le graph
@@ -139,7 +141,11 @@ class NotesView(QWidget):
     def on_delete_button_clicked(self):
         """Handler appelé quand on clique sur le bouton Delete"""
         selected_note_id = self.graph_widget.get_selected_note_id()
-        confirm_and_delete_note(self, selected_note_id)
+        if selected_note_id:
+            confirm_and_delete_note(self, selected_note_id)
+            CategoryManager().update()  # 🆕 Mise à jour après suppression
+            self.refresh_graph()        # 🆕 Redessiner le graphe
+
 
     def on_reset_view_button_clicked(self):
         """Handler appelé quand on clique sur le bouton Reset View"""

@@ -5,6 +5,8 @@ from PySide6.QtCore import Qt, Signal
 from app.utils.note_creator import NoteCreator
 from datetime import datetime
 
+from app.utils.categorie_manager.category_tree_updater import CategoryTreeUpdater
+
 # Components
 from app.components.dropdowns.dropdown_default import Dropdown_Default
 from app.components.buttons.button_text import ButtonText
@@ -130,3 +132,16 @@ class AddNoteWidget(QWidget):
         self.clear_fields()
         self.note_created.emit()
         self.cancelled.emit()
+
+        # Créer la note
+        note_data = NoteCreator.create_note(
+            title=title,
+            date_str=date,
+            note_type=type_note,
+            project=project,
+            description=description,
+            contenu=contenu
+        )
+
+        # ➕ Ajouter la note au category_tree
+        CategoryTreeUpdater().add_note(note_data["id"], note_data["keywords"])

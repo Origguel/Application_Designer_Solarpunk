@@ -1,7 +1,8 @@
 import json
 from pathlib import Path
 from datetime import datetime
-from app.utils.keyword_extractor import extract_keywords  # 👉 Import corrigé
+from app.utils.keyword_extractor import extract_keywords
+from app.utils.categorie_manager.category_manager import CategoryManager
 
 # Dossier de sauvegarde des notes
 NOTES_DIR = Path("data/notes/")
@@ -13,7 +14,7 @@ class NoteCreator:
     def create_note(title, date_str, note_type, project, description, contenu):
         note_id = NoteCreator.generate_next_id()
 
-        # 🔹 Utilisation de la vraie extraction avancée
+        # 🔹 Extraction avancée des mots-clés
         keywords = extract_keywords(description)
 
         note_data = {
@@ -30,6 +31,9 @@ class NoteCreator:
         file_path = NOTES_DIR / f"{note_id}.json"
         with open(file_path, "w", encoding="utf-8") as f:
             json.dump(note_data, f, ensure_ascii=False, indent=4)
+
+        # 🆕 Mise à jour des catégories après création de la note
+        CategoryManager().update()
 
         return note_data
 

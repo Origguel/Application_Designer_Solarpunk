@@ -3,6 +3,7 @@ from PySide6.QtGui import QBrush, QPen, QColor, QPainter
 from PySide6.QtCore import Qt, QRectF, QPointF, QTimer
 import json
 from pathlib import Path
+import math
 
 from app.utils.tree_graph_interaction import TreeGraphInteraction
 from app.components.note.graph.category_item import CategoryItem
@@ -64,9 +65,11 @@ class TreeGraphWidget(QGraphicsView):
         self.scene.addItem(text)
 
     def add_category(self, name, origin_point):
-        """Ajoute une catégorie connectée à un point donné (le centre ou une autre catégorie)"""
-        item = CategoryItem(name=name, origin_point=origin_point, scene=self.scene)
+        distance = 800  # ou une valeur fixe par défaut
+        angle = self.angle_from_origin(origin_point)
+        item = CategoryItem(name=name, origin_point=origin_point, scene=self.scene, distance=distance, angle_hint=angle)
         self.category_items.append(item)
+
 
     def advance_simulation(self):
         """Met à jour la position de chaque catégorie"""
@@ -90,18 +93,39 @@ class TreeGraphWidget(QGraphicsView):
         self.centerOn(self.center_pos)
 
     def add_category_recursively(self, node_data, origin_point, depth=0, delay_ms=4000):
-        """Ajoute une catégorie après un délai, puis ses enfants avec délai décalé"""
+        """Ajoute une catégorie après un délai, avec une distance adaptée au nombre d'enfants"""
         def spawn_node():
             name = node_data["name"]
-            item = CategoryItem(name=name, origin_point=origin_point, scene=self.scene)
+            children = node_data.get("children", [])
+            num_children = len(children)
+
+            # Distance en fonction du nombre d’enfants et profondeur
+            base_distance = 500
+            distance = base_distance + (num_children * 300) + (depth * 150)
+            distance = min(max(distance, 300), 2000)  # clamp entre 300 et 1800 px
+
+            item = CategoryItem(
+                name=name,
+                origin_point=origin_point,
+                scene=self.scene,
+                distance=distance,
+                angle_hint=self.angle_from_origin(origin_point),
+                num_children=num_children  # 🧠 transmis ici
+            )
+
             self.category_items.append(item)
 
-            # Ajouter les enfants avec +1 niveau
-            for child_node in node_data.get("children", []):
-                self.add_category_recursively(child_node, item.pos_b, depth=depth + 1)
+            for child_node in children:
+                self.add_category_recursively(child_node, item.pos_b, depth=depth + 1, delay_ms=delay_ms)
 
-        # Lancer l'ajout après un délai
         QTimer.singleShot(depth * delay_ms, spawn_node)
+
+
+    def angle_from_origin(self, point):
+        if not point:
+            return 0.0
+        to_origin = QPointF(0, 0) - point
+        return math.atan2(to_origin.y(), to_origin.x()) + math.pi
 
 
 

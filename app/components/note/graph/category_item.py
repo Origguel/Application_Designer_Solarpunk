@@ -6,7 +6,7 @@ import random
 
 
 class CategoryItem(QGraphicsItem):
-    def __init__(self, name, origin_point, scene, radius=20, distance=1000, min_spawn_ratio=0.6):
+    def __init__(self, name, origin_point, scene, radius=20, distance=1000, min_spawn_ratio=0.6, angle_hint=None, num_children=0):
         super().__init__()
 
         self.name = name
@@ -14,13 +14,18 @@ class CategoryItem(QGraphicsItem):
         self.distance = distance             # Distance fixe du lien
         self.radius = radius                 # Rayon du cercle catégorie
 
+        self.num_children = num_children
+        self.safe_multiplier = 1.0 + 0.2 * max(self.num_children - 1, 0)
+
         # Position dynamique du point B (initialisée aléatoirement autour de A)
         # Direction parent → centre
-        to_origin = QPointF(0, 0) - self.origin
-        angle_to_center = math.atan2(to_origin.y(), to_origin.x())
+        if angle_hint is not None:
+            angle = angle_hint + random.uniform(-0.3, 0.3)  # légère variation pour les enfants
+        else:
+            # direction par défaut opposée au centre
+            to_origin = QPointF(0, 0) - self.origin
+            angle = math.atan2(to_origin.y(), to_origin.x()) + math.pi + random.uniform(-0.5, 0.5)
 
-        # Ajouter une variation autour de l'opposé (angle + pi)
-        angle = angle_to_center + math.pi + random.uniform(-0.5, 0.5)
 
         # Rayon variable mais avec minimum garanti
         r = distance * random.uniform(min_spawn_ratio, 0.9)
@@ -49,7 +54,7 @@ class CategoryItem(QGraphicsItem):
     def add_to_velocity(self, dx, dy):
         self.velocity = QPointF(self.velocity.x() + dx, self.velocity.y() + dy)
 
-    def update_physics(self, other_items=[], friction=0.85, repel_strength=500, safe_distance=12, velocity_strenght=0.01):
+    def update_physics(self, other_items=[], friction=0.8, repel_strength=1000, safe_distance=10, velocity_strenght=0.2):
 
         self.safe_distance = safe_distance                 # Rayon du cercle catégorie
         self.velocity_strenght = velocity_strenght                 # Rayon du cercle catégorie
@@ -63,7 +68,7 @@ class CategoryItem(QGraphicsItem):
             self.add_to_velocity(dx * factor * velocity_strenght, dy * factor * velocity_strenght)
 
         # Répulsion entre les autres catégories
-        safe_dist = self.radius * safe_distance
+        safe_dist = self.radius * safe_distance * self.safe_multiplier
 
         for other in other_items:
             if other is self:

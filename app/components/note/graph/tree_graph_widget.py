@@ -73,7 +73,7 @@ class TreeGraphWidget(QGraphicsView):
         for item in self.category_items:
             item.update_physics(other_items=self.category_items)
 
-    def add_category_recursively(self, node_data, origin_point, parent_item=None, depth=0, delay_ms=500):
+    def add_category_recursively(self, node_data, origin_point, parent_item=None, depth=0, delay_ms=1000):
         """Ajoute une catégorie avec animation différée et hiérarchie"""
         def spawn_node():
             name = node_data["name"]

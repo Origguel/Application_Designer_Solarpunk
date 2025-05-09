@@ -30,6 +30,7 @@ class NotesView(QWidget):
         # Graph principal
         self.graph_widget = TreeGraphWidget(self)
         self.layout.addWidget(self.graph_widget)
+        self.graph_widget.scale(0.2, 0.2)
 
         # Overlay blanc semi-transparent pour désactiver le graph
         self.overlay = QWidget(self)
@@ -148,10 +149,13 @@ class NotesView(QWidget):
 
 
     def on_reset_view_button_clicked(self):
-        """Handler appelé quand on clique sur le bouton Reset View"""
-        self.graph_widget.resetTransform()
-        self.graph_widget.centerOn(0, 0)
-        print("🧹 Vue du graphe réinitialisée.")
+        """Recentre la vue sur le centre avec un zoom de 4x"""
+        self.graph_widget.resetTransform()      # Réinitialise toute transformation
+        self.graph_widget.scale(0.2, 0.2)           # 🔍 Applique un zoom 4x
+        self.graph_widget.centerOn(0, 0)        # 🧠 Recentre sur le cerveau
+        print("🔍 Zoom x4 appliqué et vue recentrée.")
+
+
 
 
     def on_search_note(self):

@@ -6,69 +6,59 @@ import random
 
 
 class CategoryItem(QGraphicsItem):
-    def __init__(self, name, origin_point, scene, radius=20, distance=1000, min_spawn_ratio=0.6, angle_hint=None, num_children=0):
+    def __init__(self, name, parent_ref, scene, radius=20, base_distance=1000, min_spawn_ratio=0.6, angle_hint=None, num_children=0):
         super().__init__()
 
         self.name = name
-        self.origin = origin_point           # QPointF : position fixe (point A)
-        self.distance = distance             # Distance fixe du lien
-        self.radius = radius                 # Rayon du cercle catégorie
+        self.parent_ref = parent_ref
+        self.radius = radius
+
+        calculated_distance = base_distance + (num_children * 500)
+        self.distance = min(max(calculated_distance, base_distance), 10000)
 
         self.num_children = num_children
-        self.safe_multiplier = 1.0 + 0.2 * max(self.num_children - 1, 0)
+        self.safe_multiplier = max(0.2, 4 - math.log2(self.num_children + 1))
 
-        # Position dynamique du point B (initialisée aléatoirement autour de A)
-        # Direction parent → centre
+        # Angle de direction
         if angle_hint is not None:
-            angle = angle_hint + random.uniform(-0.3, 0.3)  # légère variation pour les enfants
+            self.angle = angle_hint + random.uniform(-0.3, 0.3)
         else:
-            # direction par défaut opposée au centre
-            to_origin = QPointF(0, 0) - self.origin
-            angle = math.atan2(to_origin.y(), to_origin.x()) + math.pi + random.uniform(-0.5, 0.5)
+            self.angle = random.uniform(0, 2 * math.pi)
 
-
-        # Rayon variable mais avec minimum garanti
-        r = distance * random.uniform(min_spawn_ratio, 0.9)
-
-        self.pos_b = QPointF(
-            self.origin.x() + r * math.cos(angle),
-            self.origin.y() + r * math.sin(angle)
-        )
+        r = self.distance * random.uniform(min_spawn_ratio, 0.9)
+        self.pos_b = self.origin() + QPointF(r * math.cos(self.angle), r * math.sin(self.angle))
         self.velocity = QPointF(0, 0)
 
-        # Ligne de liaison A → B
         self.link = QGraphicsLineItem()
         self.link.setPen(QPen(Qt.black, 2))
         scene.addItem(self.link)
 
-        # Cercle au point B
         self.circle = QGraphicsEllipseItem(-radius, -radius, radius * 2, radius * 2)
         self.circle.setBrush(QBrush(QColor("white")))
         self.circle.setPen(QPen(Qt.black, 2))
         self.circle.setZValue(1)
         scene.addItem(self.circle)
 
-        # Ajout à la scène (positionné via advance())
         self.scene = scene
+
+    def origin(self):
+        return self.parent_ref.pos_b if self.parent_ref else QPointF(0, 0)
 
     def add_to_velocity(self, dx, dy):
         self.velocity = QPointF(self.velocity.x() + dx, self.velocity.y() + dy)
 
     def update_physics(self, other_items=[], friction=0.8, repel_strength=1000, safe_distance=10, velocity_strenght=0.2):
+        self.safe_distance = safe_distance
+        self.velocity_strenght = velocity_strenght
 
-        self.safe_distance = safe_distance                 # Rayon du cercle catégorie
-        self.velocity_strenght = velocity_strenght                 # Rayon du cercle catégorie
-
-        dx = self.pos_b.x() - self.origin.x()
-        dy = self.pos_b.y() - self.origin.y()
+        dx = self.pos_b.x() - self.origin().x()
+        dy = self.pos_b.y() - self.origin().y()
         current_dist = math.hypot(dx, dy)
-        target_dist = self.distance
         if current_dist != 0:
-            factor = (target_dist - current_dist) / current_dist
-            self.add_to_velocity(dx * factor * velocity_strenght, dy * factor * velocity_strenght)
+            factor = (self.distance - current_dist) / current_dist
+            self.add_to_velocity(dx * factor * self.velocity_strenght, dy * factor * self.velocity_strenght)
 
-        # Répulsion entre les autres catégories
-        safe_dist = self.radius * safe_distance * self.safe_multiplier
+        safe_dist = self.radius * self.safe_distance * self.safe_multiplier
 
         for other in other_items:
             if other is self:
@@ -85,8 +75,7 @@ class CategoryItem(QGraphicsItem):
                     delta.y() / dist * repel_force
                 )
 
-        # Répulsion du centre (A) vers B
-        delta_to_center = self.pos_b - self.origin
+        delta_to_center = self.pos_b - self.origin()
         dist_to_center = math.hypot(delta_to_center.x(), delta_to_center.y())
         if dist_to_center < self.radius * 2:
             repel = repel_strength * 2 / (dist_to_center * dist_to_center)
@@ -95,10 +84,9 @@ class CategoryItem(QGraphicsItem):
                 delta_to_center.y() / dist_to_center * repel
             )
 
-        # Friction + déplacement
         self.velocity *= friction
         self.pos_b += self.velocity
 
-        # Affichage
+        origin_pt = self.origin()
         self.circle.setPos(self.pos_b)
-        self.link.setLine(self.origin.x(), self.origin.y(), self.pos_b.x(), self.pos_b.y())
+        self.link.setLine(origin_pt.x(), origin_pt.y(), self.pos_b.x(), self.pos_b.y())

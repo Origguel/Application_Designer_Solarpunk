@@ -211,4 +211,3 @@ class NotesView(QWidget):
             if hasattr(item, 'remove_highlight'):
                 item.remove_highlight()
         self.search_input.clear()  # 🆕 Vider la barre de recherche aussi
-

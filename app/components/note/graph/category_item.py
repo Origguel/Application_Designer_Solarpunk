@@ -1,5 +1,5 @@
-from PySide6.QtWidgets import QGraphicsEllipseItem, QGraphicsLineItem, QGraphicsItem
-from PySide6.QtGui import QBrush, QPen, QColor
+from PySide6.QtWidgets import QGraphicsEllipseItem, QGraphicsLineItem, QGraphicsItem, QGraphicsTextItem
+from PySide6.QtGui import QBrush, QPen, QColor, QFont
 from PySide6.QtCore import QPointF, Qt
 import math
 import random
@@ -38,6 +38,21 @@ class CategoryItem(QGraphicsItem):
         self.circle.setPen(QPen(Qt.black, 2))
         self.circle.setZValue(1)
         scene.addItem(self.circle)
+
+
+
+        # Création du texte du nom de la catégorie
+        self.label = QGraphicsTextItem(self.name.upper())
+        self.label.setDefaultTextColor(Qt.black)
+        font = QFont()
+        font.setPointSize(30)  # Taille de police augmentée
+        font.setBold(True)
+        self.label.setFont(font)
+        self.label.setZValue(4)  # S'affiche au-dessus du cercle
+        self.label.setParentItem(self.circle)  # Le texte suit le cercle
+
+
+
 
         self.scene = scene
 
@@ -89,4 +104,16 @@ class CategoryItem(QGraphicsItem):
 
         origin_pt = self.origin()
         self.circle.setPos(self.pos_b)
+        # Centrage du texte horizontalement
+        text_rect = self.label.boundingRect()
+        self.label.setPos(-text_rect.width() / 2, -self.radius - text_rect.height() - 2)
+
         self.link.setLine(origin_pt.x(), origin_pt.y(), self.pos_b.x(), self.pos_b.y())
+
+
+    def update_label_opacity(self, zoom_level):
+        min_zoom = 0.1
+        max_zoom = 0.3
+        zoom = max(min_zoom, min(zoom_level, max_zoom))
+        normalized = (zoom - min_zoom) / (max_zoom - min_zoom)
+        self.label.setOpacity(normalized)

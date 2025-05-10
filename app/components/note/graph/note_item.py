@@ -11,7 +11,7 @@ class NoteItem(QGraphicsItem):
     MIN_ZOOM = 0.1
     MAX_ZOOM = 0.3
 
-    def __init__(self, note_id, parent_ref, scene, radius=6, base_distance=150, angle_hint=None):
+    def __init__(self, note_id, parent_ref, scene, radius=8, base_distance=150, angle_hint=None):
         super().__init__()
 
         self.note_id = note_id
@@ -67,7 +67,7 @@ class NoteItem(QGraphicsItem):
                 self.scene.addItem(visual_link)
                 self.keyword_links.append((category, visual_link))
 
-    def update_physics(self, other_notes=[], friction=0.8, velocity_strenght=0.2):
+    def update_physics(self, other_notes=[], friction=0.8, velocity_strenght=0.05):
         dx = self.pos_b.x() - self.origin().x()
         dy = self.pos_b.y() - self.origin().y()
         current_dist = math.hypot(dx, dy)
@@ -95,6 +95,18 @@ class NoteItem(QGraphicsItem):
                     delta.x() / dist * repel_force,
                     delta.y() / dist * repel_force
                 )
+
+        # 🔄 Attirance vers les catégories liées par mots-clés
+        attract_strength = 0.4  # plus bas = plus doux
+        for category, _ in self.keyword_links:
+            delta = category.pos_b - self.pos_b
+            dist = math.hypot(delta.x(), delta.y())
+            if dist > 1:
+                self.add_to_velocity(
+                    delta.x() / dist * attract_strength,
+                    delta.y() / dist * attract_strength
+                )
+
 
         self.velocity *= friction
         self.pos_b += self.velocity

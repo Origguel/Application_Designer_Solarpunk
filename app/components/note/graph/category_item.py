@@ -90,3 +90,20 @@ class CategoryItem(QGraphicsItem):
         origin_pt = self.origin()
         self.circle.setPos(self.pos_b)
         self.link.setLine(origin_pt.x(), origin_pt.y(), self.pos_b.x(), self.pos_b.y())
+
+
+    def update_link_thickness(self, zoom_level):
+        min_zoom = 0.1
+        max_zoom = 0.4
+        zoom = max(min_zoom, min(zoom_level, max_zoom))  # Clamp
+
+        normalized = (zoom - min_zoom) / (max_zoom - min_zoom)  # Entre 0 et 1
+
+        # Inversion : plus le zoom est petit, plus le trait est épais
+        min_width = 1
+        max_width = 6
+        width = max_width - (normalized * (max_width - min_width))
+
+        pen = self.link.pen()
+        pen.setWidthF(width)
+        self.link.setPen(pen)

@@ -108,9 +108,16 @@ class TreeGraphWidget(QGraphicsView):
             return 0.0
         to_origin = QPointF(0, 0) - point
         return math.atan2(to_origin.y(), to_origin.x()) + math.pi
+    
+    def update_category_display(self):
+        current_zoom = self.transform().m11()
+        for item in self.category_items:
+            item.update_label_opacity(current_zoom)
+            item.update_link_thickness(current_zoom)
 
     def wheelEvent(self, event):
         self.interaction.wheel_event(event)
+        self.update_category_display()
 
     def mousePressEvent(self, event):
         self.interaction.mouse_press_event(event)

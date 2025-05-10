@@ -55,8 +55,7 @@ class TreeGraphWidget(QGraphicsView):
         self.create_center_node(tree_data.get("name", "Cerveau"))
 
         for child in tree_data.get("children", []):
-            if self.is_category_useful(child):  # ✅ Filtrage ici
-                self.add_category_recursively(child, self.center_pos)
+            self.add_category_recursively(child, self.center_pos)
 
         self.centerOn(self.center_pos)
 
@@ -110,14 +109,14 @@ class TreeGraphWidget(QGraphicsView):
 
             # 🔁 Ajout récursif des sous-catégories utiles uniquement
             for child_node in children:
-                if self.is_category_useful(child_node):
-                    self.add_category_recursively(
-                        child_node,
-                        origin_point=item.pos_b,
-                        parent_item=item,
-                        depth=depth + 1,
-                        delay_ms=delay_ms
-                    )
+                self.add_category_recursively(
+                    child_node,
+                    origin_point=item.pos_b,
+                    parent_item=item,
+                    depth=depth + 1,
+                    delay_ms=delay_ms
+                )
+
 
 
         QTimer.singleShot(depth * delay_ms, spawn_node)
@@ -145,15 +144,6 @@ class TreeGraphWidget(QGraphicsView):
         for note in self.note_items:
             # Prévu pour extensions futures si nécessaire
             pass
-
-
-    def is_category_useful(self, node_data):
-        name = node_data.get("name", "").strip().lower()
-
-        has_direct_note = bool(node_data.get("notes"))
-        keyword_count = self.category_keyword_count.get(name, 0)
-
-        return has_direct_note or keyword_count >= 3
 
     
 

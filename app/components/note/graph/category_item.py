@@ -6,6 +6,10 @@ import random
 
 
 class CategoryItem(QGraphicsItem):
+
+    MIN_ZOOM = 0.1
+    MAX_ZOOM = 0.2
+
     def __init__(self, name, parent_ref, scene, radius=20, base_distance=1000, min_spawn_ratio=0.6, angle_hint=None, num_children=0):
         super().__init__()
 
@@ -112,8 +116,47 @@ class CategoryItem(QGraphicsItem):
 
 
     def update_label_opacity(self, zoom_level):
-        min_zoom = 0.1
-        max_zoom = 0.3
-        zoom = max(min_zoom, min(zoom_level, max_zoom))
-        normalized = (zoom - min_zoom) / (max_zoom - min_zoom)
+        zoom = max(self.MIN_ZOOM, min(zoom_level, self.MAX_ZOOM))
+        normalized = (zoom - self.MIN_ZOOM) / (self.MAX_ZOOM - self.MIN_ZOOM)
         self.label.setOpacity(normalized)
+
+    def update_link_thickness(self, zoom_level):
+        zoom = max(self.MIN_ZOOM, min(zoom_level, self.MAX_ZOOM))
+        normalized = (zoom - self.MIN_ZOOM) / (self.MAX_ZOOM - self.MIN_ZOOM)
+
+        # Inversion : plus le zoom est petit, plus le trait est épais
+        min_width = 1
+        max_width = 6
+        width = max_width - (normalized * (max_width - min_width))
+
+        pen = self.link.pen()
+        pen.setWidthF(width)
+        self.link.setPen(pen)
+
+    def update_circle_outline_thickness(self, zoom_level):
+        zoom = max(self.MIN_ZOOM, min(zoom_level, self.MAX_ZOOM))
+        normalized = (zoom - self.MIN_ZOOM) / (self.MAX_ZOOM - self.MIN_ZOOM)
+
+        min_width = 1
+        max_width = 6
+        width = max_width - (normalized * (max_width - min_width))
+
+        pen = self.circle.pen()
+        pen.setWidthF(width)
+        self.circle.setPen(pen)
+
+
+    def update_circle_visual_scale(self, zoom_level):
+        zoom = max(self.MIN_ZOOM, min(zoom_level, self.MAX_ZOOM))
+        normalized = (zoom - self.MIN_ZOOM) / (self.MAX_ZOOM - self.MIN_ZOOM)
+
+        min_scale = 1.0
+        max_scale = 2.0
+        scale = max_scale - (normalized * (max_scale - min_scale))
+
+        self.circle.setScale(scale)
+
+        # Repositionner le texte au-dessus du cercle (en tenant compte du scale)
+        text_rect = self.label.boundingRect()
+        offset_y = -self.radius * scale - text_rect.height() - 2
+        self.label.setPos(-text_rect.width() / 2, offset_y)

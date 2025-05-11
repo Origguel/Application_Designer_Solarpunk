@@ -151,9 +151,8 @@ class NotesView(QWidget):
     def on_reset_view_button_clicked(self):
         """Recentre la vue sur le centre avec un zoom de 4x"""
         self.graph_widget.resetTransform()      # Réinitialise toute transformation
-        self.graph_widget.scale(0.2, 0.2)           # 🔍 Applique un zoom 4x
+        self.graph_widget.scale(0.1, 0.1)           # 🔍 Applique un zoom
         self.graph_widget.centerOn(0, 0)        # 🧠 Recentre sur le cerveau
-        print("🔍 Zoom x4 appliqué et vue recentrée.")
 
 
 

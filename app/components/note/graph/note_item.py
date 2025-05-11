@@ -24,6 +24,7 @@ class NoteItem(QGraphicsItem):
         self.safe_distance = 5
         self.velocity = QPointF(0, 0)
         self.keyword_links = []  # 🔗 liens visuels vers catégories par mot-clé
+
         self._highlighted = False
 
         # Position initiale
@@ -38,12 +39,15 @@ class NoteItem(QGraphicsItem):
 
         # Cercle noir (sans bordure)
         self.circle = InteractiveNoteCircleItem(self.note_id, notes_view)
+        self.circle.setParentItem(self)
         self.circle.setRect(-radius, -radius, radius * 2, radius * 2)
         self.circle.setBrush(QBrush(Qt.black))
         self.circle.setPen(QPen(Qt.transparent))
         self.circle.setZValue(1)
         scene.addItem(self.circle)
-        self.circle.note = self
+
+        self._selected = False
+        self.circle.note = self  # ✅ clé de la communication
 
         # Titre de la note (affiché au-dessus du point)
         self.label = QGraphicsTextItem(self.note_id)
@@ -63,6 +67,7 @@ class NoteItem(QGraphicsItem):
                 self.note_data = json.load(f)
         else:
             self.note_data = {"id": note_id}
+        
 
     def origin(self):
         return self.parent_ref.pos_b if self.parent_ref else QPointF(0, 0)
@@ -211,7 +216,23 @@ class NoteItem(QGraphicsItem):
         self.refresh_brush()
 
     def refresh_brush(self):
-        if self._highlighted:
-            self.circle.setBrush(QBrush(QColor("#FFDF00")))  # Jaune
+        if self._selected:
+            self.circle.setBrush(QBrush(QColor("#F18805")))  # Priorité sélection
+        elif self._highlighted:
+            self.circle.setBrush(QBrush(QColor("#FFDF00")))
         else:
             self.circle.setBrush(QBrush(Qt.black))
+
+
+    def select(self):
+        self._selected = True
+        self.circle.setScale(2.0)
+        self.label.setScale(1.4)
+        self.circle.setBrush(QBrush(QColor("#F18805")))  # Orange sélection
+        self.refresh_brush()
+
+    def deselect(self):
+        self._selected = False
+        self.circle.setScale(1.0)
+        self.label.setScale(1.0)
+        self.refresh_brush()

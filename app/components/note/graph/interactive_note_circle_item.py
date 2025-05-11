@@ -13,21 +13,30 @@ class InteractiveNoteCircleItem(QGraphicsEllipseItem):
         self.setBrush(QBrush(Qt.black))  # ✅ reste noir à l’état hover
 
     def hoverEnterEvent(self, event):
-        self.setScale(2.0)
-        if hasattr(self.parentItem(), "note"):
-            self.parentItem().note.label.setScale(1.4)  # 📈 agrandit texte
+        if hasattr(self, "note") and not self.note._selected:
+            self.setScale(2.0)
+            self.note.label.setScale(1.4)
         super().hoverEnterEvent(event)
 
+
     def hoverLeaveEvent(self, event):
-        self.setScale(1.0)
-        if hasattr(self.parentItem(), "note"):
-            note = self.parentItem().note
-            note.label.setScale(1.0)                  # 🔽 texte normal
-            note.refresh_brush()                      # 🎨 couleur selon état
+        note = getattr(self, "note", None)
+        if note:
+            if not note._selected:
+                self.setScale(1.0)
+                note.label.setScale(1.0)
+                note.refresh_brush()
+        else:
+            self.setScale(1.0)
         super().hoverLeaveEvent(event)
+
 
 
     def mousePressEvent(self, event):
         print(f"🖱️ Note cliquée : {self.note_id}")
+        if hasattr(self, "note"):
+            for item in self.notes_view.graph_widget.note_items:
+                item.deselect()
+            self.note.select()  # ✅ self.note existe désormais
         self.notes_view.open_note_detail(self.note_id)
         super().mousePressEvent(event)

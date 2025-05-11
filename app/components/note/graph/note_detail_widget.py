@@ -18,7 +18,7 @@ class NoteDetailWidget(QFrame):
         self.close_button.move(10, 10)
         self.close_button.clicked.connect(self.close_detail)
         
-        layout.setContentsMargins(12, 48, 12, 12)
+        layout.setContentsMargins(12, 64, 12, 12)
         layout.setSpacing(8)
 
         # 🧹 Bouton Supprimer supprimé pour test

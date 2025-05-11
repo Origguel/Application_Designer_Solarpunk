@@ -6,12 +6,14 @@ import random
 import json
 from pathlib import Path
 
+from app.components.note.graph.interactive_note_circle_item import InteractiveNoteCircleItem
+
 
 class NoteItem(QGraphicsItem):
     MIN_ZOOM = 0.6
     MAX_ZOOM = 0.8
 
-    def __init__(self, note_id, parent_ref, scene, radius=8, base_distance=150, angle_hint=None):
+    def __init__(self, note_id, parent_ref, scene, notes_view, radius=8, base_distance=150, angle_hint=None):
         super().__init__()
 
         self.note_id = note_id
@@ -34,7 +36,8 @@ class NoteItem(QGraphicsItem):
         scene.addItem(self.link)
 
         # Cercle noir (sans bordure)
-        self.circle = QGraphicsEllipseItem(-radius, -radius, radius * 2, radius * 2)
+        self.circle = InteractiveNoteCircleItem(self.note_id, notes_view)
+        self.circle.setRect(-radius, -radius, radius * 2, radius * 2)
         self.circle.setBrush(QBrush(Qt.black))
         self.circle.setPen(QPen(Qt.transparent))
         self.circle.setZValue(1)

@@ -1,7 +1,8 @@
-# app/components/note_detail_widget.py
-
 from PySide6.QtWidgets import QWidget, QVBoxLayout, QLabel, QFrame, QSizePolicy, QHBoxLayout
 from PySide6.QtCore import Qt
+
+from app.components.buttons.button_icon import ButtonIcon
+from app.utils.layouts.flow_layout import FlowLayout
 
 class NoteDetailWidget(QFrame):
     def __init__(self, note_data, parent=None):
@@ -12,7 +13,12 @@ class NoteDetailWidget(QFrame):
         self.setObjectName("NoteDetailWidget")
         self.setStyleSheet("background-color: #FFFFFF;")
         layout = QVBoxLayout(self)
-        layout.setContentsMargins(12, 12, 12, 12)
+
+        self.close_button = ButtonIcon(">", 36, 36, "Button_Secondary", self)
+        self.close_button.move(10, 10)
+        self.close_button.clicked.connect(self.close_detail)
+        
+        layout.setContentsMargins(12, 48, 12, 12)
         layout.setSpacing(8)
 
         # 🧹 Bouton Supprimer supprimé pour test
@@ -27,15 +33,37 @@ class NoteDetailWidget(QFrame):
         date = QLabel(f"Date : {note_data.get('date', '-')}")
         date.setObjectName("NoteDate")
 
-        keywords = QLabel("Mots-clés : " + ", ".join(note_data.get("keywords", [])))
-        keywords.setObjectName("NoteKeywords")
+        # Groupe des mots-clés
+        keywords_widget = QWidget(self)
+        keywords_layout = FlowLayout(keywords_widget, spacing=6)
+        keywords_layout.setSpacing(6)
+        keywords_layout.setContentsMargins(0, 0, 0, 0)
+
+        for kw in note_data.get("keywords", []):
+            pill = QLabel(kw)
+            pill.setObjectName("KeywordPill")
+            pill.setStyleSheet("""
+                QLabel#KeywordPill {
+                    border: 1px solid black;
+                    border-radius: 8px;
+                    padding: 4px 8px;
+                    background-color: #f4f4f4;
+                }
+            """)
+            keywords_layout.addWidget(pill)
 
         description = QLabel(note_data.get("description", ""))
         description.setObjectName("NoteDescription")
 
-        for label in [title, project, date, keywords, description]:
+        for label in [title, project, date]:
             label.setWordWrap(True)
             layout.addWidget(label)
+
+        layout.addWidget(keywords_widget)
+
+        description.setWordWrap(True)
+        layout.addWidget(description)
+
 
         contenu = QLabel(note_data.get("contenu", ""))
         contenu.setWordWrap(True)
@@ -43,3 +71,7 @@ class NoteDetailWidget(QFrame):
         contenu.setAlignment(Qt.AlignTop | Qt.AlignLeft)
         contenu.setObjectName("NoteContent")
         layout.addWidget(contenu)
+
+    def close_detail(self):
+        if self.parent():
+            self.parent().close_note_detail()

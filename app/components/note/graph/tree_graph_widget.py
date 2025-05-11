@@ -102,6 +102,7 @@ class TreeGraphWidget(QGraphicsView):
                     note_id=note_id,
                     parent_ref=item,
                     scene=self.scene,
+                    notes_view=self.parent(),
                     angle_hint=random.uniform(0, 2 * math.pi)
                 )
                 self.note_items.append(note_item)
@@ -118,7 +119,7 @@ class TreeGraphWidget(QGraphicsView):
                 )
 
             self.update_category_display()
-            
+
         QTimer.singleShot(depth * delay_ms, spawn_node)
 
 

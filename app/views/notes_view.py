@@ -3,6 +3,8 @@
 from PySide6.QtWidgets import QWidget, QVBoxLayout
 from PySide6.QtCore import Qt
 from PySide6.QtWidgets import QLineEdit
+import json
+from pathlib import Path
 
 from app.components.note.graph.graph_widget import GraphWidget
 from app.components.note.add_note_widget import AddNoteWidget
@@ -10,6 +12,7 @@ from app.handlers.delete_note_handler import confirm_and_delete_note
 from app.components.note.graph.interactive_ellipse_item import InteractiveEllipseItem
 from app.utils.categorie_manager.category_manager import CategoryManager
 from app.components.note.graph.tree_graph_widget import TreeGraphWidget
+from app.components.note.graph.note_detail_widget import NoteDetailWidget
 
 
 # Componenents
@@ -67,6 +70,41 @@ class NotesView(QWidget):
 
         # Panneau d'ajout
         self.add_note_widget = None
+
+    def open_note_detail(self, note_id):
+        """Affiche le détail d'une note dans un panneau à droite"""
+        note_path = Path(f"data/notes/{note_id}.json")
+        if not note_path.exists():
+            print(f"❌ Fichier de note introuvable : {note_path}")
+            return
+
+        with open(note_path, "r", encoding="utf-8") as f:
+            note_data = json.load(f)
+
+        self.close_note_detail()  # ✅ remplacement sécurisé
+
+        self.note_detail_widget = NoteDetailWidget(note_data, self)
+        widget_width = 460
+        top_margin = 68
+        right_margin = 34
+        bottom_margin = 26
+        available_height = self.height() - top_margin - bottom_margin
+
+        self.note_detail_widget.setGeometry(
+            self.width() - widget_width - right_margin,
+            top_margin,
+            widget_width,
+            available_height
+        )
+        self.note_detail_widget.raise_()
+        self.note_detail_widget.show()
+
+
+    def close_note_detail(self):
+        if hasattr(self, 'note_detail_widget') and self.note_detail_widget:
+            self.note_detail_widget.setParent(None)
+            self.note_detail_widget.deleteLater()
+            self.note_detail_widget = None
 
     def open_add_note_widget(self):
         """Ouvre la fenêtre pour ajouter une nouvelle note"""

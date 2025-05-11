@@ -142,8 +142,8 @@ class TreeGraphWidget(QGraphicsView):
             item.update_circle_outline_thickness(current_zoom)
             item.update_circle_visual_scale(current_zoom)
         for note in self.note_items:
-            # Prévu pour extensions futures si nécessaire
-            pass
+            note.update_label_opacity(current_zoom)
+            note.update_link_opacity(current_zoom)
 
     
 

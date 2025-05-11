@@ -1,5 +1,5 @@
-from PySide6.QtWidgets import QGraphicsEllipseItem, QGraphicsLineItem, QGraphicsItem
-from PySide6.QtGui import QBrush, QPen, QColor
+from PySide6.QtWidgets import QGraphicsEllipseItem, QGraphicsLineItem, QGraphicsItem, QGraphicsTextItem
+from PySide6.QtGui import QBrush, QPen, QColor, QFont
 from PySide6.QtCore import QPointF, Qt
 import math
 import random
@@ -8,8 +8,8 @@ from pathlib import Path
 
 
 class NoteItem(QGraphicsItem):
-    MIN_ZOOM = 0.1
-    MAX_ZOOM = 0.3
+    MIN_ZOOM = 0.6
+    MAX_ZOOM = 0.8
 
     def __init__(self, note_id, parent_ref, scene, radius=8, base_distance=150, angle_hint=None):
         super().__init__()
@@ -39,6 +39,18 @@ class NoteItem(QGraphicsItem):
         self.circle.setPen(QPen(Qt.transparent))
         self.circle.setZValue(1)
         scene.addItem(self.circle)
+
+        # Titre de la note (affiché au-dessus du point)
+        self.label = QGraphicsTextItem(self.note_id)
+        self.label.setDefaultTextColor(Qt.black)
+        font = QFont()
+        font.setPointSize(8)
+        font.setBold(True)
+        self.label.setFont(font)
+        self.label.setZValue(4)
+        self.label.setParentItem(self.circle)
+        text_rect = self.label.boundingRect()
+        self.label.setPos(-text_rect.width() / 2, -self.radius - text_rect.height() - 2)
 
     def origin(self):
         return self.parent_ref.pos_b if self.parent_ref else QPointF(0, 0)
@@ -146,3 +158,31 @@ class NoteItem(QGraphicsItem):
         base = 200
         increment = 100
         self.distance = base + (num_links * increment)
+
+
+    def update_label_opacity(self, zoom_level):
+        zoom = max(self.MIN_ZOOM, min(zoom_level, self.MAX_ZOOM))
+        normalized = (zoom - self.MIN_ZOOM) / (self.MAX_ZOOM - self.MIN_ZOOM)
+        self.label.setOpacity(normalized)
+
+    def update_link_opacity(self, zoom_level):
+        zoom = max(self.MIN_ZOOM, min(zoom_level, self.MAX_ZOOM))
+        normalized = (zoom - self.MIN_ZOOM) / (self.MAX_ZOOM - self.MIN_ZOOM)
+
+        # Inverser la courbe : plus on zoom, plus c’est transparent
+        opacity = 1.0 - (0.8 * normalized)  # de 1.0 à 0.4
+
+        # 🔁 Appliquer à tous les liens secondaires
+        for _, link in self.keyword_links:
+            color = link.pen().color()
+            color.setAlphaF(opacity)
+            pen = link.pen()
+            pen.setColor(color)
+            link.setPen(pen)
+
+        # ✅ Appliquer au lien principal
+        main_color = self.link.pen().color()
+        main_color.setAlphaF(opacity)
+        main_pen = self.link.pen()
+        main_pen.setColor(main_color)
+        self.link.setPen(main_pen)

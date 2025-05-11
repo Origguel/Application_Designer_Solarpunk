@@ -1,7 +1,7 @@
 # app/views/notes_view.py
 
 from PySide6.QtWidgets import QWidget, QVBoxLayout
-from PySide6.QtCore import Qt
+from PySide6.QtCore import Qt, QTimer, QPointF
 from PySide6.QtWidgets import QLineEdit
 import json
 from pathlib import Path
@@ -24,6 +24,8 @@ from app.components.buttons.button_icon import ButtonIcon
 class NotesView(QWidget):
     def __init__(self):
         super().__init__()
+
+        self.is_camera_animating = False
 
         # Layout principal
         self.layout = QVBoxLayout(self)
@@ -187,11 +189,23 @@ class NotesView(QWidget):
 
 
     def on_reset_view_button_clicked(self):
-        """Recentre la vue sur le centre avec un zoom de 4x"""
-        self.graph_widget.resetTransform()      # Réinitialise toute transformation
-        self.graph_widget.scale(0.1, 0.1)           # 🔍 Applique un zoom
-        self.graph_widget.centerOn(0, 0)        # 🧠 Recentre sur le cerveau
+        if self.is_camera_animating:
+            print("⏳ Animation déjà en cours.")
+            return
 
+        current_center = self.graph_widget.mapToScene(self.graph_widget.viewport().rect().center())
+        current_scale = self.graph_widget.transform().m11()
+
+        center_threshold = 5.0
+        scale_threshold = 0.01
+        target_center = QPointF(0, 0)
+        target_scale = 0.1
+
+        if (current_center - target_center).manhattanLength() < center_threshold and abs(current_scale - target_scale) < scale_threshold:
+            print("✅ Vue déjà centrée et zoomée, animation ignorée.")
+            return
+
+        self.animate_camera_to_center()
 
 
 
@@ -251,3 +265,56 @@ class NotesView(QWidget):
                 item.remove_highlight()
         self.search_input.clear()
         self.graph_widget.update_category_display()
+
+    from PySide6.QtCore import QTimer, QPointF
+
+    def animate_camera_to_center(self, duration_ms=1000, target_scale=0.1):
+        def ease_in_out_expo(t):
+            if t == 0:
+                return 0
+            if t == 1:
+                return 1
+            if t < 0.5:
+                return 0.5 * pow(2, 20 * t - 10)
+            else:
+                return 1 - 0.5 * pow(2, -20 * t + 10)
+
+        if self.is_camera_animating:
+            return
+
+        view = self.graph_widget
+        self.is_camera_animating = True
+        view.setInteractive(False)  # 🛑 désactive les interactions
+
+        steps = 60
+        interval = duration_ms // steps
+        initial_scale = view.transform().m11()
+        scale_diff = target_scale - initial_scale
+        current_center = view.mapToScene(view.viewport().rect().center())
+        target_center = QPointF(0, 0)
+        delta_center = target_center - current_center
+        step = 0
+
+        def animate_step():
+            nonlocal step
+            if step >= steps:
+                timer.stop()
+                view.setInteractive(True)
+                self.is_camera_animating = False
+                print("✅ Animation terminée")
+                return
+
+            t = ease_in_out_expo((step + 1) / steps)
+            interpolated_scale = initial_scale + scale_diff * t
+            interpolated_center = current_center + delta_center * t
+
+            view.resetTransform()
+            view.scale(interpolated_scale, interpolated_scale)
+            view.centerOn(interpolated_center)
+            self.graph_widget.update_category_display()
+
+            step += 1
+
+        timer = QTimer(self)
+        timer.timeout.connect(animate_step)
+        timer.start(interval)

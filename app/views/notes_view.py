@@ -208,11 +208,12 @@ class NotesView(QWidget):
                 item.remove_highlight()
 
         matches = []
-        for item in self.graph_widget.scene.items():
+        for item in self.graph_widget.category_items + self.graph_widget.note_items:
             if hasattr(item, 'note_data'):
                 title = item.note_data.get("title", "").lower()
                 if keyword in title:
                     matches.append(item)
+
 
         if not matches:
             print("❌ Aucune note trouvée avec ce mot-clé.")
@@ -232,10 +233,9 @@ class NotesView(QWidget):
     def keyPressEvent(self, event):
         """Gérer les raccourcis clavier (ex: Escape pour clear search, R pour recentrer)"""
         if event.key() == Qt.Key_Escape:
-            if self.search_input.text().strip():  # 🆕 Vérifier si l'input n'est PAS vide
-                self.on_reset_view_button_clicked()
-                self.clear_search_highlights()
-                print("🧹 Vue réinitialisée via Escape.")
+            self.clear_search_highlights()
+            self.on_reset_view_button_clicked()
+            print("🧹 Vue réinitialisée via Escape.")
         elif event.key() == Qt.Key_R:
             self.on_reset_view_button_clicked()
             print("🔄 Vue recentrée via touche R.")
@@ -244,7 +244,7 @@ class NotesView(QWidget):
 
     def clear_search_highlights(self):
         """Retirer tous les highlights de recherche et vider la barre de recherche"""
-        for item in self.graph_widget.scene.items():
+        for item in self.graph_widget.note_items:
             if hasattr(item, 'remove_highlight'):
                 item.remove_highlight()
-        self.search_input.clear()  # 🆕 Vider la barre de recherche aussi
+        self.search_input.clear()

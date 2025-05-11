@@ -55,6 +55,13 @@ class NoteItem(QGraphicsItem):
         text_rect = self.label.boundingRect()
         self.label.setPos(-text_rect.width() / 2, -self.radius - text_rect.height() - 2)
 
+        note_path = Path(f"data/notes/{note_id}.json")
+        if note_path.exists():
+            with open(note_path, "r", encoding="utf-8") as f:
+                self.note_data = json.load(f)
+        else:
+            self.note_data = {"id": note_id}
+
     def origin(self):
         return self.parent_ref.pos_b if self.parent_ref else QPointF(0, 0)
 
@@ -189,3 +196,9 @@ class NoteItem(QGraphicsItem):
         main_pen = self.link.pen()
         main_pen.setColor(main_color)
         self.link.setPen(main_pen)
+
+    def highlight(self):
+        self.circle.setBrush(QBrush(QColor("#FFDF00")))  # Jaune clair
+
+    def remove_highlight(self):
+        self.circle.setBrush(QBrush(Qt.black))

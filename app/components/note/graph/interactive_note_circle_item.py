@@ -1,5 +1,3 @@
-# app/components/note/graph/interactive_note_circle_item.py
-
 from PySide6.QtWidgets import QGraphicsEllipseItem
 from PySide6.QtGui import QBrush, QColor, QCursor
 from PySide6.QtCore import Qt
@@ -10,20 +8,22 @@ class InteractiveNoteCircleItem(QGraphicsEllipseItem):
         self.note_id = note_id
         self.notes_view = notes_view
         self.setAcceptHoverEvents(True)
-        self.default_brush = QBrush(Qt.black)
-        self.hover_brush = QBrush(QColor("#FF9900"))  # orange au survol
-        self.setBrush(self.default_brush)
         self.setCursor(QCursor(Qt.PointingHandCursor))
+        self.setScale(1.0)  # ✅ important pour pouvoir reset
+        self.setBrush(QBrush(Qt.black))  # ✅ reste noir à l’état hover
 
     def hoverEnterEvent(self, event):
-        self.setBrush(self.hover_brush)
+        self.setScale(2.0)
+        if hasattr(self.parentItem(), "note"):
+            self.parentItem().note.label.setScale(1.4)  # 📈 agrandit texte
         super().hoverEnterEvent(event)
 
     def hoverLeaveEvent(self, event):
-        if hasattr(self, "note"):
-            self.note.refresh_brush()
-        else:
-            self.setBrush(QBrush(Qt.black))
+        self.setScale(1.0)
+        if hasattr(self.parentItem(), "note"):
+            note = self.parentItem().note
+            note.label.setScale(1.0)                  # 🔽 texte normal
+            note.refresh_brush()                      # 🎨 couleur selon état
         super().hoverLeaveEvent(event)
 
 

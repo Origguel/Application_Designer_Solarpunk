@@ -24,6 +24,7 @@ class NoteItem(QGraphicsItem):
         self.safe_distance = 5
         self.velocity = QPointF(0, 0)
         self.keyword_links = []  # 🔗 liens visuels vers catégories par mot-clé
+        self._highlighted = False
 
         # Position initiale
         self.angle = angle_hint + random.uniform(-0.3, 0.3) if angle_hint else random.uniform(0, 2 * math.pi)
@@ -42,6 +43,7 @@ class NoteItem(QGraphicsItem):
         self.circle.setPen(QPen(Qt.transparent))
         self.circle.setZValue(1)
         scene.addItem(self.circle)
+        self.circle.note = self
 
         # Titre de la note (affiché au-dessus du point)
         self.label = QGraphicsTextItem(self.note_id)
@@ -197,8 +199,19 @@ class NoteItem(QGraphicsItem):
         main_pen.setColor(main_color)
         self.link.setPen(main_pen)
 
+    def is_highlighted(self):
+        return self._highlighted
+
     def highlight(self):
-        self.circle.setBrush(QBrush(QColor("#FFDF00")))  # Jaune clair
+        self._highlighted = True
+        self.circle.setBrush(QBrush(QColor("#FFDF00")))
 
     def remove_highlight(self):
-        self.circle.setBrush(QBrush(Qt.black))
+        self._highlighted = False
+        self.refresh_brush()
+
+    def refresh_brush(self):
+        if self._highlighted:
+            self.circle.setBrush(QBrush(QColor("#FFDF00")))  # Jaune
+        else:
+            self.circle.setBrush(QBrush(Qt.black))

@@ -20,8 +20,12 @@ class InteractiveNoteCircleItem(QGraphicsEllipseItem):
         super().hoverEnterEvent(event)
 
     def hoverLeaveEvent(self, event):
-        self.setBrush(self.default_brush)
+        if hasattr(self, "note"):
+            self.note.refresh_brush()
+        else:
+            self.setBrush(QBrush(Qt.black))
         super().hoverLeaveEvent(event)
+
 
     def mousePressEvent(self, event):
         print(f"🖱️ Note cliquée : {self.note_id}")

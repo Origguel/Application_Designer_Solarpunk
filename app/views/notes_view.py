@@ -65,7 +65,7 @@ class NotesView(QWidget):
         self.search_input = Input_Default(placeholder="Rechercher une note...", x=400, y=36, text_position="center-left", parent=self)
         self.search_input.move(74, 26)
         self.search_input.raise_()
-        self.search_input.returnPressed.connect(self.on_search_note)
+        self.search_input.textChanged.connect(self.on_search_note)
 
 
         # Panneau d'ajout
@@ -200,6 +200,7 @@ class NotesView(QWidget):
         keyword = self.search_input.text().strip().lower()
 
         if not keyword:
+            self.clear_search_highlights()
             return
 
         # D'abord, retirer tous les anciens highlights
@@ -211,7 +212,8 @@ class NotesView(QWidget):
         for item in self.graph_widget.category_items + self.graph_widget.note_items:
             if hasattr(item, 'note_data'):
                 title = item.note_data.get("title", "").lower()
-                if keyword in title:
+                words = title.split()
+                if keyword in words:
                     matches.append(item)
 
 
@@ -248,3 +250,4 @@ class NotesView(QWidget):
             if hasattr(item, 'remove_highlight'):
                 item.remove_highlight()
         self.search_input.clear()
+        self.graph_widget.update_category_display()

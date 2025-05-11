@@ -117,8 +117,8 @@ class TreeGraphWidget(QGraphicsView):
                     delay_ms=delay_ms
                 )
 
-
-
+            self.update_category_display()
+            
         QTimer.singleShot(depth * delay_ms, spawn_node)
 
 

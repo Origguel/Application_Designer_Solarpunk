@@ -209,19 +209,26 @@ class NoteItem(QGraphicsItem):
 
     def highlight(self):
         self._highlighted = True
-        self.circle.setBrush(QBrush(QColor("#FFDF00")))
+        self.circle.setBrush(QBrush(QColor("#F18805")))  # Orange intérieur
+        self.circle.setPen(QPen(Qt.black, 1.5))          # Bordure noire
+
 
     def remove_highlight(self):
         self._highlighted = False
         self.refresh_brush()
 
+
     def refresh_brush(self):
         if self._selected:
-            self.circle.setBrush(QBrush(QColor("#F18805")))  # Priorité sélection
+            self.circle.setBrush(QBrush(QColor("#F18805")))  # Orange plein
+            self.circle.setPen(QPen(Qt.transparent))          # Pas de bordure
         elif self._highlighted:
-            self.circle.setBrush(QBrush(QColor("#FFDF00")))
+            self.circle.setBrush(QBrush(QColor("#F18805")))   # Orange clair
+            self.circle.setPen(QPen(Qt.black, 1.5))           # Bordure noire fine
         else:
-            self.circle.setBrush(QBrush(Qt.black))
+            self.circle.setBrush(QBrush(Qt.black))            # Cercle noir
+            self.circle.setPen(QPen(Qt.transparent))          # Pas de bordure
+
 
 
     def select(self):

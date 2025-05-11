@@ -243,3 +243,6 @@ class NoteItem(QGraphicsItem):
         self.circle.setScale(1.0)
         self.label.setScale(1.0)
         self.refresh_brush()
+
+    def boundingRect(self):
+        return self.circle.mapRectToParent(self.circle.rect())

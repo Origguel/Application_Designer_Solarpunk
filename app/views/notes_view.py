@@ -6,10 +6,8 @@ from PySide6.QtWidgets import QLineEdit
 import json
 from pathlib import Path
 
-from app.components.note.graph.graph_widget import GraphWidget
 from app.components.note.add_note_widget import AddNoteWidget
 from app.handlers.delete_note_handler import confirm_and_delete_note
-from app.components.note.graph.interactive_ellipse_item import InteractiveEllipseItem
 from app.utils.categorie_manager.category_manager import CategoryManager
 from app.components.note.graph.tree_graph_widget import TreeGraphWidget
 from app.components.note.note_detail_widget import NoteDetailWidget
@@ -175,12 +173,9 @@ class NotesView(QWidget):
         """ Recharge complètement le graphe après ajout ou suppression d'une note """
         print("🔄 Rafraîchissement du graphe...")
 
-        InteractiveEllipseItem.selected_item = None
-
         self.graph_widget.setParent(None)
         self.graph_widget.deleteLater()
 
-        self.graph_widget = GraphWidget(self)
         self.layout.addWidget(self.graph_widget)
 
         self.plus_button.raise_()

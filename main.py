@@ -10,9 +10,6 @@ from app.views.home_view import HomeView
 # === Ajouter le dossier "app" au chemin Python ===
 sys.path.append(os.path.join(os.path.dirname(__file__), "app"))
 
-# === Charger les ressources (images, icons, etc.) ===
-import app.resources_rc
-
 # === Fonction pour charger automatiquement tous les fichiers .qss ===
 def load_all_qss_from_dir(directory: Path) -> str:
     style = ""

@@ -85,12 +85,16 @@ class TreeStructureGenerator:
 
             components.append(group)
 
-        # Étape 2 : pour chaque groupe, rattacher la catégorie la plus dense au cerveau
+        # Étape 2 : pour chaque groupe, rattacher plusieurs ancres au cerveau
         for group in components:
-            anchor = max(group, key=lambda cat: len(self.category_notes.get(cat, [])))
+            sorted_group = sorted(group, key=lambda cat: len(self.category_notes.get(cat, [])), reverse=True)
+            anchors = sorted_group[:min(3, len(sorted_group))]  # jusqu'à 3 racines par groupe
             visited.clear()
-            subtree = build_subtree(anchor)
-            tree["children"].append(subtree)
+            for anchor in anchors:
+                if anchor not in visited:
+                    subtree = build_subtree(anchor)
+                    tree["children"].append(subtree)
+
 
         return tree
 

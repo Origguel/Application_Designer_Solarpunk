@@ -169,7 +169,7 @@ class NoteItem(QGraphicsItem):
         for category in all_categories:
             if category.name.lower() in keywords:
                 visual_link = QGraphicsLineItem()
-                pen = QPen(QColor("#808080"))
+                pen = QPen(QColor("#D5D5D5"))
                 pen.setWidthF(1.0)
                 pen.setStyle(Qt.SolidLine)
                 visual_link.setZValue(0)

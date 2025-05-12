@@ -9,7 +9,7 @@ nlp = None
 nlp_ready = False
 nlp_lock = threading.Lock()
 
-TERMS_PATH = Path("data/termes_interdits.json")
+TERMS_PATH = Path("assets/keyword/termes_interdits.json")
 if TERMS_PATH.exists():
     with TERMS_PATH.open(encoding="utf-8") as f:
         termes_interdits = set(json.load(f))
@@ -34,7 +34,6 @@ def ensure_nlp_ready():
         threading.Thread(target=_load_nlp_model, daemon=True).start()
 
 def extract_keywords(text):
-    """Extraction de mots-clés en attendant que le modèle soit prêt."""
     ensure_nlp_ready()
 
     global nlp
@@ -42,7 +41,7 @@ def extract_keywords(text):
     if not nlp_ready:
         print("⏳ Modèle spaCy pas encore prêt, petite attente...")
         import time
-        timeout = 5  # secondes
+        timeout = 5
         start = time.time()
         while not nlp_ready and (time.time() - start) < timeout:
             time.sleep(0.1)
@@ -52,16 +51,41 @@ def extract_keywords(text):
             return []
 
     doc = nlp(text.lower())
-    mots_cles = []
-    for token in doc:
-        mot = token.lemma_
-        if (
-            not token.is_stop
-            and not token.is_punct
-            and not token.like_num
-            and len(mot) > 2
-            and mot not in termes_interdits
-        ):
-            mots_cles.append(mot)
+    candidates = {}
 
-    return list(set(mots_cles))[:6]
+    for token in doc:
+        mot = token.lemma_.lower()
+        pos = token.pos_
+
+        # ❌ Filtres de base
+        if token.is_stop or token.is_punct or token.like_num:
+            continue
+        if len(mot) < 3 or mot in termes_interdits:
+            continue
+        if not mot.isalpha():
+            continue
+        if sum(1 for c in mot if c in "aeiouy") < 2:
+            continue
+
+        # ✅ POS ciblés
+        if pos in {"NOUN", "PROPN", "ADJ"}:
+            score = 1
+            if pos == "PROPN":
+                score += 2
+            elif pos == "ADJ":
+                score += 0.5
+            if mot in candidates:
+                candidates[mot] += score
+            else:
+                candidates[mot] = score
+
+    # 🔽 Tri par pertinence, puis unicité
+    sorted_keywords = sorted(candidates.items(), key=lambda x: -x[1])
+    mots_uniques = []
+    seen = set()
+    for mot, _ in sorted_keywords:
+        if mot not in seen:
+            seen.add(mot)
+            mots_uniques.append(mot)
+
+    return mots_uniques[:6]

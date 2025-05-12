@@ -66,7 +66,7 @@ class CategoryItem(QGraphicsItem):
     def add_to_velocity(self, dx, dy):
         self.velocity = QPointF(self.velocity.x() + dx, self.velocity.y() + dy)
 
-    def update_physics(self, other_items=[], friction=0.8, safe_distance=10, velocity_strenght=0.2):
+    def update_physics(self, other_items=[], friction=0.8, safe_distance=15, velocity_strenght=0.2):
         self.safe_distance = safe_distance
         self.velocity_strenght = velocity_strenght
 
@@ -78,7 +78,7 @@ class CategoryItem(QGraphicsItem):
             self.add_to_velocity(dx * factor * self.velocity_strenght, dy * factor * self.velocity_strenght)
 
         # 🧠 Repoussement adaptatif selon le nombre de catégories connectées
-        base_repel_strength = 1000
+        base_repel_strength = 2000
         category_count = len(getattr(self.parent_ref, "children", [])) if self.parent_ref else len(other_items)
         category_count = max(category_count, 1)
         repel_strength = base_repel_strength / math.sqrt(category_count)

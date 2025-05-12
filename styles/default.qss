@@ -109,3 +109,15 @@ QWidget#Home_Button {
     border-radius: 6px;
     color: #2B2B2B;
 }
+
+
+
+
+
+
+
+#NoteToolsBar {
+    background-color: #FFFFFF;
+    border: 1px solid #000000;
+    border-radius: 6px;
+}

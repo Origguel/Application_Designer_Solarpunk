@@ -4,7 +4,7 @@ from PySide6.QtCore import Qt, QSize
 import os
 
 class ButtonIcon(QPushButton):
-    def __init__(self, icon_name="add", x=30, y=30, style="Button_Primary", parent=None):
+    def __init__(self, icon_name="add", x=30, y=30, style="Button_Secondary_Icon", parent=None):
         super().__init__(parent)
 
         self.setFixedSize(x, y)

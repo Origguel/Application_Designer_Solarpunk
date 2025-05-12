@@ -31,10 +31,27 @@
     color: #2B2B2B;
 }
 
-
-
 /* Hover pour - */
 #Button_Delete:hover {
-    background-color: #ff0000; /* Gris clair */
+    background-color: #E2635E; /* Gris clair */
+    color: #ffffff;
+}
+
+
+
+
+#Button_Secondary_Icon , #Button_Delete_Icon {
+    background-color: #FFFFFF;
+    color: #2B2B2B;
+    border-radius: 3px;
+    padding: 2px 2px;
+}
+
+#Button_Secondary_Icon:hover {
+    background-color: #DDDDDD;
+}
+
+#Button_Delete_Icon:hover {
+    background-color: #E2635E;
     color: #ffffff;
 }

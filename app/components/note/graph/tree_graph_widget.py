@@ -164,6 +164,14 @@ class TreeGraphWidget(QGraphicsView):
             except Exception as e:
                 print(f"❌ Erreur lecture {note_file.name} : {e}")
 
+    
+    def get_selected_note_id(self):
+        for note in self.note_items:
+            if note.is_selected():
+                return note.note_data.get("id")
+        return None
+
+
 
 
 

@@ -27,6 +27,9 @@ def delete_note_file(note_id):
     if os.path.exists(file_path):
         os.remove(file_path)
         print(f"🗑️ Note ID {note_id} supprimée avec succès.")
-        CategoryTreeUpdater().delete_note(note_id)  # 🆕 mise à jour arbre
+
+        CategoryTreeUpdater().delete_note(note_id)  # ➖ Retire du tree
+        from app.utils.categorie_manager.category_manager import CategoryManager
+        CategoryManager().update()  # 🔁 Met à jour les fichiers de lien/catégories
     else:
         print(f"❌ Le fichier de la note ID {note_id} est introuvable.")

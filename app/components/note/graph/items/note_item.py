@@ -252,3 +252,6 @@ class NoteItem(QGraphicsItem):
 
     def boundingRect(self):
         return self.circle.mapRectToParent(self.circle.rect())
+    
+    def is_selected(self):
+        return self._selected

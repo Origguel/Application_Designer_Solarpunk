@@ -192,12 +192,12 @@ class NotesView(QWidget):
 
 
     def on_delete_button_clicked(self):
-        """Handler appelé quand on clique sur le bouton Delete"""
         selected_note_id = self.graph_widget.get_selected_note_id()
         if selected_note_id:
             confirm_and_delete_note(self, selected_note_id)
-            CategoryManager().update()  # 🆕 Mise à jour après suppression
-            self.refresh_graph()        # 🆕 Redessiner le graphe
+        else:
+            print("❌ Aucune note sélectionnée pour suppression.")
+
 
 
     def on_reset_view_button_clicked(self):

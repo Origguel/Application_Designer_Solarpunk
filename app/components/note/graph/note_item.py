@@ -49,8 +49,20 @@ class NoteItem(QGraphicsItem):
         self._selected = False
         self.circle.note = self  # ✅ clé de la communication
 
+        note_path = Path(f"data/notes/{note_id}.json")
+        if note_path.exists():
+            with open(note_path, "r", encoding="utf-8") as f:
+                self.note_data = json.load(f)
+            MAX_LABEL_LENGTH = 24
+            note_title = self.note_data.get("title", note_id)
+            if len(note_title) > MAX_LABEL_LENGTH:
+                note_title = note_title[:MAX_LABEL_LENGTH - 3] + "…"
+        else:
+            self.note_data = {"id": note_id}
+            note_title = note_id
+
         # Titre de la note (affiché au-dessus du point)
-        self.label = QGraphicsTextItem(self.note_id)
+        self.label = QGraphicsTextItem(note_title)
         self.label.setDefaultTextColor(Qt.black)
         font = QFont()
         font.setPointSize(8)
@@ -60,13 +72,7 @@ class NoteItem(QGraphicsItem):
         self.label.setParentItem(self.circle)
         text_rect = self.label.boundingRect()
         self.label.setPos(-text_rect.width() / 2, -self.radius - text_rect.height() - 2)
-
-        note_path = Path(f"data/notes/{note_id}.json")
-        if note_path.exists():
-            with open(note_path, "r", encoding="utf-8") as f:
-                self.note_data = json.load(f)
-        else:
-            self.note_data = {"id": note_id}
+        
         
 
     def origin(self):

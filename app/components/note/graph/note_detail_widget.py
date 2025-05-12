@@ -11,10 +11,9 @@ class NoteDetailWidget(QFrame):
         self.setAttribute(Qt.WA_StyledBackground, True)
 
         self.setObjectName("NoteDetailWidget")
-        self.setStyleSheet("background-color: #FFFFFF;")
         layout = QVBoxLayout(self)
 
-        self.close_button = ButtonIcon(">", 36, 36, "Button_Secondary", self)
+        self.close_button = ButtonIcon(icon_name="arrow_big_Right", style="Button_Secondary_Icon", parent=self)
         self.close_button.move(10, 10)
         self.close_button.clicked.connect(self.close_detail)
         
@@ -45,9 +44,9 @@ class NoteDetailWidget(QFrame):
             pill.setStyleSheet("""
                 QLabel#KeywordPill {
                     border: 1px solid black;
-                    border-radius: 8px;
+                    border-radius: 6px;
                     padding: 4px 8px;
-                    background-color: #f4f4f4;
+                    background-color: #FFFFFF;
                 }
             """)
             keywords_layout.addWidget(pill)

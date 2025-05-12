@@ -42,13 +42,10 @@ class CategoryTreeUpdater:
         return modified
 
     def _find_or_create_category(self, current_node, category_name):
-        # Recherche récursive de la catégorie
-        for child in current_node.get("children", []):
-            if child["name"].lower() == category_name.lower():
-                return child
-            result = self._find_or_create_category(child, category_name)
-            if result:
-                return result
+        # Recherche globale stricte (non sensible à la casse)
+        found = self._find_category_recursive(current_node, category_name)
+        if found:
+            return found
 
         # Si non trouvée, créer à la racine
         new_node = {
@@ -60,3 +57,13 @@ class CategoryTreeUpdater:
         current_node.setdefault("children", []).append(new_node)
         print(f"📁 Création de la catégorie : {category_name}")
         return new_node
+
+    def _find_category_recursive(self, node, category_name):
+        if node["name"].lower() == category_name.lower():
+            return node
+        for child in node.get("children", []):
+            result = self._find_category_recursive(child, category_name)
+            if result:
+                return result
+        return None
+

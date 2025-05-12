@@ -170,17 +170,24 @@ class NotesView(QWidget):
             )
 
     def refresh_graph(self):
-        """ Recharge complètement le graphe après ajout ou suppression d'une note """
         print("🔄 Rafraîchissement du graphe...")
 
-        self.graph_widget.setParent(None)
-        self.graph_widget.deleteLater()
+        if hasattr(self, "graph_widget"):
+            self.graph_widget.setParent(None)
+            self.graph_widget.deleteLater()
 
+        # 🔁 Recréer un nouvel objet TreeGraphWidget
+        self.graph_widget = TreeGraphWidget(self)
+        self.graph_widget.scale(0.2, 0.2)
         self.layout.addWidget(self.graph_widget)
 
+        # 🆙 Relever les éléments d'interface
         self.plus_button.raise_()
         self.delete_button.raise_()
-        self.resetview_button.raise_()  # 🆕 Ajouter ici
+        self.resetview_button.raise_()
+        self.search_input.raise_()
+        self.toolbar.raise_()
+
 
 
 

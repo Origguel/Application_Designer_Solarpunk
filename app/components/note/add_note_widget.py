@@ -118,7 +118,8 @@ class AddNoteWidget(QWidget):
             print("❗ Tous les champs obligatoires ne sont pas remplis.")
             return
 
-        NoteCreator.create_note(
+        # Créer la note
+        note_data = NoteCreator.create_note(
             title=title,
             date_str=date,
             note_type=type_note,
@@ -132,16 +133,3 @@ class AddNoteWidget(QWidget):
         self.clear_fields()
         self.note_created.emit()
         self.cancelled.emit()
-
-        # Créer la note
-        note_data = NoteCreator.create_note(
-            title=title,
-            date_str=date,
-            note_type=type_note,
-            project=project,
-            description=description,
-            contenu=contenu
-        )
-
-        # ➕ Ajouter la note au category_tree
-        CategoryTreeUpdater().add_note(note_data["id"], note_data["keywords"])

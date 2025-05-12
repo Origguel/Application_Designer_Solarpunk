@@ -2,7 +2,11 @@ import json
 from pathlib import Path
 from datetime import datetime
 from app.utils.keyword_extractor import extract_keywords
+
+# Links
 from app.utils.categorie_manager.category_manager import CategoryManager
+from app.utils.categorie_manager.category_tree_updater import CategoryTreeUpdater
+
 
 # Dossier de sauvegarde des notes
 NOTES_DIR = Path("data/notes/")
@@ -32,10 +36,18 @@ class NoteCreator:
         with open(file_path, "w", encoding="utf-8") as f:
             json.dump(note_data, f, ensure_ascii=False, indent=4)
 
-        # 🆕 Mise à jour des catégories après création de la note
+        # 🆕 Mise à jour des catégories de liens et du tree
         CategoryManager().update()
 
+        # 🆕 Ajout de la note dans le tree JSON
+        try:
+            updater = CategoryTreeUpdater()
+            updater.add_note(note_id, keywords)
+        except Exception as e:
+            print(f"⚠️ Erreur lors de l'ajout de la note au tree : {e}")
+
         return note_data
+
 
     @staticmethod
     def generate_next_id():

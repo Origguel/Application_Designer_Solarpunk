@@ -9,6 +9,6 @@ if (!(Test-Path $pythonExe)) {
 }
 
 # Exécuter main.py avec le bon python.exe
-& "$pythonExe" "launcher.py"
+& "$pythonExe" "main.py"
 
 Pause

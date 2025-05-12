@@ -66,7 +66,7 @@ class CategoryItem(QGraphicsItem):
     def add_to_velocity(self, dx, dy):
         self.velocity = QPointF(self.velocity.x() + dx, self.velocity.y() + dy)
 
-    def update_physics(self, other_items=[], friction=0.8, repel_strength=1000, safe_distance=10, velocity_strenght=0.2):
+    def update_physics(self, other_items=[], friction=0.8, safe_distance=10, velocity_strenght=0.2):
         self.safe_distance = safe_distance
         self.velocity_strenght = velocity_strenght
 
@@ -76,6 +76,12 @@ class CategoryItem(QGraphicsItem):
         if current_dist != 0:
             factor = (self.distance - current_dist) / current_dist
             self.add_to_velocity(dx * factor * self.velocity_strenght, dy * factor * self.velocity_strenght)
+
+        # 🧠 Repoussement adaptatif selon le nombre de catégories connectées
+        base_repel_strength = 1000
+        category_count = len(getattr(self.parent_ref, "children", [])) if self.parent_ref else len(other_items)
+        category_count = max(category_count, 1)
+        repel_strength = base_repel_strength / math.sqrt(category_count)
 
         safe_dist = self.radius * self.safe_distance * self.safe_multiplier
 
@@ -108,11 +114,10 @@ class CategoryItem(QGraphicsItem):
 
         origin_pt = self.origin()
         self.circle.setPos(self.pos_b)
-        # Centrage du texte horizontalement
         text_rect = self.label.boundingRect()
         self.label.setPos(-text_rect.width() / 2, -self.radius - text_rect.height() - 2)
-
         self.link.setLine(origin_pt.x(), origin_pt.y(), self.pos_b.x(), self.pos_b.y())
+
 
 
     def update_label_opacity(self, zoom_level):

@@ -41,14 +41,6 @@ class NoteDetailWidget(QFrame):
         for kw in note_data.get("keywords", []):
             pill = QLabel(kw)
             pill.setObjectName("KeywordPill")
-            pill.setStyleSheet("""
-                QLabel#KeywordPill {
-                    border: 1px solid black;
-                    border-radius: 6px;
-                    padding: 4px 8px;
-                    background-color: #FFFFFF;
-                }
-            """)
             keywords_layout.addWidget(pill)
 
         description = QLabel(note_data.get("description", ""))

@@ -91,7 +91,12 @@ QLabel#NoteContent {
     font-size: 10pt;
 }
 
-
+QLabel#KeywordPill {
+    background-color: #FFFFFF;
+    border: 1px solid black;
+    border-radius: 6px;
+    padding: 4px 8px;
+}
 
 
 

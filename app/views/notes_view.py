@@ -12,7 +12,7 @@ from app.handlers.delete_note_handler import confirm_and_delete_note
 from app.components.note.graph.interactive_ellipse_item import InteractiveEllipseItem
 from app.utils.categorie_manager.category_manager import CategoryManager
 from app.components.note.graph.tree_graph_widget import TreeGraphWidget
-from app.components.note.graph.note_detail_widget import NoteDetailWidget
+from app.components.note.note_detail_widget import NoteDetailWidget
 
 
 # Componenents

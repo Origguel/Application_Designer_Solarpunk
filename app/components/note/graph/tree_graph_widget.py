@@ -8,8 +8,8 @@ import random
 from collections import defaultdict
 
 from app.utils.tree_graph_interaction import TreeGraphInteraction
-from app.components.note.graph.category_item import CategoryItem
-from app.components.note.graph.note_item import NoteItem
+from app.components.note.graph.items.category_item import CategoryItem
+from app.components.note.graph.items.note_item import NoteItem
 
 
 class TreeGraphWidget(QGraphicsView):

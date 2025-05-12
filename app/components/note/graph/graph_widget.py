@@ -3,7 +3,7 @@ from PySide6.QtGui import QPainter, QWheelEvent, QMouseEvent
 from PySide6.QtCore import Qt
 
 from app.utils.graph_logic import GraphLogic
-from app.components.note.graph.note_detail_widget import NoteDetailWidget
+from app.components.note.note_detail_widget import NoteDetailWidget
 from app.components.note.graph.interactive_ellipse_item import InteractiveEllipseItem
 
 class GraphWidget(QGraphicsView):

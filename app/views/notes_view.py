@@ -45,23 +45,33 @@ class NotesView(QWidget):
         self.overlay.hide()
         self.overlay.setAttribute(Qt.WA_TransparentForMouseEvents, False)
 
-        # Bouton add +
-        self.plus_button = ButtonIcon(icon_name="add", style="Button_Secondary", parent=self)
-        self.plus_button.move(34, 26)
-        self.plus_button.raise_()
+
+        # 🆕 Conteneur de la barre d’outil
+        self.toolbar = QWidget(self)
+        self.toolbar.setObjectName("NoteToolsBar")
+        self.toolbar.setFixedWidth(36)  # Ajuste selon besoin
+        self.toolbar.move(34, 26)
+        self.toolbar.setFixedHeight(104)
+
+        # 🆕 Layout vertical avec espacement de 4px
+        toolbar_layout = QVBoxLayout(self.toolbar)
+        toolbar_layout.setContentsMargins(3, 3, 3, 3)
+        toolbar_layout.setSpacing(4)
+
+        # 🆕 Boutons dans le layout
+        self.plus_button = ButtonIcon(icon_name="add", style="Button_Secondary_Icon", parent=self.toolbar)
+        self.resetview_button = ButtonIcon(icon_name="resize", style="Button_Secondary_Icon", parent=self.toolbar)
+        self.delete_button = ButtonIcon(icon_name="trash", style="Button_Delete_Icon", parent=self.toolbar)
+
+        toolbar_layout.addWidget(self.plus_button)
+        toolbar_layout.addWidget(self.resetview_button)
+        toolbar_layout.addWidget(self.delete_button)
+
+        # 🆕 Connexions
         self.plus_button.clicked.connect(self.open_add_note_widget)
+        self.resetview_button.clicked.connect(self.on_reset_view_button_clicked)
+        self.delete_button.clicked.connect(self.on_delete_button_clicked)
 
-        # Bouton delete - 
-        self.delete_button = ButtonIcon(icon_name="trash", style="Button_Delete", parent=self)
-        self.delete_button.move(34, 66)
-        self.delete_button.raise_()
-        self.delete_button.clicked.connect(self.on_delete_button_clicked)  # 🆕 Connexion du clic
-
-        # Bouton reset r
-        self.resetview_button = ButtonIcon(icon_name="resize", style="Button_Secondary", parent=self)
-        self.resetview_button.move(34, 106)
-        self.resetview_button.raise_()
-        self.resetview_button.clicked.connect(self.on_reset_view_button_clicked)  # 🆕 Connexion du clic
 
         # Barre de recherche        
         self.search_input = Input_Default(placeholder="Rechercher une note...", x=400, y=36, text_position="center-left", parent=self)

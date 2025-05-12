@@ -27,9 +27,11 @@ class CategoryTreeUpdater:
         modified = self._remove_note_recursive(self.tree, note_id)
         if modified:
             print(f"❌ Supprimé {note_id} de l'arbre.")
+            self._clean_empty_categories(self.tree)  # 👈 Nettoyage récursif
             self.save()
         else:
             print(f"⚠️ Note {note_id} introuvable.")
+
 
     def _remove_note_recursive(self, node, note_id):
         modified = False
@@ -67,3 +69,16 @@ class CategoryTreeUpdater:
                 return result
         return None
 
+
+    def _clean_empty_categories(self, node):
+        # Nettoie récursivement les enfants d’un nœud
+        cleaned_children = []
+        for child in node.get("children", []):
+            self._clean_empty_categories(child)
+            has_notes = bool(child.get("notes"))
+            has_children = bool(child.get("children"))
+            if has_notes or has_children:
+                cleaned_children.append(child)
+            else:
+                print(f"🧹 Catégorie vide supprimée : {child['name']}")
+        node["children"] = cleaned_children

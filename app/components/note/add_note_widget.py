@@ -17,7 +17,7 @@ from app.components.inputs.input_multiline import Input_Multiline
 
 class AddNoteWidget(QWidget):
     cancelled = Signal()
-    note_created = Signal()
+    note_created = Signal(str, list)
 
     def __init__(self, parent=None):
         super().__init__(parent)
@@ -131,5 +131,5 @@ class AddNoteWidget(QWidget):
         print(f"✅ Note '{title}' enregistrée avec succès !")
 
         self.clear_fields()
-        self.note_created.emit()
+        self.note_created.emit(note_data["id"], note_data["keywords"])
         self.cancelled.emit()

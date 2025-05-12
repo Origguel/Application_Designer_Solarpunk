@@ -10,6 +10,7 @@ from collections import defaultdict
 from app.utils.tree_graph_interaction import TreeGraphInteraction
 from app.components.note.graph.items.category_item import CategoryItem
 from app.components.note.graph.items.note_item import NoteItem
+from app.components.note.graph.items.note_item import NoteItem
 
 
 class TreeGraphWidget(QGraphicsView):
@@ -170,6 +171,103 @@ class TreeGraphWidget(QGraphicsView):
             if note.is_selected():
                 return note.note_data.get("id")
         return None
+    
+
+    def add_note_live(self, note_id, keywords):
+        for keyword in keywords:
+            category_item = self.find_or_create_category_item(keyword)
+            note_item = NoteItem(
+                note_id=note_id,
+                parent_ref=category_item,
+                scene=self.scene,
+                notes_view=self.parent(),
+                angle_hint=random.uniform(0, 2 * math.pi)
+            )
+            category_item.note_items.append(note_item)
+            self.note_items.append(note_item)
+            note_item.init_keyword_links(self.category_items)
+
+        self.update_category_display()
+
+
+
+    def find_or_create_category_item(self, keyword):
+        for cat in self.category_items:
+            if cat.name.lower() == keyword.lower():
+                return cat
+
+        # 🔧 Si non trouvé : créer une nouvelle catégorie visuelle
+        from app.components.note.graph.items.category_item import CategoryItem
+
+        item = CategoryItem(
+            name=keyword,
+            parent_ref=None,
+            scene=self.scene,
+            angle_hint=random.uniform(0, 2 * math.pi),
+            num_children=0
+        )
+        item.note_items = []
+        self.category_items.append(item)
+        return item
+    
+
+    def delete_note_live(self, note_id):
+        to_remove = None
+        for note in self.note_items:
+            if note.note_id == note_id:
+                to_remove = note
+                break
+
+        if to_remove:
+            self.scene.removeItem(to_remove.circle)
+            self.scene.removeItem(to_remove.link)
+            for _, link in to_remove.keyword_links:
+                self.scene.removeItem(link)
+
+            parent = to_remove.parent_ref
+            if parent:
+                parent.note_items.remove(to_remove)
+
+            self.note_items.remove(to_remove)
+            print(f"🗑️ Note visuelle supprimée : {note_id}")
+
+            # 🔄 Vérifie si sa catégorie est vide
+            if parent and not parent.note_items:
+                self.scene.removeItem(parent)
+                self.category_items.remove(parent)
+                print(f"🧹 Catégorie visuelle supprimée : {parent.name}")
+
+        self.update_category_display()
+
+
+    def delete_note_live(self, note_id):
+        to_remove = None
+        for note in self.note_items:
+            if note.note_id == note_id:
+                to_remove = note
+                break
+
+        if to_remove:
+            self.scene.removeItem(to_remove.circle)
+            self.scene.removeItem(to_remove.link)
+            for _, link in to_remove.keyword_links:
+                self.scene.removeItem(link)
+
+            parent = to_remove.parent_ref
+            if parent:
+                parent.note_items.remove(to_remove)
+
+            self.note_items.remove(to_remove)
+            print(f"🗑️ Note visuelle supprimée : {note_id}")
+
+            # 🔄 Vérifie si sa catégorie est vide
+            if parent and not parent.note_items:
+                self.scene.removeItem(parent)
+                self.category_items.remove(parent)
+                print(f"🧹 Catégorie visuelle supprimée : {parent.name}")
+
+        self.update_category_display()
+
 
 
 

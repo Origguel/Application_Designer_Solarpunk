@@ -11,6 +11,7 @@ from app.handlers.delete_note_handler import confirm_and_delete_note
 from app.utils.categorie_manager.category_manager import CategoryManager
 from app.components.note.graph.tree_graph_widget import TreeGraphWidget
 from app.components.note.note_detail_widget import NoteDetailWidget
+from app.utils.categorie_manager.category_tree_updater import CategoryTreeUpdater
 
 
 # Componenents
@@ -138,7 +139,7 @@ class NotesView(QWidget):
 
             # Connecter les signaux
             self.add_note_widget.cancelled.connect(self.close_add_note_widget)
-            self.add_note_widget.note_created.connect(self.refresh_graph)
+            self.add_note_widget.note_created.connect(self.add_note_visually)
 
     def close_add_note_widget(self):
         """Ferme proprement la fenêtre d'ajout de note"""
@@ -330,3 +331,13 @@ class NotesView(QWidget):
         timer = QTimer(self)
         timer.timeout.connect(animate_step)
         timer.start(interval)
+
+    def add_note_visually(self, note_id, keywords):
+        # 🧠 Mise à jour du JSON
+        updater = CategoryTreeUpdater()
+        updater.add_note(note_id, keywords)
+
+        # ➕ Ajout visuel
+        self.graph_widget.add_note_live(note_id, keywords)
+        print(f"✨ Note ajoutée visuellement dans le graphe : {note_id}")
+        self.close_add_note_widget()

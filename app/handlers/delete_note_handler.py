@@ -19,7 +19,6 @@ def confirm_and_delete_note(parent_view, selected_note_id):
 
     if confirm == QMessageBox.Yes:
         delete_note_file(selected_note_id)
-        parent_view.refresh_graph()
 
 def delete_note_file(note_id):
     file_path = os.path.join("data", "notes", f"{note_id}.json")

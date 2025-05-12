@@ -209,35 +209,7 @@ class TreeGraphWidget(QGraphicsView):
         item.note_items = []
         self.category_items.append(item)
         return item
-    
 
-    def delete_note_live(self, note_id):
-        to_remove = None
-        for note in self.note_items:
-            if note.note_id == note_id:
-                to_remove = note
-                break
-
-        if to_remove:
-            self.scene.removeItem(to_remove.circle)
-            self.scene.removeItem(to_remove.link)
-            for _, link in to_remove.keyword_links:
-                self.scene.removeItem(link)
-
-            parent = to_remove.parent_ref
-            if parent:
-                parent.note_items.remove(to_remove)
-
-            self.note_items.remove(to_remove)
-            print(f"🗑️ Note visuelle supprimée : {note_id}")
-
-            # 🔄 Vérifie si sa catégorie est vide
-            if parent and not parent.note_items:
-                self.scene.removeItem(parent)
-                self.category_items.remove(parent)
-                print(f"🧹 Catégorie visuelle supprimée : {parent.name}")
-
-        self.update_category_display()
 
 
     def delete_note_live(self, note_id):
@@ -262,11 +234,41 @@ class TreeGraphWidget(QGraphicsView):
 
             # 🔄 Vérifie si sa catégorie est vide
             if parent and not parent.note_items:
-                self.scene.removeItem(parent)
+                self.scene.removeItem(parent.circle)
+                self.scene.removeItem(parent.link)
+                self.scene.removeItem(parent.label)
                 self.category_items.remove(parent)
                 print(f"🧹 Catégorie visuelle supprimée : {parent.name}")
 
+
         self.update_category_display()
+
+        # 🔍 Charger les catégories valides depuis category_tree.json
+        with open(self.category_tree_path, "r", encoding="utf-8") as f:
+            tree_data = json.load(f)
+
+        def collect_categories(node):
+            names = set()
+            if node["type"] == "category":
+                names.add(node["name"].lower())
+            for child in node.get("children", []):
+                names.update(collect_categories(child))
+            return names
+
+        valid_categories = collect_categories(tree_data)
+
+        # 🧹 Supprimer visuellement les catégories qui n’existent plus
+        to_remove = []
+        for cat in self.category_items:
+            cat_name = cat.name.lower()
+            if cat_name not in valid_categories:
+                self.scene.removeItem(cat)
+                to_remove.append(cat)
+                print(f"🧹 Catégorie visuelle supprimée (hors JSON) : {cat_name}")
+
+        for cat in to_remove:
+            self.category_items.remove(cat)
+
 
 
 

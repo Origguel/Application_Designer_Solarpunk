@@ -196,6 +196,8 @@ class NotesView(QWidget):
         selected_note_id = self.graph_widget.get_selected_note_id()
         if selected_note_id:
             confirm_and_delete_note(self, selected_note_id)
+            CategoryManager().update()
+            self.graph_widget.delete_note_live(selected_note_id)
         else:
             print("❌ Aucune note sélectionnée pour suppression.")
 

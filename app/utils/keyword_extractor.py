@@ -20,6 +20,9 @@ def extract_keywords(text):
 
     for token in doc:
         mot = token.lemma_.lower()
+        if token.pos_ == "PROPN" or len(mot) <= 4:
+            mot = token.text.lower()
+            print(f"🧪 Lemme modifié : {token.text} → {mot}")
         pos = token.pos_
 
         # ❌ Filtres de base

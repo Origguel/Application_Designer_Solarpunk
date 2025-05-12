@@ -2,7 +2,7 @@ import sys
 import subprocess
 from PySide6.QtWidgets import QApplication, QSplashScreen
 from PySide6.QtGui import QFont, QPainter, QColor, QGuiApplication
-from PySide6.QtCore import Qt, QRect
+from PySide6.QtCore import Qt, QRect, QTimer
 
 class CustomSplash(QSplashScreen):
     def __init__(self):
@@ -17,26 +17,44 @@ class CustomSplash(QSplashScreen):
         y = (screen_geometry.height() - splash_geometry.height()) // 2
         self.move(x, y)
 
+        self.percent = 0
+
     def drawContents(self, painter):
+        # Texte principal "Mycelium"
         painter.setPen(QColor("#2B2B2B"))
         painter.setFont(QFont("Arial", 32, QFont.Bold))
-        rect = QRect(0, 0, self.width(), self.height())
-        painter.drawText(rect, Qt.AlignCenter, "Mycelium")
+        painter.drawText(QRect(0, 30, self.width(), 50), Qt.AlignCenter, "Mycelium")
+
+        # Texte secondaire : pourcentage
+        painter.setFont(QFont("Arial", 14))
+        painter.drawText(QRect(0, self.height() - 50, self.width(), 30), Qt.AlignCenter, f"Chargement... {self.percent}%")
+
+def update_progress(splash: CustomSplash, app: QApplication, callback_on_complete):
+    def step():
+        splash.percent += 1
+        splash.update()
+        app.processEvents()
+        if splash.percent < 100:
+            QTimer.singleShot(50, step)  # temps total ~5s
+        else:
+            callback_on_complete()
+
+    step()
 
 if __name__ == "__main__":
     app = QApplication(sys.argv)
-
     splash = CustomSplash()
     splash.show()
     app.processEvents()
 
-    # Lancer le vrai programme et ATTENDRE qu’il se termine
-    try:
-        process = subprocess.Popen([sys.executable, "main.py"])
-        process.wait()  # <-- Bloque ici jusqu'à fermeture de main.py
-    except Exception as e:
-        splash.showMessage(f"Erreur : {e}", Qt.AlignBottom | Qt.AlignCenter, Qt.red)
-    finally:
+    # Quand le chargement est terminé (100%), fermer splash et lancer l'app principale
+    def on_complete():
         splash.close()
+        try:
+            subprocess.Popen([sys.executable, "main.py"])  # ← Lancer sans attendre
+        except Exception as e:
+            print(f"Erreur de lancement : {e}")
+        sys.exit()  # Ferme le launcher
 
-    sys.exit()
+    update_progress(splash, app, on_complete)
+    sys.exit(app.exec())

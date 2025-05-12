@@ -1,13 +1,10 @@
-# app/utils/keyword_extractor.py
-
 import json
 from pathlib import Path
-import threading
+import spacy
 
-# Pas de spacy importé au début
-nlp = None
-nlp_ready = False
-nlp_lock = threading.Lock()
+# ✅ Chargement immédiat de spaCy au lancement
+nlp = spacy.load("fr_core_news_sm")
+print("✅ Modèle spaCy chargé (au lancement).")
 
 TERMS_PATH = Path("assets/keyword/termes_interdits.json")
 if TERMS_PATH.exists():
@@ -16,40 +13,8 @@ if TERMS_PATH.exists():
 else:
     termes_interdits = set()
 
-def _load_nlp_model():
-    """Charge spaCy dans un thread."""
-    global nlp, nlp_ready
-    import spacy  # 👈 Import spacy ici seulement
-    nlp = spacy.load("fr_core_news_sm")
-    with nlp_lock:
-        nlp_ready = True
-    print("✅ Modèle spaCy chargé.")
-
-def ensure_nlp_ready():
-    """Assure que le modèle est chargé (sinon lance le thread)."""
-    global nlp_ready
-
-    if not nlp_ready:
-        print("⚡ Chargement du modèle spaCy déclenché...")
-        threading.Thread(target=_load_nlp_model, daemon=True).start()
 
 def extract_keywords(text):
-    ensure_nlp_ready()
-
-    global nlp
-
-    if not nlp_ready:
-        print("⏳ Modèle spaCy pas encore prêt, petite attente...")
-        import time
-        timeout = 5
-        start = time.time()
-        while not nlp_ready and (time.time() - start) < timeout:
-            time.sleep(0.1)
-
-        if not nlp_ready:
-            print("❗ Modèle non chargé après 5s, extraction annulée.")
-            return []
-
     doc = nlp(text.lower())
     candidates = {}
 

@@ -33,7 +33,7 @@
 
 /* Hover pour - */
 #Button_Delete:hover {
-    background-color: #E2635E; /* Gris clair */
+    background-color: #FFCCCA;
     color: #ffffff;
 }
 
@@ -52,6 +52,6 @@
 }
 
 #Button_Delete_Icon:hover {
-    background-color: #E2635E;
+    background-color: #FFCCCA;
     color: #ffffff;
 }

@@ -32,52 +32,24 @@ class HomeGrid(QWidget):
                 placeholder.setStyleSheet("background-color: #e0e0e0; border-radius: 6px;")  # Juste pour voir les cases
                 self.home_layout.addWidget(placeholder, row, col)
 
-        # Fusionner les premières 2 lignes x 6 colonnes en une seule cellule
+        # Cell Projets
         cell_projects = QWidget()
         cell_projects.setObjectName("home_cell")
         self.home_layout.addWidget(cell_projects, 0, 0, 2, 6)  # Fusion de 2 lignes x 6 colonnes (positions (0, 0))
 
-        # Ajouter une cellule 2x1 après la 2x6
-        cell_notes = QWidget()
-        cell_notes.setObjectName("cell_note")
-        cell_notes_layout = QVBoxLayout(cell_notes)
-        button_notes = ButtonIcon(icon_name="arrow_big_Right", style="Button_Secondary_Icon", parent=cell_notes)
-        button_notes.clicked.connect(self.on_button_notes_click)
-        cell_notes_layout.addWidget(button_notes)
-        cell_notes_layout.setAlignment(Qt.AlignBottom | Qt.AlignRight)
-        self.home_layout.addWidget(cell_notes, 0, 6, 2, 1)
+        # Cell Note
+        self.create_cell_with_button("cell_note", self.on_button_notes_click, (0, 6), rowspan=2, colspan=1)
 
-        cell_solarpunk = QWidget()
-        cell_solarpunk.setObjectName("cell_solarpunk")
-        cell_solarpunk_layout = QVBoxLayout(cell_solarpunk)
-        button_solarpunk = ButtonIcon(icon_name="arrow_big_Right", style="Button_Secondary_Icon", parent=cell_solarpunk)
-        button_solarpunk.clicked.connect(self.on_button_solarpunk_click)
-        cell_solarpunk_layout.addWidget(button_solarpunk)
-        cell_solarpunk_layout.setAlignment(Qt.AlignBottom | Qt.AlignRight)
-        self.home_layout.addWidget(cell_solarpunk, 0, 7, 1, 2)  # Positionner la cellule à (0, 6) avec 2 lignes et 1 colonne
+        # Cell Solarpunk
+        self.create_cell_with_button("cell_solarpunk", self.on_button_solarpunk_click, (0, 7), rowspan=1, colspan=2)
 
-        # Gestion de Projets (utilise ButtonText)
-        cell_gestion = QWidget()
-        cell_gestion.setObjectName("home_cell")
-        cell_gestion_layout = QVBoxLayout(cell_gestion)
-        button_gestion = ButtonIcon(icon_name="arrow_big_Right", style="Button_Secondary_Icon", parent=cell_gestion)
-        button_gestion.clicked.connect(self.on_button_gestion_click)
-        cell_gestion_layout.addWidget(button_gestion)
-        cell_gestion_layout.setAlignment(Qt.AlignBottom | Qt.AlignRight)
-        self.home_layout.addWidget(cell_gestion, 1, 7, 1, 1)
+        # Cell Gestion de projet
+        self.create_cell_with_button("home_cell", self.on_button_gestion_click, (1, 7))
 
-        # Statistiques (utilise ButtonText)
-        cell_stat = QWidget()
-        cell_stat.setObjectName("home_cell")
-        cell_stat_layout = QVBoxLayout(cell_stat)
-        button_stat = ButtonIcon(icon_name="arrow_big_Right", style="Button_Secondary_Icon", parent=cell_stat)
-        button_stat.clicked.connect(self.on_button_stat_click)
-        cell_stat_layout.addWidget(button_stat)
-        cell_stat_layout.setAlignment(Qt.AlignBottom | Qt.AlignRight)
-        self.home_layout.addWidget(cell_stat, 1, 8, 1, 1)
+        # Cell Statistique
+        self.create_cell_with_button("home_cell", self.on_button_stat_click, (1, 8))
 
-
-        # Ajouter d'autres cellules
+        # Cell Calendrier
         cell_calendrier = QWidget()
         cell_calendrier.setObjectName("home_cell")
         self.home_layout.addWidget(cell_calendrier, 2, 0, 3, 9)  # Positionner la cellule à (0, 6) avec 2 lignes et 1 colonne
@@ -125,3 +97,17 @@ class HomeGrid(QWidget):
             print("Erreur : parent_widget non défini")
 
     
+
+    def create_cell_with_button(self, object_name, on_click, grid_pos, rowspan=1, colspan=1):
+        cell = QWidget()
+        cell.setObjectName(object_name)
+
+        layout = QVBoxLayout(cell)
+        button = ButtonIcon(icon_name="arrow_big_Right", style="Button_Secondary_Icon", parent=cell)
+        button.clicked.connect(on_click)
+
+        layout.addWidget(button)
+        layout.setAlignment(Qt.AlignBottom | Qt.AlignRight)
+
+        row, col = grid_pos
+        self.home_layout.addWidget(cell, row, col, rowspan, colspan)

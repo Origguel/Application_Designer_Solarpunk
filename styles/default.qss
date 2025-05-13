@@ -102,16 +102,12 @@ QLabel#KeywordPill {
 
 
 
-QWidget#Home_Box {
+
+
+QWidget#home_cell {
     background-color: #FFFFFF;
     border: 1px solid #2B2B2B;
     border-radius: 6px;
-}
-
-QFrame#home_cell {
-    background-color: #FFFFFF;
-    border: 1px solid #2B2B2B;
-    border-radius: 24px;
 }
 
 #cell_solarpunk, #cell_note {

@@ -6,6 +6,9 @@ from PySide6.QtCore import Qt
 
 # Componenents
 from app.components.buttons.button_text import ButtonText
+from app.components.buttons.button_icon import ButtonIcon
+
+
 
 class HomeGrid(QWidget):
     # Créer un signal pour notifier le changement de page
@@ -37,7 +40,7 @@ class HomeGrid(QWidget):
         cell_notes = QWidget()
         cell_notes.setObjectName("Home_Box")
         cell_notes_layout = QVBoxLayout(cell_notes)
-        button_notes = ButtonText("Notes", x=150, y=80, style="Button_Secondary", parent=cell_notes)
+        button_notes = ButtonIcon(icon_name="arrow_big_Right", style="Button_Secondary_Icon", parent=cell_notes)
         button_notes.clicked.connect(self.on_button_notes_click)
         cell_notes_layout.addWidget(button_notes)
         cell_notes_layout.setAlignment(Qt.AlignCenter)
@@ -52,7 +55,7 @@ class HomeGrid(QWidget):
         cell_gestion = QWidget()
         cell_gestion.setObjectName("Home_Box")
         cell_gestion_layout = QVBoxLayout(cell_gestion)
-        button_gestion = ButtonText("Gestion de Projets", x=150, y=80, style="Button_Secondary", parent=cell_gestion)
+        button_gestion = ButtonIcon(icon_name="arrow_big_Right", style="Button_Secondary_Icon", parent=cell_gestion)
         button_gestion.clicked.connect(self.on_button_gestion_click)
         cell_gestion_layout.addWidget(button_gestion)
         cell_gestion_layout.setAlignment(Qt.AlignCenter)
@@ -62,7 +65,7 @@ class HomeGrid(QWidget):
         cell_stat = QWidget()
         cell_stat.setObjectName("Home_Box")
         cell_stat_layout = QVBoxLayout(cell_stat)
-        button_stat = ButtonText("Statistiques", x=150, y=80, style="Button_Secondary", parent=cell_stat)
+        button_stat = ButtonIcon(icon_name="arrow_big_Right", style="Button_Secondary_Icon", parent=cell_stat)
         button_stat.clicked.connect(self.on_button_stat_click)
         cell_stat_layout.addWidget(button_stat)
         cell_stat_layout.setAlignment(Qt.AlignCenter)

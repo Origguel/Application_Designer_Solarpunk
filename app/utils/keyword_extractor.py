@@ -2,10 +2,6 @@ import json
 from pathlib import Path
 import spacy
 
-# ✅ Chargement immédiat de spaCy au lancement
-nlp = spacy.load("fr_core_news_sm")
-print("✅ Modèle spaCy chargé (au lancement).")
-
 TERMS_PATH = Path("assets/keyword/termes_interdits.json")
 if TERMS_PATH.exists():
     with TERMS_PATH.open(encoding="utf-8") as f:
@@ -13,8 +9,17 @@ if TERMS_PATH.exists():
 else:
     termes_interdits = set()
 
+def get_nlp():
+    global _nlp_model
+    if _nlp_model is None:
+        print(">>> Chargement du modèle spaCy depuis lazy_spacy_keywords...")
+        _nlp_model = spacy.load("fr_core_news_sm")
+        print("✅ Modèle spaCy chargé dans lazy_spacy_keywords.")
+    return _nlp_model
+
 
 def extract_keywords(text):
+    nlp = get_nlp()
     doc = nlp(text.lower())
     candidates = {}
 

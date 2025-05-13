@@ -1,7 +1,8 @@
 # app/components/home_grid.py
-from PySide6.QtWidgets import QWidget, QGridLayout, QPushButton, QVBoxLayout, QSizePolicy
+from PySide6.QtWidgets import QWidget, QGridLayout, QPushButton, QVBoxLayout, QSizePolicy, QLabel, QFrame
 from PySide6.QtCore import Signal
 from PySide6.QtCore import Qt
+from PySide6.QtGui import QPixmap
 
 
 # Componenents
@@ -18,6 +19,37 @@ class HomeGrid(QWidget):
 
     def __init__(self):
         super().__init__()
+
+        def create_background_cell(image_path: str, object_name: str = "home_cell") -> QFrame:
+            frame = QFrame()
+            frame.setObjectName(object_name)
+            frame.setStyleSheet(f"""
+                QFrame#{object_name} {{
+                    border: 1px solid #2B2B2B;
+                    border-radius: 6px;
+                    background-color: transparent;
+                }}
+            """)
+
+            label = QLabel(frame)
+            label.setScaledContents(True)  # ← important pour forcer le fill sans bug
+            pixmap = QPixmap(image_path)
+            label.setPixmap(pixmap.scaled(
+                frame.size(), Qt.KeepAspectRatioByExpanding, Qt.SmoothTransformation
+            ))
+            label.setGeometry(0, 0, frame.width(), frame.height())
+            label.lower()
+
+            def resize_background():
+                label.setPixmap(pixmap.scaled(
+                    frame.size(), Qt.KeepAspectRatioByExpanding, Qt.SmoothTransformation
+                ))
+                label.setGeometry(0, 0, frame.width(), frame.height())
+
+            frame.resizeEvent = lambda event: resize_background()
+
+            return frame
+
 
         # Créer un layout de type GridLayout
         self.home_layout = QGridLayout(self)
@@ -38,7 +70,7 @@ class HomeGrid(QWidget):
 
         # Ajouter une cellule 2x1 après la 2x6
         cell_notes = QWidget()
-        cell_notes.setObjectName("Home_Box")
+        cell_notes.setObjectName("cell_note")
         cell_notes_layout = QVBoxLayout(cell_notes)
         button_notes = ButtonIcon(icon_name="arrow_big_Right", style="Button_Secondary_Icon", parent=cell_notes)
         button_notes.clicked.connect(self.on_button_notes_click)
@@ -46,10 +78,9 @@ class HomeGrid(QWidget):
         cell_notes_layout.setAlignment(Qt.AlignCenter)
         self.home_layout.addWidget(cell_notes, 0, 6, 2, 1)
 
-        # Ajouter d'autres cellules
-        cell_solarpunk = QWidget()
-        cell_solarpunk.setObjectName("Home_Box")
-        self.home_layout.addWidget(cell_solarpunk, 0, 7, 1, 2)  # Positionner la cellule à (0, 6) avec 2 lignes et 1 colonne
+        # ...
+        cell_solarpunk = create_background_cell("assets/img/home_background/solarpunk.png")
+        self.home_layout.addWidget(cell_solarpunk, 0, 7, 1, 2)
 
         # Gestion de Projets (utilise ButtonText)
         cell_gestion = QWidget()
@@ -115,3 +146,5 @@ class HomeGrid(QWidget):
             self.parent_widget.dropdown.setCurrentIndex(3)  # Stats page
         else:
             print("Erreur : parent_widget non défini")
+
+    

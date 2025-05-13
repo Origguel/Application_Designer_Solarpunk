@@ -108,11 +108,25 @@ QWidget#Home_Box {
     border-radius: 6px;
 }
 
-QWidget#Home_Button {
+QFrame#home_cell {
     background-color: #FFFFFF;
     border: 1px solid #2B2B2B;
+    border-radius: 24px;
+}
+
+#cell_solarpunk, #cell_note {
+    background-position: center;
+    background-repeat: no-repeat;
+    border: 1px solid #2B2B2B;
     border-radius: 6px;
-    color: #2B2B2B;
+}
+
+#cell_solarpunk {
+    background-image: url(assets/img/home_background/solarpunk.png);
+}
+
+#cell_note {
+    background-image: url(assets/img/home_background/graph_note.png);
 }
 
 

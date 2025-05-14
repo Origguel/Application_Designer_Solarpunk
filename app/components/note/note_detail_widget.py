@@ -13,11 +13,11 @@ class NoteDetailWidget(QFrame):
         self.setObjectName("NoteDetailWidget")
         layout = QVBoxLayout(self)
 
-        self.close_button = ButtonIcon(icon_name="arrow_big_Right", style="Button_Secondary_Icon", parent=self)
-        self.close_button.move(10, 10)
+        self.close_button = ButtonIcon(icon_name="arrow_big_Left", style="Button_Secondary_Icon", parent=self)
+        self.close_button.move(460 - 30 - 3, 3)
         self.close_button.clicked.connect(self.close_detail)
         
-        layout.setContentsMargins(12, 64, 12, 12)
+        layout.setContentsMargins(6, 30 + 6 + 6, 6, 6)
         layout.setSpacing(8)
 
         # 🧹 Bouton Supprimer supprimé pour test

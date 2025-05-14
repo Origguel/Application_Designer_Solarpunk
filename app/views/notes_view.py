@@ -1,345 +1,66 @@
-# app/views/notes_view.py
+from PySide6.QtWidgets import QWidget, QMainWindow, QStackedLayout, QGridLayout
+from PySide6.QtCore import Qt, QPointF
 
-from PySide6.QtWidgets import QWidget, QVBoxLayout
-from PySide6.QtCore import Qt, QTimer, QPointF
-from PySide6.QtWidgets import QLineEdit
-import json
-from pathlib import Path
-
-from app.components.note.add_note_widget import AddNoteWidget
-from app.handlers.delete_note_handler import confirm_and_delete_note
-from app.utils.categorie_manager.category_manager import CategoryManager
-from app.components.note.graph.tree_graph_widget import TreeGraphWidget
-from app.components.note.note_detail_widget import NoteDetailWidget
-from app.utils.categorie_manager.category_tree_updater import CategoryTreeUpdater
+from app.views.projects_view import ProjectsView
+from app.views.statistics_view import StatisticsView
+from app.components.dropdowns.dropdown_default import Dropdown_Default
+from app.components.note.notes_page_widget import NotesPageWidget
 
 
-# Componenents
-from app.components.inputs.input_default import Input_Default
-from app.components.buttons.button_icon import ButtonIcon
-
-
-
-class NotesView(QWidget):
+class NotesView(QMainWindow):
     def __init__(self):
         super().__init__()
+        self.setWindowTitle("Designer Solarpunk")
+        self.setObjectName("NotesView")
+        self.setStyleSheet("QMainWindow#NotesView { background: white; }")
 
-        self.is_camera_animating = False
+        # === Conteneur central ===
+        self.central_widget = QWidget(self)
+        self.setCentralWidget(self.central_widget)
 
-        # Layout principal
-        self.layout = QVBoxLayout(self)
-        self.layout.setContentsMargins(0, 0, 0, 0)
-        self.layout.setSpacing(0)
+        # === Layout principal ===
+        self.main_layout = QGridLayout(self.central_widget)
+        self.main_layout.setContentsMargins(0, 0, 0, 0)
+        self.main_layout.setSpacing(0)
 
-        # Graph principal
-        self.graph_widget = TreeGraphWidget(self)
-        self.layout.addWidget(self.graph_widget)
-        self.graph_widget.scale(0.2, 0.2)
+        # === Stack de vues ===
+        self.stack_container = QWidget(self.central_widget)
+        self.stack_layout = QStackedLayout(self.stack_container)
+        self.main_layout.addWidget(self.stack_container, 0, 0)
 
-        # Overlay blanc semi-transparent pour désactiver le graph
-        self.overlay = QWidget(self)
-        self.overlay.setStyleSheet("""
-            background-color: rgba(255, 255, 255, 180);
-        """)
-        self.overlay.hide()
-        self.overlay.setAttribute(Qt.WA_TransparentForMouseEvents, False)
+        # === Pages ===
+        self.notes_page = NotesPageWidget()
+        self.projects_page = ProjectsView()
+        self.statistics_page = StatisticsView()
 
+        self.stack_layout.addWidget(self.notes_page)
+        self.stack_layout.addWidget(self.projects_page)
+        self.stack_layout.addWidget(self.statistics_page)
 
-        # 🆕 Conteneur de la barre d’outil
-        self.toolbar = QWidget(self)
-        self.toolbar.setObjectName("NoteToolsBar")
-        self.toolbar.setFixedWidth(36)  # Ajuste selon besoin
-        self.toolbar.move(34, 26)
-        self.toolbar.setFixedHeight(104)
-
-        # 🆕 Layout vertical avec espacement de 4px
-        toolbar_layout = QVBoxLayout(self.toolbar)
-        toolbar_layout.setContentsMargins(3, 3, 3, 3)
-        toolbar_layout.setSpacing(4)
-
-        # 🆕 Boutons dans le layout
-        self.plus_button = ButtonIcon(icon_name="add", style="Button_Secondary_Icon", parent=self.toolbar)
-        self.resetview_button = ButtonIcon(icon_name="resize", style="Button_Secondary_Icon", parent=self.toolbar)
-        self.delete_button = ButtonIcon(icon_name="trash", style="Button_Delete_Icon", parent=self.toolbar)
-
-        toolbar_layout.addWidget(self.plus_button)
-        toolbar_layout.addWidget(self.resetview_button)
-        toolbar_layout.addWidget(self.delete_button)
-
-        # 🆕 Connexions
-        self.plus_button.clicked.connect(self.open_add_note_widget)
-        self.resetview_button.clicked.connect(self.on_reset_view_button_clicked)
-        self.delete_button.clicked.connect(self.on_delete_button_clicked)
-
-
-        # Barre de recherche        
-        self.search_input = Input_Default(placeholder="Rechercher une note...", x=400, y=36, text_position="center-left", parent=self)
-        self.search_input.move(74, 26)
-        self.search_input.raise_()
-        self.search_input.textChanged.connect(self.on_search_note)
-
-
-        # Panneau d'ajout
-        self.add_note_widget = None
-
-    def open_note_detail(self, note_id):
-        """Affiche le détail d'une note dans un panneau à droite"""
-        note_path = Path(f"data/notes/{note_id}.json")
-        if not note_path.exists():
-            print(f"❌ Fichier de note introuvable : {note_path}")
-            return
-
-        with open(note_path, "r", encoding="utf-8") as f:
-            note_data = json.load(f)
-
-        self.close_note_detail()  # ✅ remplacement sécurisé
-
-        self.note_detail_widget = NoteDetailWidget(note_data, self)
-        widget_width = 460
-        top_margin = 68
-        right_margin = 34
-        bottom_margin = 26
-        available_height = self.height() - top_margin - bottom_margin
-
-        self.note_detail_widget.setGeometry(
-            self.width() - widget_width - right_margin,
-            top_margin,
-            widget_width,
-            available_height
+        # === Dropdown ===
+        self.dropdown = Dropdown_Default(
+            style="Navigation_Dropdown",
+            items=["Notes", "Projets", "Statistiques"],
+            responsive=False,
+            parent=self
         )
-        self.note_detail_widget.raise_()
-        self.note_detail_widget.show()
+        self.dropdown.move(self.width() - self.dropdown.width() - 34, 26)
+        self.dropdown.currentIndexChanged.connect(self.changer_page)
+        self.dropdown.raise_()
 
+        self.showMaximized()
+        self.stack_layout.setCurrentWidget(self.notes_page)
 
-    def close_note_detail(self):
-        if hasattr(self, 'note_detail_widget') and self.note_detail_widget:
-            self.note_detail_widget.setParent(None)
-            self.note_detail_widget.deleteLater()
-            self.note_detail_widget = None
+    def changer_page(self, index):
+        if index == 0:
+            self.stack_layout.setCurrentWidget(self.notes_page)
+        elif index == 1:
+            self.stack_layout.setCurrentWidget(self.projects_page)
+        elif index == 2:
+            self.stack_layout.setCurrentWidget(self.statistics_page)
 
-    def open_add_note_widget(self):
-        """Ouvre la fenêtre pour ajouter une nouvelle note"""
-        if not self.add_note_widget:
-            self.overlay.setGeometry(0, 0, self.width(), self.height())
-            self.overlay.show()
-            self.overlay.raise_()
-
-            self.add_note_widget = AddNoteWidget(self)
-            widget_width = int(self.width() * 0.6)
-            widget_height = int(self.height() * 0.6)
-            self.add_note_widget.setGeometry(
-                (self.width() - widget_width) // 2,
-                (self.height() - widget_height) // 2,
-                widget_width,
-                widget_height
-            )
-
-            self.add_note_widget.raise_()
-            self.add_note_widget.show()
-
-            # Connecter les signaux
-            self.add_note_widget.cancelled.connect(self.close_add_note_widget)
-            self.add_note_widget.note_created.connect(self.add_note_visually)
-
-    def close_add_note_widget(self):
-        """Ferme proprement la fenêtre d'ajout de note"""
-        if self.add_note_widget:
-            self.add_note_widget.setParent(None)
-            self.add_note_widget.deleteLater()
-            self.add_note_widget = None
-        self.overlay.hide()
+        self.dropdown.raise_()
 
     def resizeEvent(self, event):
-        """Adapter la taille des éléments au redimensionnement"""
         super().resizeEvent(event)
-        if hasattr(self, 'graph_widget'):
-            self.graph_widget.setGeometry(0, 0, self.width(), self.height())
-        if hasattr(self, 'plus_button'):
-            self.plus_button.move(34, 26)
-        if hasattr(self, 'delete_button'):
-            self.delete_button.move(34, 66)
-        if hasattr(self, 'resetview_button'):
-            self.resetview_button.move(34, 106)
-        if hasattr(self, 'search_input'):
-            self.search_input.move(74, 26)
-        if self.overlay.isVisible():
-            self.overlay.setGeometry(0, 0, self.width(), self.height())
-        if self.add_note_widget:
-            self.add_note_widget.move(
-                (self.width() - self.add_note_widget.width()) // 2,
-                (self.height() - self.add_note_widget.height()) // 2
-            )
-
-    def refresh_graph(self):
-        print("🔄 Rafraîchissement du graphe...")
-
-        if hasattr(self, "graph_widget"):
-            self.graph_widget.setParent(None)
-            self.graph_widget.deleteLater()
-
-        # 🔁 Recréer un nouvel objet TreeGraphWidget
-        self.graph_widget = TreeGraphWidget(self)
-        self.graph_widget.scale(0.2, 0.2)
-        self.layout.addWidget(self.graph_widget)
-
-        # 🆙 Relever les éléments d'interface
-        self.plus_button.raise_()
-        self.delete_button.raise_()
-        self.resetview_button.raise_()
-        self.search_input.raise_()
-        self.toolbar.raise_()
-
-
-
-
-    def on_delete_button_clicked(self):
-        selected_note_id = self.graph_widget.get_selected_note_id()
-        if selected_note_id:
-            confirm_and_delete_note(self, selected_note_id)
-            CategoryManager().update()
-            self.graph_widget.delete_note_live(selected_note_id)
-        else:
-            print("❌ Aucune note sélectionnée pour suppression.")
-
-
-
-    def on_reset_view_button_clicked(self):
-        if self.is_camera_animating:
-            print("⏳ Animation déjà en cours.")
-            return
-
-        current_center = self.graph_widget.mapToScene(self.graph_widget.viewport().rect().center())
-        current_scale = self.graph_widget.transform().m11()
-
-        center_threshold = 5.0
-        scale_threshold = 0.01
-        target_center = QPointF(0, 0)
-        target_scale = 0.1
-
-        if (current_center - target_center).manhattanLength() < center_threshold and abs(current_scale - target_scale) < scale_threshold:
-            print("✅ Vue déjà centrée et zoomée, animation ignorée.")
-            return
-
-        self.animate_camera_to_center()
-
-
-
-    def on_search_note(self):
-        """Handler appelé quand on valide une recherche"""
-        keyword = self.search_input.text().strip().lower()
-
-        if not keyword:
-            self.clear_search_highlights()
-            return
-
-        # D'abord, retirer tous les anciens highlights
-        for item in self.graph_widget.scene.items():
-            if hasattr(item, 'note_data') and hasattr(item, 'remove_highlight'):
-                item.remove_highlight()
-
-        matches = []
-        for item in self.graph_widget.category_items + self.graph_widget.note_items:
-            if hasattr(item, 'note_data'):
-                title = item.note_data.get("title", "").lower()
-                words = title.split()
-                if keyword in words:
-                    matches.append(item)
-
-
-        if not matches:
-            print("❌ Aucune note trouvée avec ce mot-clé.")
-            return
-
-        for item in matches:
-            item.highlight()
-
-        if len(matches) == 1:
-            self.graph_widget.centerOn(matches[0])
-            self.graph_widget.resetTransform()
-            self.graph_widget.scale(3, 3)
-            print(f"🔍 Note unique trouvée et zoomée : {matches[0].note_data.get('title', '')}")
-        else:
-            print(f"🔍 {len(matches)} notes trouvées.")
-
-    def keyPressEvent(self, event):
-        """Gérer les raccourcis clavier (ex: Escape pour clear search, R pour recentrer)"""
-        if event.key() == Qt.Key_Escape:
-            self.clear_search_highlights()
-            self.on_reset_view_button_clicked()
-            print("🧹 Vue réinitialisée via Escape.")
-        elif event.key() == Qt.Key_R:
-            self.on_reset_view_button_clicked()
-            print("🔄 Vue recentrée via touche R.")
-
-
-
-    def clear_search_highlights(self):
-        """Retirer tous les highlights de recherche et vider la barre de recherche"""
-        for item in self.graph_widget.note_items:
-            if hasattr(item, 'remove_highlight'):
-                item.remove_highlight()
-        self.search_input.clear()
-        self.graph_widget.update_category_display()
-
-    from PySide6.QtCore import QTimer, QPointF
-
-    def animate_camera_to_center(self, duration_ms=1000, target_scale=0.1):
-        def ease_in_out_expo(t):
-            if t == 0:
-                return 0
-            if t == 1:
-                return 1
-            if t < 0.5:
-                return 0.5 * pow(2, 20 * t - 10)
-            else:
-                return 1 - 0.5 * pow(2, -20 * t + 10)
-
-        if self.is_camera_animating:
-            return
-
-        view = self.graph_widget
-        self.is_camera_animating = True
-        view.setInteractive(False)  # 🛑 désactive les interactions
-
-        steps = 60
-        interval = duration_ms // steps
-        initial_scale = view.transform().m11()
-        scale_diff = target_scale - initial_scale
-        current_center = view.mapToScene(view.viewport().rect().center())
-        target_center = QPointF(0, 0)
-        delta_center = target_center - current_center
-        step = 0
-
-        def animate_step():
-            nonlocal step
-            if step >= steps:
-                timer.stop()
-                view.setInteractive(True)
-                self.is_camera_animating = False
-                print("✅ Animation terminée")
-                return
-
-            t = ease_in_out_expo((step + 1) / steps)
-            interpolated_scale = initial_scale + scale_diff * t
-            interpolated_center = current_center + delta_center * t
-
-            view.resetTransform()
-            view.scale(interpolated_scale, interpolated_scale)
-            view.centerOn(interpolated_center)
-            self.graph_widget.update_category_display()
-
-            step += 1
-
-        timer = QTimer(self)
-        timer.timeout.connect(animate_step)
-        timer.start(interval)
-
-    def add_note_visually(self, note_id, keywords):
-        # 🧠 Mise à jour du JSON
-        updater = CategoryTreeUpdater()
-        updater.add_note(note_id, keywords)
-
-        # ➕ Ajout visuel
-        self.graph_widget.add_note_live(note_id, keywords)
-        print(f"✨ Note ajoutée visuellement dans le graphe : {note_id}")
-        self.close_add_note_widget()
+        self.dropdown.move(self.width() - self.dropdown.width() - 34, 26)

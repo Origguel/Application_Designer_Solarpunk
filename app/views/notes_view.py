@@ -1,10 +1,10 @@
 from PySide6.QtWidgets import QWidget, QMainWindow, QStackedLayout, QGridLayout
-from PySide6.QtCore import Qt, QPointF
+from PySide6.QtCore import Qt
 
 from app.views.projects_view import ProjectsView
 from app.views.statistics_view import StatisticsView
-from app.components.dropdowns.dropdown_default import Dropdown_Default
 from app.components.note.notes_page_widget import NotesPageWidget
+from app.components.note.navigation_header_widget import NavigationHeader
 
 
 class NotesView(QMainWindow):
@@ -37,30 +37,29 @@ class NotesView(QMainWindow):
         self.stack_layout.addWidget(self.projects_page)
         self.stack_layout.addWidget(self.statistics_page)
 
-        # === Dropdown ===
-        self.dropdown = Dropdown_Default(
-            style="Navigation_Dropdown",
-            items=["Notes", "Projets", "Statistiques"],
-            responsive=False,
-            parent=self
-        )
-        self.dropdown.move(self.width() - self.dropdown.width() - 34, 26)
-        self.dropdown.currentIndexChanged.connect(self.changer_page)
-        self.dropdown.raise_()
+        # === Navigation header personnalisé ===
+        self.navbar = NavigationHeader(parent=self, on_nav_callback=self.navigate_to_section)
+        self.navbar.resize(400, 48)
+        self.navbar.move(self.width() - 416, 16)
+        self.navbar.raise_()
+        self.navbar.highlight("NOTES")
 
         self.showMaximized()
         self.stack_layout.setCurrentWidget(self.notes_page)
 
-    def changer_page(self, index):
-        if index == 0:
+    def navigate_to_section(self, label):
+        if label == "NOTES":
             self.stack_layout.setCurrentWidget(self.notes_page)
-        elif index == 1:
+        elif label == "PROJETS":
             self.stack_layout.setCurrentWidget(self.projects_page)
-        elif index == 2:
+        elif label == "STATISTIQUES":
             self.stack_layout.setCurrentWidget(self.statistics_page)
 
-        self.dropdown.raise_()
+        self.navbar.highlight(label)
 
     def resizeEvent(self, event):
         super().resizeEvent(event)
-        self.dropdown.move(self.width() - self.dropdown.width() - 34, 26)
+        self.navbar.move(
+            self.width() - self.navbar.width() - 16,
+            16
+        )

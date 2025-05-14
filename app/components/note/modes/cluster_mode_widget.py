@@ -10,24 +10,27 @@ from collections import defaultdict
 from app.utils.tree_graph_interaction import TreeGraphInteraction
 from app.components.note.graph.items.category_item import CategoryItem
 from app.components.note.graph.items.note_item import NoteItem
-from app.components.note.graph.items.note_item import NoteItem
+from app.components.note.notes_camera_animation import animate_camera_to_center
 
 
-class TreeGraphWidget(QGraphicsView):
-    def __init__(self, parent=None):
+class ClusterModeWidget(QGraphicsView):
+    def __init__(self, notes_view, parent=None):
         super().__init__(parent)
+        self.notes_view = notes_view
 
         self.interaction = TreeGraphInteraction(self)
 
         self.setRenderHint(QPainter.Antialiasing)
         self.setTransformationAnchor(QGraphicsView.AnchorUnderMouse)
         self.setResizeAnchor(QGraphicsView.AnchorUnderMouse)
+        self.setFrameStyle(QGraphicsView.NoFrame)
 
         self.setHorizontalScrollBarPolicy(Qt.ScrollBarAlwaysOff)
         self.setVerticalScrollBarPolicy(Qt.ScrollBarAlwaysOff)
 
         self.scene = QGraphicsScene()
         self.setScene(self.scene)
+        self.setViewportMargins(0, 0, 0, 0)
         self.setSceneRect(-100000, -100000, 200000, 200000)
 
         self.category_tree_path = Path("data/categories/category_tree.json")
@@ -41,6 +44,11 @@ class TreeGraphWidget(QGraphicsView):
         self.timer = QTimer()
         self.timer.timeout.connect(self.advance_simulation)
         self.timer.start(16)
+
+        self.scale(0.2, 0.2)
+        self.centerOn(QPointF(0, 0))
+
+        self.is_camera_animating = False
 
         self.init_graph()
 
@@ -103,7 +111,7 @@ class TreeGraphWidget(QGraphicsView):
                     note_id=note_id,
                     parent_ref=item,
                     scene=self.scene,
-                    notes_view=self.parent(),
+                    notes_view=self.notes_view,
                     angle_hint=random.uniform(0, 2 * math.pi)
                 )
                 self.note_items.append(note_item)
@@ -270,6 +278,8 @@ class TreeGraphWidget(QGraphicsView):
             self.category_items.remove(cat)
 
 
+    def reset_view(self):
+        animate_camera_to_center(self)
 
 
 

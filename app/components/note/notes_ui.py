@@ -1,13 +1,14 @@
 from PySide6.QtWidgets import QVBoxLayout, QHBoxLayout, QWidget
 from PySide6.QtCore import Qt
-from app.components.note.graph.tree_graph_widget import TreeGraphWidget
+
+
+from app.components.note.modes.cluster_mode_widget import ClusterModeWidget
 from app.components.buttons.button_icon import ButtonIcon
 from app.components.inputs.input_default import Input_Default
 
 def setup_ui(self):
-    self.graph_widget = TreeGraphWidget(self)
+    self.graph_widget = ClusterModeWidget(self.visualization_container)
     self.graph_widget.setGeometry(0, 0, self.width(), self.height())
-    self.graph_widget.scale(0.2, 0.2)
 
     self.overlay = QWidget(self)
     self.overlay.setStyleSheet("background-color: rgba(255, 255, 255, 180);")
@@ -70,3 +71,7 @@ def setup_ui(self):
     note_mode_layout.addWidget(self.note_mode_cluster)
     note_mode_layout.addWidget(self.note_mode_timeline)
     note_mode_layout.addWidget(self.note_mode_theme)
+
+    self.note_mode_cluster.clicked.connect(lambda: self.switch_note_mode("cluster"))
+    self.note_mode_timeline.clicked.connect(lambda: self.switch_note_mode("timeline"))
+    self.note_mode_theme.clicked.connect(lambda: self.switch_note_mode("theme"))

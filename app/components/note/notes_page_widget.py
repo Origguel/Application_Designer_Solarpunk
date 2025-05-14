@@ -1,4 +1,4 @@
-from PySide6.QtWidgets import QWidget
+from PySide6.QtWidgets import QWidget, QFrame, QLabel
 from PySide6.QtCore import Qt, QPointF
 
 from app.components.note.notes_ui import setup_ui
@@ -16,21 +16,51 @@ from app.components.note.notes_search_handler import (
 )
 from app.components.note.notes_camera_animation import animate_camera_to_center
 
+from app.components.note.modes.cluster_mode_widget import ClusterModeWidget
+from app.components.note.modes.timeline_mode_widget import TimelineModeWidget
+from app.components.note.modes.theme_mode_widget import ThemeModeWidget
+
 
 class NotesPageWidget(QWidget):
     def __init__(self):
         super().__init__()
+        
         self.is_camera_animating = False
+        self.visualization_container = QFrame(self)
+        self.visualization_container.setGeometry(0, 0, self.width(), self.height())
+        self.visualization_container.lower()  # reste derrière les autres UI
         setup_ui(self)
+
+        self.visualization_widgets = {
+            "cluster": self.graph_widget,  # déjà instancié par setup_ui
+            "timeline": None,              # à instancier plus tard
+            "theme": None                  # à instancier plus tard
+        }
+        self.current_mode = "cluster"
+
+        self.visualization_widgets["cluster"] = ClusterModeWidget(self, self.visualization_container)
+        self.visualization_widgets["timeline"] = TimelineModeWidget(self.visualization_container)
+        self.visualization_widgets["theme"] = ThemeModeWidget(self.visualization_container)
+
+        self.switch_note_mode("cluster")
+
 
     def resizeEvent(self, event):
         super().resizeEvent(event)
         self.graph_widget.setGeometry(0, 0, self.width(), self.height())
+        self.visualization_container.setGeometry(0, 0, self.width(), self.height())
+        for widget in self.visualization_widgets.values():
+            if widget:
+                widget.setGeometry(0, 0, self.width(), self.height())
+
         self.toolbar.move(16, 16)
+
         self.note_mode.move(500, 500)
+
         self.search_input.move(58, 16)
         if self.overlay.isVisible():
             self.overlay.setGeometry(0, 0, self.width(), self.height())
+
         if self.add_note_widget:
             self.add_note_widget.move(
                 (self.width() - self.add_note_widget.width()) // 2,
@@ -68,16 +98,35 @@ class NotesPageWidget(QWidget):
             print("⏳ Animation déjà en cours.")
             return
 
-        current_center = self.graph_widget.mapToScene(self.graph_widget.viewport().rect().center())
-        current_scale = self.graph_widget.transform().m11()
-        center_threshold = 5.0
-        scale_threshold = 0.01
-        target_center = QPointF(0, 0)
-        target_scale = 0.1
+        current_widget = self.visualization_widgets.get(self.current_mode)
+        if hasattr(current_widget, "reset_view"):
+            current_widget.reset_view()
+            print(f"🔄 Vue recentrée pour le mode {self.current_mode}.")
+        else:
+            print(f"❌ Le mode {self.current_mode} ne supporte pas encore la réinitialisation.")
 
-        if (current_center - target_center).manhattanLength() < center_threshold and abs(current_scale - target_scale) < scale_threshold:
-            print("✅ Vue déjà centrée et zoomée, animation ignorée.")
+
+
+    def switch_note_mode(self, mode):
+        if mode not in self.visualization_widgets:
+            print(f"❌ Mode inconnu : {mode}")
             return
 
-        animate_camera_to_center(self)
+        # Cacher tous les widgets de visualisation
+        for widget in self.visualization_widgets.values():
+            if widget:
+                widget.hide()
 
+        # Si le widget du mode n’est pas encore créé, afficher un placeholder
+        if self.visualization_widgets[mode] is None:
+            placeholder = QLabel(f"Mode '{mode}' en cours de développement", self.visualization_container)
+            placeholder.setAlignment(Qt.AlignCenter)
+            placeholder.setStyleSheet("font-size: 24px; color: grey;")
+            placeholder.setGeometry(0, 0, self.width(), self.height())
+            placeholder.show()
+            self.visualization_widgets[mode] = placeholder
+        else:
+            self.visualization_widgets[mode].show()
+
+        self.current_mode = mode
+        print(f"🔁 Mode actif : {mode}")

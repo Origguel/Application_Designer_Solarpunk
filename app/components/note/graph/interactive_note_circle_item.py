@@ -35,3 +35,4 @@ class InteractiveNoteCircleItem(QGraphicsEllipseItem):
             self.note.select()
         self.notes_view.open_note_detail(self.note_id)
         super().mousePressEvent(event)
+    

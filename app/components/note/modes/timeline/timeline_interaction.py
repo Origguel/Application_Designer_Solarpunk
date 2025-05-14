@@ -1,19 +1,22 @@
-# app/components/note/modes/timeline_interaction.py
-
 from PySide6.QtCore import QPoint, Qt
+
 
 class TimelineInteraction:
     def __init__(self, canvas):
         self.canvas = canvas
         self.is_panning = False
         self.last_pos = QPoint()
-        self.offset_x = 0  # Décalage horizontal en pixels
+        self.offset_x = 0  # décalage horizontal
+
+        self.zoom_level = 1.0
+        self.min_zoom = 0.65  # ≈ 2 ans
+        self.max_zoom = 8.0   # ≈ 2 semaines
+        self.base_spacing = 120  # espace entre mois à zoom 1.0
 
     def mousePressEvent(self, event):
         if event.button() == Qt.RightButton:
             self.is_panning = True
             self.last_pos = event.pos()
-
 
     def mouseMoveEvent(self, event):
         if self.is_panning:
@@ -26,6 +29,28 @@ class TimelineInteraction:
         if event.button() == Qt.RightButton:
             self.is_panning = False
 
+    def wheelEvent(self, event):
+        angle = event.angleDelta().y()
+        zoom_factor = 1.1 if angle > 0 else 0.9
+        new_zoom = self.zoom_level * zoom_factor
+
+        if self.min_zoom <= new_zoom <= self.max_zoom:
+            old_spacing = self.get_spacing()
+            self.zoom_level = new_zoom
+            new_spacing = self.get_spacing()
+
+            mouse_x = event.position().x()
+            center_x = self.canvas.width() / 2
+            delta_offset = (mouse_x - center_x) * (new_spacing - old_spacing) / old_spacing
+            self.offset_x -= delta_offset
+
+            self.canvas.update()
 
     def get_offset_x(self):
         return self.offset_x
+
+    def get_spacing(self):
+        return self.base_spacing * self.zoom_level
+
+    def get_zoom_level(self):
+        return self.zoom_level

@@ -14,7 +14,6 @@ class TimelineCanvas(QWidget):
         self.visible_months = {}  # Clé = index relatif au mois actuel, valeur = datetime
 
 
-
     def generate_months(self, center_month, count=12):
         """Génère une liste de mois centrée sur le mois actuel."""
         months = []
@@ -43,7 +42,7 @@ class TimelineCanvas(QWidget):
         offset = self.interaction.get_offset_x()
 
         # Paramètres d'affichage
-        spacing = 120  # distance entre mois
+        spacing = self.interaction.get_spacing()
         radius = 6
         font = QFont("Arial", 10)
         painter.setFont(font)
@@ -85,12 +84,15 @@ class TimelineCanvas(QWidget):
     def mouseReleaseEvent(self, event):
         self.interaction.mouseReleaseEvent(event)
 
+    def wheelEvent(self, event):
+        self.interaction.wheelEvent(event)
+
 
 
     def update_visible_months(self):
         """Génère dynamiquement les mois visibles et supprime ceux hors champ."""
         w = self.width()
-        spacing = 120
+        spacing = self.interaction.get_spacing()
         center_x = w // 2
         offset = self.interaction.get_offset_x()
         margin = spacing * 2  # marge tampon

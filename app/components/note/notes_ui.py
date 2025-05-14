@@ -1,4 +1,4 @@
-from PySide6.QtWidgets import QVBoxLayout, QWidget
+from PySide6.QtWidgets import QVBoxLayout, QHBoxLayout, QWidget
 from PySide6.QtCore import Qt
 from app.components.note.graph.tree_graph_widget import TreeGraphWidget
 from app.components.buttons.button_icon import ButtonIcon
@@ -14,15 +14,16 @@ def setup_ui(self):
     self.overlay.hide()
     self.overlay.setAttribute(Qt.WA_TransparentForMouseEvents, False)
 
+    # Toolbar
     self.toolbar = QWidget(self)
-    self.toolbar.setObjectName("NoteToolsBar")
+    self.toolbar.setObjectName("Note_ToolsBar")
     self.toolbar.setFixedWidth(36)
     self.toolbar.setFixedHeight(104)
 
     toolbar_layout = QVBoxLayout(self.toolbar)
     toolbar_layout.setContentsMargins(3, 3, 3, 3)
     toolbar_layout.setSpacing(4)
-
+    # Toolbar Buttons
     self.plus_button = ButtonIcon("add", style="Button_Secondary_Icon", parent=self.toolbar)
     self.resetview_button = ButtonIcon("resize", style="Button_Secondary_Icon", parent=self.toolbar)
     self.delete_button = ButtonIcon("trash", style="Button_Delete_Icon", parent=self.toolbar)
@@ -50,3 +51,22 @@ def setup_ui(self):
     self.note_detail_left_margin = 16  # à droite de la toolbar et search input
     self.note_detail_top_margin = 16 + self.toolbar.height() + 6
     self.note_detail_widget = None
+
+
+
+    self.note_mode = QWidget(self)
+    self.note_mode.setObjectName("Note_Mode_Bar")
+    self.note_mode.setFixedWidth(104)
+    self.note_mode.setFixedHeight(36)
+
+    note_mode_layout = QHBoxLayout(self.note_mode)
+    note_mode_layout.setContentsMargins(3, 3, 3, 3)
+    note_mode_layout.setSpacing(4)
+
+    self.note_mode_cluster = ButtonIcon("cluster", style="Button_Secondary_Icon", parent=self.note_mode)
+    self.note_mode_timeline = ButtonIcon("timeline", style="Button_Secondary_Icon", parent=self.note_mode)
+    self.note_mode_theme = ButtonIcon("theme", style="Button_Secondary_Icon", parent=self.note_mode)
+
+    note_mode_layout.addWidget(self.note_mode_cluster)
+    note_mode_layout.addWidget(self.note_mode_timeline)
+    note_mode_layout.addWidget(self.note_mode_theme)

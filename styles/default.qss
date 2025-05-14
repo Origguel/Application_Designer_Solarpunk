@@ -131,7 +131,7 @@ QWidget#home_cell {
 
 
 
-#NoteToolsBar {
+#Note_ToolsBar, #Note_Mode_Bar {
     background-color: #FFFFFF;
     border: 1px solid #000000;
     border-radius: 6px;

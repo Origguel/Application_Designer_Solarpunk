@@ -1,0 +1,49 @@
+from PySide6.QtWidgets import QVBoxLayout, QWidget
+from PySide6.QtCore import Qt
+from app.components.note.graph.tree_graph_widget import TreeGraphWidget
+from app.components.buttons.button_icon import ButtonIcon
+from app.components.inputs.input_default import Input_Default
+
+def setup_ui(self):
+    self.graph_widget = TreeGraphWidget(self)
+    self.graph_widget.setGeometry(0, 0, self.width(), self.height())
+    self.graph_widget.scale(0.2, 0.2)
+
+    self.overlay = QWidget(self)
+    self.overlay.setStyleSheet("background-color: rgba(255, 255, 255, 180);")
+    self.overlay.hide()
+    self.overlay.setAttribute(Qt.WA_TransparentForMouseEvents, False)
+
+    self.toolbar = QWidget(self)
+    self.toolbar.setObjectName("NoteToolsBar")
+    self.toolbar.setFixedWidth(36)
+    self.toolbar.setFixedHeight(104)
+    self.toolbar.move(34, 26)
+
+    toolbar_layout = QVBoxLayout(self.toolbar)
+    toolbar_layout.setContentsMargins(3, 3, 3, 3)
+    toolbar_layout.setSpacing(4)
+
+    self.plus_button = ButtonIcon("add", style="Button_Secondary_Icon", parent=self.toolbar)
+    self.resetview_button = ButtonIcon("resize", style="Button_Secondary_Icon", parent=self.toolbar)
+    self.delete_button = ButtonIcon("trash", style="Button_Delete_Icon", parent=self.toolbar)
+
+    toolbar_layout.addWidget(self.plus_button)
+    toolbar_layout.addWidget(self.resetview_button)
+    toolbar_layout.addWidget(self.delete_button)
+
+    self.plus_button.clicked.connect(self.open_add_note_widget)
+    self.resetview_button.clicked.connect(self.on_reset_view_button_clicked)
+    self.delete_button.clicked.connect(self.on_delete_button_clicked)
+
+    self.search_input = Input_Default(
+        placeholder="Rechercher une note...",
+        x=400, y=36,
+        text_position="center-left",
+        parent=self
+    )
+    self.search_input.move(74, 26)
+    self.search_input.raise_()
+    self.search_input.textChanged.connect(self.on_search_note)
+
+    self.add_note_widget = None

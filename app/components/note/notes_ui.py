@@ -47,3 +47,8 @@ def setup_ui(self):
     self.search_input.textChanged.connect(self.on_search_note)
 
     self.add_note_widget = None
+
+    # Positionner dynamiquement le détail de note sur la gauche (dans open_note_detail)
+    self.note_detail_left_margin = 16  # à droite de la toolbar et search input
+    self.note_detail_top_margin = 16 + self.toolbar.height() + 6
+    self.note_detail_widget = None

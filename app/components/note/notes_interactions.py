@@ -15,14 +15,30 @@ def open_note_detail(self, note_id):
     with open(note_path, "r", encoding="utf-8") as f:
         note_data = json.load(f)
 
-    self.close_note_detail()
+    self.close_note_detail()  # supprime l'ancien s'il existe
 
+    # Crée le nouveau widget D'ABORD
     self.note_detail_widget = NoteDetailWidget(note_data, self)
+
+    # Calcule ensuite sa position
+    widget_width = 460
+    top_margin = self.note_detail_top_margin     # sous la toolbar
+    left_margin = self.note_detail_left_margin   # à droite des outils
+    bottom_margin = 26
+    available_height = self.height() - top_margin - bottom_margin
+
     self.note_detail_widget.setGeometry(
-        self.width() - 460 - 34, 68, 460, self.height() - 68 - 26
+        left_margin,
+        top_margin,
+        widget_width,
+        available_height
     )
+
     self.note_detail_widget.raise_()
     self.note_detail_widget.show()
+
+
+
 
 def close_note_detail(self):
     if hasattr(self, 'note_detail_widget') and self.note_detail_widget:

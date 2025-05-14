@@ -3,11 +3,15 @@ from PySide6.QtGui import QPainter, QPen, QFont
 from PySide6.QtCore import Qt, QPoint, QRect
 from datetime import datetime, timedelta
 
+from .timeline_interaction import TimelineInteraction
+
 class TimelineCanvas(QWidget):
     def __init__(self, parent=None):
         super().__init__(parent)
         self.setMinimumHeight(200)
         self.months = self.generate_months(center_month=datetime.today(), count=12)
+        self.interaction = TimelineInteraction(self)
+
 
     def generate_months(self, center_month, count=12):
         """Génère une liste de mois centrée sur le mois actuel."""
@@ -40,7 +44,7 @@ class TimelineCanvas(QWidget):
 
         for i, month in enumerate(self.months):
             dx = (i - len(self.months) // 2) * spacing
-            x = center_x + dx
+            x = center_x + dx + self.interaction.get_offset_x()
 
             # === Point du mois principal ===
             painter.setPen(QPen(Qt.black, 2))
@@ -63,3 +67,12 @@ class TimelineCanvas(QWidget):
                     painter.setPen(QPen(Qt.gray, 1))
                     painter.drawLine(tick_x, y_line - 6, tick_x, y_line + 6)
 
+
+    def mousePressEvent(self, event):
+        self.interaction.mousePressEvent(event)
+
+    def mouseMoveEvent(self, event):
+        self.interaction.mouseMoveEvent(event)
+
+    def mouseReleaseEvent(self, event):
+        self.interaction.mouseReleaseEvent(event)

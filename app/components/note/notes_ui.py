@@ -18,7 +18,6 @@ def setup_ui(self):
     self.toolbar.setObjectName("NoteToolsBar")
     self.toolbar.setFixedWidth(36)
     self.toolbar.setFixedHeight(104)
-    self.toolbar.move(34, 26)
 
     toolbar_layout = QVBoxLayout(self.toolbar)
     toolbar_layout.setContentsMargins(3, 3, 3, 3)
@@ -42,7 +41,6 @@ def setup_ui(self):
         text_position="center-left",
         parent=self
     )
-    self.search_input.move(74, 26)
     self.search_input.raise_()
     self.search_input.textChanged.connect(self.on_search_note)
 

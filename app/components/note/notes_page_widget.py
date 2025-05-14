@@ -26,8 +26,8 @@ class NotesPageWidget(QWidget):
     def resizeEvent(self, event):
         super().resizeEvent(event)
         self.graph_widget.setGeometry(0, 0, self.width(), self.height())
-        self.toolbar.move(34, 26)
-        self.search_input.move(74, 26)
+        self.toolbar.move(16, 16)
+        self.search_input.move(58, 16)
         if self.overlay.isVisible():
             self.overlay.setGeometry(0, 0, self.width(), self.height())
         if self.add_note_widget:

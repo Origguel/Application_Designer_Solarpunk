@@ -7,6 +7,8 @@ import json
 
 from .timeline_interaction import TimelineInteraction
 from .timeline_note_item import TimelineNoteItem
+from .timeline_month_item import TimelineMonthItem
+from .timeline_data_loader import TimelineDataLoader
 
 class TimelineCanvas(QWidget):
     def __init__(self, parent=None):
@@ -14,8 +16,7 @@ class TimelineCanvas(QWidget):
         self.setMinimumHeight(200)
         self.interaction = TimelineInteraction(self)
         self.visible_months = {}  # Clé = index relatif au mois actuel, valeur = datetime
-        self.note_index = self.load_note_index()
-        self.note_cache = {}  # {id: note_data}
+        self.data_loader = TimelineDataLoader()
 
     def paintEvent(self, event):
         self.update_visible_months()
@@ -23,7 +24,6 @@ class TimelineCanvas(QWidget):
         painter.setRenderHint(QPainter.Antialiasing)
 
         w = self.width()
-        h = self.height()
         center_x = w // 2
         y_line = self.height() - 128
 
@@ -31,69 +31,40 @@ class TimelineCanvas(QWidget):
         painter.setPen(QPen(Qt.black, 2))
         painter.drawLine(0, y_line, w, y_line)
 
-        # Récupérer l’offset
         offset = self.interaction.get_offset_x()
         spacing = self.interaction.get_spacing()
-        radius = 6
         font = QFont("Arial", 10)
         painter.setFont(font)
 
-        # Point de référence = mois actuel
-        today = datetime.today()
-        current_month = datetime(today.year, today.month, 1)
-        total_months = (w // spacing) + 4
-
-        # --- TRAIT ORANGE POUR AUJOURD'HUI ---
+        # Trait orange pour aujourd'hui
         today = datetime.today()
         x_today = self.get_x_for_date(today)
-
         painter.setPen(QPen(QColor("#EC831E"), 2))
         painter.drawLine(x_today, 0, x_today, self.height())
 
-
-        # ✅ 1. D'abord afficher les notes
-        for date_str in self.note_index.keys():
+        # Affichage des notes
+        for date_str in self.data_loader.note_index.keys():
             try:
                 date_obj = datetime.strptime(date_str, "%Y-%m-%d")
                 x = self.get_x_for_date(date_obj)
-                notes = self.get_notes_for_date(date_obj)
+                notes = self.data_loader.get_notes_for_date(date_obj)
 
-                note_items = []
+                note_items = [TimelineNoteItem(x, y_line, idx, self.interaction.get_zoom_level())
+                              for idx, note in reversed(list(enumerate(notes)))]
 
-                for idx, note in reversed(list(enumerate(notes))):
-                    note_item = TimelineNoteItem(x, y_line, idx, self.interaction.get_zoom_level())
-                    note_items.append(note_item)
-
-                # 1. Dessiner les lignes
                 for item in note_items:
                     item.draw_line(painter)
-
-                # 2. Dessiner les points
                 for item in note_items:
                     item.draw_point(painter)
-
-
 
             except Exception as e:
                 print(f"Erreur affichage note : {e}")
 
-        # ✅ 2. Ensuite dessiner les mois par-dessus
+        # Affichage des mois
         for i, date in self.visible_months.items():
             x = center_x + i * spacing + offset
-
-            painter.setPen(QPen(Qt.black, 2))
-            painter.setBrush(Qt.white)
-            painter.drawEllipse(QPoint(x, y_line), radius, radius)
-
-            label = date.strftime("%b %Y")
-            text_rect = QRect(x - 40, y_line + 12, 80, 20)
-            painter.drawText(text_rect, Qt.AlignCenter, label)
-
-            for j in range(1, 4):
-                sub_x = x + j * spacing // 4
-                painter.setPen(QPen(Qt.gray, 1))
-                painter.drawLine(sub_x, y_line - 10, sub_x, y_line + 10)
-
+            item = TimelineMonthItem(x, date, y_line, spacing)
+            item.draw(painter)
 
     def get_x_for_date(self, target_date):
         today = datetime.today()
@@ -101,23 +72,25 @@ class TimelineCanvas(QWidget):
         delta_days = (target_date - base_date).days
 
         spacing = self.interaction.get_spacing()
-        pixels_per_day = spacing / 30  # approx
+        pixels_per_day = spacing / 30
         center_x = self.width() // 2
         offset = self.interaction.get_offset_x()
 
         return center_x + delta_days * pixels_per_day + offset
 
-    def mousePressEvent(self, event):
-        self.interaction.mousePressEvent(event)
+    def get_date_for_x(self, x_pos):
+        today = datetime.today()
+        base_date = datetime(today.year, today.month, 1)
 
-    def mouseMoveEvent(self, event):
-        self.interaction.mouseMoveEvent(event)
+        spacing = self.interaction.get_spacing()
+        pixels_per_day = spacing / 30
+        center_x = self.width() // 2
+        offset = self.interaction.get_offset_x()
 
-    def mouseReleaseEvent(self, event):
-        self.interaction.mouseReleaseEvent(event)
+        delta_px = x_pos - center_x - offset
+        delta_days = delta_px / pixels_per_day
 
-    def wheelEvent(self, event):
-        self.interaction.wheelEvent(event)
+        return base_date + timedelta(days=delta_days)
 
     def update_visible_months(self):
         w = self.width()
@@ -140,42 +113,14 @@ class TimelineCanvas(QWidget):
             elif i in self.visible_months:
                 del self.visible_months[i]
 
-    def load_note_index(self):
-        index_path = Path("data/timeline/note_index_by_date.json")
-        if not index_path.exists():
-            print("❌ Fichier d'index de notes introuvable")
-            return {}
-        with open(index_path, "r", encoding="utf-8") as f:
-            return json.load(f)
+    def mousePressEvent(self, event):
+        self.interaction.mousePressEvent(event)
 
-    def get_notes_for_date(self, date_obj):
-        date_str = date_obj.strftime("%Y-%m-%d")
-        note_ids = self.note_index.get(date_str, [])
-        notes = []
-        for note_id in note_ids:
-            if note_id in self.note_cache:
-                notes.append(self.note_cache[note_id])
-            else:
-                try:
-                    with open(f"data/notes/{note_id}.json", "r", encoding="utf-8") as f:
-                        note_data = json.load(f)
-                        self.note_cache[note_id] = note_data
-                        notes.append(note_data)
-                except Exception as e:
-                    print(f"❌ Note manquante : {note_id}")
-        return notes
-    
-    def get_date_for_x(self, x_pos):
-        today = datetime.today()
-        base_date = datetime(today.year, today.month, 1)
+    def mouseMoveEvent(self, event):
+        self.interaction.mouseMoveEvent(event)
 
-        spacing = self.interaction.get_spacing()
-        pixels_per_day = spacing / 30
-        center_x = self.width() // 2
-        offset = self.interaction.get_offset_x()
+    def mouseReleaseEvent(self, event):
+        self.interaction.mouseReleaseEvent(event)
 
-        # Calcul du nombre de jours depuis base_date
-        delta_px = x_pos - center_x - offset
-        delta_days = delta_px / pixels_per_day
-
-        return base_date + timedelta(days=delta_days)
+    def wheelEvent(self, event):
+        self.interaction.wheelEvent(event)

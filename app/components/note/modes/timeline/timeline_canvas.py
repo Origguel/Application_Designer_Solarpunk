@@ -9,14 +9,19 @@ from .timeline_interaction import TimelineInteraction
 from .timeline_note_item import TimelineNoteItem
 from .timeline_month_item import TimelineMonthItem
 from .timeline_data_loader import TimelineDataLoader
+from .timeline_note_hover import TimelineNoteHoverHandler
 
 class TimelineCanvas(QWidget):
     def __init__(self, parent=None):
+        self.visible_note_items = []
+        self.note_items_by_date = {}
         super().__init__(parent)
+        self.setMouseTracking(True)
         self.setMinimumHeight(200)
         self.interaction = TimelineInteraction(self)
         self.visible_months = {}  # Clé = index relatif au mois actuel, valeur = datetime
         self.data_loader = TimelineDataLoader()
+        self.hover_handler = TimelineNoteHoverHandler(self)
 
     def paintEvent(self, event):
         self.update_visible_months()
@@ -42,6 +47,10 @@ class TimelineCanvas(QWidget):
         painter.setPen(QPen(QColor("#EC831E"), 2))
         painter.drawLine(x_today, 0, x_today, self.height())
 
+        self.hover_handler.clear_items()
+        self.note_items_by_date.clear()
+
+
         # Affichage des notes
         for date_str in self.data_loader.note_index.keys():
             try:
@@ -49,16 +58,26 @@ class TimelineCanvas(QWidget):
                 x = self.get_x_for_date(date_obj)
                 notes = self.data_loader.get_notes_for_date(date_obj)
 
-                note_items = [TimelineNoteItem(x, y_line, idx, self.interaction.get_zoom_level())
-                              for idx, note in reversed(list(enumerate(notes)))]
+                if date_str not in self.note_items_by_date:
+                    note_items = [
+                        TimelineNoteItem(x, y_line, idx, self.interaction.get_zoom_level(), canvas=self, note_id=note["id"])
+                        for idx, note in reversed(list(enumerate(notes)))
+                    ]
+                    self.note_items_by_date[date_str] = note_items  # 🟢 C'était ça qu’il manquait !
+
+
+
+                note_items = self.note_items_by_date[date_str]
 
                 for item in note_items:
                     item.draw_line(painter)
                 for item in note_items:
                     item.draw_point(painter)
+                    self.hover_handler.register_item(item)
 
             except Exception as e:
                 print(f"Erreur affichage note : {e}")
+
 
         # Affichage des mois
         for i, date in self.visible_months.items():
@@ -114,9 +133,15 @@ class TimelineCanvas(QWidget):
                 del self.visible_months[i]
 
     def mousePressEvent(self, event):
+        if self.hover_handler.handle_click(event.pos()):
+            return
         self.interaction.mousePressEvent(event)
 
     def mouseMoveEvent(self, event):
+        print(f"🧭 mouseMoveEvent pos=({event.pos().x()}, {event.pos().y()})")
+        if self.hover_handler.handle_hover(event.pos()):
+            self.update()
+            return
         self.interaction.mouseMoveEvent(event)
 
     def mouseReleaseEvent(self, event):

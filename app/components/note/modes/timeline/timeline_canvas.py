@@ -159,3 +159,18 @@ class TimelineCanvas(QWidget):
                 except Exception as e:
                     print(f"❌ Note manquante : {note_id}")
         return notes
+    
+    def get_date_for_x(self, x_pos):
+        today = datetime.today()
+        base_date = datetime(today.year, today.month, 1)
+
+        spacing = self.interaction.get_spacing()
+        pixels_per_day = spacing / 30
+        center_x = self.width() // 2
+        offset = self.interaction.get_offset_x()
+
+        # Calcul du nombre de jours depuis base_date
+        delta_px = x_pos - center_x - offset
+        delta_days = delta_px / pixels_per_day
+
+        return base_date + timedelta(days=delta_days)

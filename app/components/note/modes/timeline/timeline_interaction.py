@@ -35,16 +35,23 @@ class TimelineInteraction:
         new_zoom = self.zoom_level * zoom_factor
 
         if self.min_zoom <= new_zoom <= self.max_zoom:
+            # 1. Calculer la date visible actuellement au centre
+            center_px = self.canvas.width() // 2
+            center_date = self.canvas.get_date_for_x(center_px)
+
+            # 2. Zoom effectif
             old_spacing = self.get_spacing()
             self.zoom_level = new_zoom
             new_spacing = self.get_spacing()
 
-            mouse_x = event.position().x()
-            center_x = self.canvas.width() / 2
-            delta_offset = (mouse_x - center_x) * (new_spacing - old_spacing) / old_spacing
-            self.offset_x -= delta_offset
+            # 3. Calculer la nouvelle position de cette même date après zoom
+            new_center_px = self.canvas.get_x_for_date(center_date)
+
+            # 4. Ajuster l'offset pour que la date reste centrée
+            self.offset_x -= (new_center_px - center_px)
 
             self.canvas.update()
+
 
     def get_offset_x(self):
         return self.offset_x

@@ -1,5 +1,5 @@
 from PySide6.QtWidgets import QWidget
-from PySide6.QtGui import QPainter, QPen, QFont
+from PySide6.QtGui import QPainter, QPen, QFont, QColor
 from PySide6.QtCore import Qt, QPoint, QRect
 from datetime import datetime, timedelta
 from pathlib import Path
@@ -42,6 +42,14 @@ class TimelineCanvas(QWidget):
         current_month = datetime(today.year, today.month, 1)
         total_months = (w // spacing) + 4
 
+        # --- TRAIT ORANGE POUR AUJOURD'HUI ---
+        today = datetime.today()
+        x_today = self.get_x_for_date(today)
+
+        painter.setPen(QPen(QColor("#EC831E"), 2))
+        painter.drawLine(x_today, 0, x_today, self.height())
+
+
         # ✅ 1. D'abord afficher les notes
         for date_str in self.note_index.keys():
             try:
@@ -68,7 +76,7 @@ class TimelineCanvas(QWidget):
         for i, date in self.visible_months.items():
             x = center_x + i * spacing + offset
 
-            painter.setPen(QPen(Qt.darkBlue, 2))
+            painter.setPen(QPen(Qt.black, 2))
             painter.setBrush(Qt.white)
             painter.drawEllipse(QPoint(x, y_line), radius, radius)
 

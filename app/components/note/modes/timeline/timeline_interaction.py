@@ -10,7 +10,7 @@ class TimelineInteraction:
 
         self.zoom_level = 1.0
         self.min_zoom = 0.65  # ≈ 2 ans
-        self.max_zoom = 8.0   # ≈ 2 semaines
+        self.max_zoom = 10.0   # ≈ 2 semaines
         self.base_spacing = 120  # espace entre mois à zoom 1.0
 
     def mousePressEvent(self, event):

@@ -57,10 +57,12 @@ class TimelineCanvas(QWidget):
                 x = self.get_x_for_date(date_obj)
                 notes = self.get_notes_for_date(date_obj)
 
+                note_draw_data = []
+
                 for idx, note in reversed(list(enumerate(notes))):
                     zoom = self.interaction.get_zoom_level()
 
-                    # Taille dynamique de la hauteur de ligne (entre 30 et 120)
+                    # Taille dynamique de la hauteur de ligne (entre 30 et 200)
                     line_height = max(30, min(200, int(zoom * 60)))
 
                     # Espacement vertical dynamique entre les notes (entre 12 et 50)
@@ -70,15 +72,21 @@ class TimelineCanvas(QWidget):
                     note_top = y_line - line_height - offset_y
                     note_bottom = y_line
 
-                    # Rayon dynamique du point
                     radius = max(2, min(8, int(zoom * 2)))
 
-                    # Dessin
+                    # Stocker les données pour la 2e boucle
+                    note_draw_data.append((x, note_top, note_bottom, radius))
+
+                # 1. DESSIN DES LIGNES (FOND)
+                for x, note_top, note_bottom, _ in note_draw_data:
+                    painter.setPen(QPen(QColor("#B3B3B3"), 1))
+                    painter.drawLine(x, note_top, x, note_bottom)
+
+                # 2. DESSIN DES POINTS (DEVANT)
+                for x, note_top, _, radius in note_draw_data:
                     painter.setBrush(Qt.black)
                     painter.drawEllipse(QPoint(x, note_top), radius, radius)
 
-                    painter.setPen(QPen(QColor("#B3B3B3"), 1))
-                    painter.drawLine(x, note_top, x, note_bottom)
 
 
             except Exception as e:

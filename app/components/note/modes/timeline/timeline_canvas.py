@@ -6,6 +6,7 @@ from pathlib import Path
 import json
 
 from .timeline_interaction import TimelineInteraction
+from .timeline_note_item import TimelineNoteItem
 
 class TimelineCanvas(QWidget):
     def __init__(self, parent=None):
@@ -57,35 +58,19 @@ class TimelineCanvas(QWidget):
                 x = self.get_x_for_date(date_obj)
                 notes = self.get_notes_for_date(date_obj)
 
-                note_draw_data = []
+                note_items = []
 
                 for idx, note in reversed(list(enumerate(notes))):
-                    zoom = self.interaction.get_zoom_level()
+                    note_item = TimelineNoteItem(x, y_line, idx, self.interaction.get_zoom_level())
+                    note_items.append(note_item)
 
-                    # Taille dynamique de la hauteur de ligne (entre 30 et 200)
-                    line_height = max(30, min(200, int(zoom * 60)))
+                # 1. Dessiner les lignes
+                for item in note_items:
+                    item.draw_line(painter)
 
-                    # Espacement vertical dynamique entre les notes (entre 12 et 50)
-                    offset_step = max(12, min(50, int(zoom * 12)))
-                    offset_y = (idx + 1) * offset_step
-
-                    note_top = y_line - line_height - offset_y
-                    note_bottom = y_line
-
-                    radius = max(2, min(8, int(zoom * 2)))
-
-                    # Stocker les données pour la 2e boucle
-                    note_draw_data.append((x, note_top, note_bottom, radius))
-
-                # 1. DESSIN DES LIGNES (FOND)
-                for x, note_top, note_bottom, _ in note_draw_data:
-                    painter.setPen(QPen(QColor("#B3B3B3"), 1))
-                    painter.drawLine(x, note_top, x, note_bottom)
-
-                # 2. DESSIN DES POINTS (DEVANT)
-                for x, note_top, _, radius in note_draw_data:
-                    painter.setBrush(Qt.black)
-                    painter.drawEllipse(QPoint(x, note_top), radius, radius)
+                # 2. Dessiner les points
+                for item in note_items:
+                    item.draw_point(painter)
 
 
 

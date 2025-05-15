@@ -2,7 +2,7 @@
 
 from PySide6.QtWidgets import QWidget, QLabel, QPushButton, QTextEdit, QLineEdit, QVBoxLayout, QHBoxLayout, QComboBox
 from PySide6.QtCore import Qt, Signal
-from app.utils.note_creator import NoteCreator
+from app.components.note.note_creator import NoteCreator
 from datetime import datetime
 
 from app.utils.categorie_manager.category_tree_updater import CategoryTreeUpdater

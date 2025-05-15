@@ -4,7 +4,7 @@ from app.components.note.add_note_widget import AddNoteWidget
 from app.components.note.note_detail_widget import NoteDetailWidget
 from app.utils.categorie_manager.category_manager import CategoryManager
 from app.utils.categorie_manager.category_tree_updater import CategoryTreeUpdater
-from app.handlers.delete_note_handler import confirm_and_delete_note
+from app.components.note.delete_note_handler import confirm_and_delete_note
 
 def open_note_detail(self, note_id):
     note_path = Path(f"data/notes/{note_id}.json")

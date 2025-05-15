@@ -6,7 +6,7 @@ import random
 import json
 from pathlib import Path
 
-from app.components.note.graph.interactive_note_circle_item import InteractiveNoteCircleItem
+from app.components.note.modes.cluster.items.cluster_interactive_note_circle_item import InteractiveNoteCircleItem
 
 
 class NoteItem(QGraphicsItem):

@@ -6,8 +6,8 @@ from pathlib import Path
 import json
 
 from .timeline_interaction import TimelineInteraction
-from .timeline_note_item import TimelineNoteItem
-from .timeline_month_item import TimelineMonthItem
+from .items.timeline_note_item import TimelineNoteItem
+from .items.timeline_month_item import TimelineMonthItem
 from .timeline_data_loader import TimelineDataLoader
 
 class TimelineCanvas(QWidget):

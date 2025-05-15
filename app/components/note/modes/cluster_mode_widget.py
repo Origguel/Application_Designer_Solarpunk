@@ -7,10 +7,10 @@ import math
 import random
 from collections import defaultdict
 
-from app.utils.tree_graph_interaction import TreeGraphInteraction
-from app.components.note.graph.items.category_item import CategoryItem
-from app.components.note.graph.items.note_item import NoteItem
-from app.components.note.notes_camera_animation import animate_camera_to_center
+from app.components.note.modes.cluster.cluster_graph_interaction import TreeGraphInteraction
+from app.components.note.modes.cluster.items.cluster_category_item import CategoryItem
+from app.components.note.modes.cluster.items.cluster_note_item import NoteItem
+from app.components.note.modes.cluster.cluster_camera_animation import animate_camera_to_center
 
 
 class ClusterModeWidget(QGraphicsView):
@@ -205,7 +205,7 @@ class ClusterModeWidget(QGraphicsView):
                 return cat
 
         # 🔧 Si non trouvé : créer une nouvelle catégorie visuelle
-        from app.components.note.graph.items.category_item import CategoryItem
+        from app.components.note.modes.cluster.items.cluster_category_item import CategoryItem
 
         item = CategoryItem(
             name=keyword,

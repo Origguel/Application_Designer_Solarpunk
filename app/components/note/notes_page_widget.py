@@ -14,7 +14,7 @@ from app.components.note.notes_search_handler import (
     on_search_note,
     clear_search_highlights
 )
-from app.components.note.notes_camera_animation import animate_camera_to_center
+from app.components.note.modes.cluster.cluster_camera_animation import animate_camera_to_center
 
 from app.components.note.modes.cluster_mode_widget import ClusterModeWidget
 from app.components.note.modes.timeline_mode_widget import TimelineModeWidget

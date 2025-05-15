@@ -1,0 +1,149 @@
+Structure du projet:
+
+- .gitignore ()
+- Design Solarpunk.lnk (.lnk)
+- README.md (.md)
+[app/]
+  - _init_.py (.py)
+  [components/]
+    [buttons/]
+      - button_icon.py (.py)
+      - button_text.py (.py)
+    [dropdowns/]
+      - dropdown_default.py (.py)
+      - dropdown_legende.py (.py)
+      - dropdown_legende_delegate.py (.py)
+    [inputs/]
+      - input_default.py (.py)
+      - input_multiline.py (.py)
+    [note/]
+      - add_note_widget.py (.py)
+      - delete_note_handler.py (.py)
+      [modes/]
+        [cluster/]
+          - cluster_camera_animation.py (.py)
+          - cluster_clickable_ellipse.py (.py)
+          - cluster_graph_interaction.py (.py)
+          [items/]
+            - cluster_category_item.py (.py)
+            - cluster_interactive_note_circle_item.py (.py)
+            - cluster_note_item.py (.py)
+        - cluster_mode_widget.py (.py)
+        [theme/]
+        - theme_mode_widget.py (.py)
+        [timeline/]
+          [items/]
+            - timeline_month_item.py (.py)
+            - timeline_note_item.py (.py)
+          - timeline_canvas.py (.py)
+          - timeline_data_loader.py (.py)
+          - timeline_interaction.py (.py)
+        - timeline_mode_widget.py (.py)
+      - navigation_header_widget.py (.py)
+      - note_creator.py (.py)
+      - note_detail_widget.py (.py)
+      - notes_interactions.py (.py)
+      - notes_page_widget.py (.py)
+      - notes_search_handler.py (.py)
+      - notes_ui.py (.py)
+  [controllers/]
+    - home_controller.py (.py)
+    - notes_controller.py (.py)
+    - projects_controller.py (.py)
+    - statistics_controller.py (.py)
+  [models/]
+    - home_model.py (.py)
+    - notes_model.py (.py)
+    - projects_model.py (.py)
+    - statistics_model.py (.py)
+  [utils/]
+    [categorie_manager/]
+      - category_manager.py (.py)
+      - category_tree_updater.py (.py)
+      - tree_structure_generator.py (.py)
+    - inertial_drag_handler.py (.py)
+    - keyword_extractor.py (.py)
+    [layouts/]
+      - flow_layout.py (.py)
+  [views/]
+    - notes_view.py (.py)
+    - projects_view.py (.py)
+    - statistics_view.py (.py)
+[assets/]
+  [icons/]
+    - Photo.svg (.svg)
+    - add.svg (.svg)
+    - arrow_big_Down.svg (.svg)
+    - arrow_big_Left.svg (.svg)
+    - arrow_big_Right.svg (.svg)
+    - arrow_big_Up.svg (.svg)
+    - arrow_small.svg (.svg)
+    - calendar.svg (.svg)
+    - cluster.svg (.svg)
+    - link.svg (.svg)
+    - logo.ico (.ico)
+    - menu.svg (.svg)
+    - move.svg (.svg)
+    - parameter.svg (.svg)
+    - plus.svg (.svg)
+    - resize.svg (.svg)
+    - search.svg (.svg)
+    - theme.svg (.svg)
+    - timeline.svg (.svg)
+    - trash.svg (.svg)
+    - zoom.svg (.svg)
+  [img/]
+    [home_background/]
+      - graph_note.png (.png)
+      - solarpunk.png (.png)
+  [keyword/]
+    - termes_interdits.json (.json)
+[config/]
+  - config.py (.py)
+  - constants.py (.py)
+- custom_splash.py (.py)
+[data/]
+  [categories/]
+    - all_categories.json (.json)
+    - category_tree.json (.json)
+    - link_categories.json (.json)
+  [notes/]
+    - note_0001.json (.json)
+    - [...]
+    - note_0219.json (.json)
+  - notes_designer_corrigé_210.json (.json)
+  [projets/]
+    [Photos/]
+      [projet_0001/]
+        - 0001.png (.png)
+        - 0002.png (.png)
+        - 0003.png (.png)
+    - projet_0001.json (.json)
+    - projet_0002.json (.json)
+    - projet_0003.json (.json)
+    - projet_0004.json (.json)
+    - projet_0005.json (.json)
+    - projet_0006.json (.json)
+    - projet_0007.json (.json)
+  - split_notes_to_files.py (.py)
+  [timeline/]
+    - note_index_by_date.json (.json)
+- generate_project_structure.py (.py)
+- launch_debug.ps1 (.ps1)
+- launch_invisible.ps1 (.ps1)
+- launch_terminal.bat (.bat)
+- launcher.bat (.bat)
+- main.py (.py)
+- requirements.txt (.txt)
+- setup_venv.bat (.bat)
+[styles/]
+  - button.qss (.qss)
+  - default.qss (.qss)
+  - dropdown.qss (.qss)
+  - input.qss (.qss)
+[tests/]
+  - generate_interdits_candidates.py (.py)
+  - generate_timeline_note.py (.py)
+  - rebuild_categories_and_tree.py (.py)
+  - test_category_tree_updater.py (.py)
+  - update_keywords_for_all_notes.py (.py)

@@ -1,5 +1,5 @@
 from PySide6.QtWidgets import QWidget, QFrame, QLabel
-from PySide6.QtCore import Qt, QPointF
+from PySide6.QtCore import Qt, QPointF, Signal, QObject
 import json
 from pathlib import Path
 
@@ -17,38 +17,51 @@ from app.utils.categorie_manager.category_manager import CategoryManager
 from app.components.note.delete_note_handler import confirm_and_delete_note
 from app.utils.categorie_manager.category_tree_updater import CategoryTreeUpdater
 from app.components.note.note_detail_widget import NoteDetailWidget
+from app.components.note.note_creator import NoteCreator
 
 
 class NotesPageWidget(QWidget):
+    note_created = Signal(str, list)  # ✅ ID de la note + liste de mots-clés
+    cancelled = Signal()
+
     def __init__(self):
         super().__init__()
 
-        # UI Variable
+        # UI State variables
         self.searchbar_visible = False
         self.addnote_visible = False
         self.cluster_visible = True
         self.timeline_visible = False
         self.theme_visible = False
-        
         self.is_camera_animating = False
+
+        # Container principal
         self.visualization_container = QFrame(self)
         self.visualization_container.setGeometry(0, 0, self.width(), self.height())
-        self.visualization_container.lower()  # reste derrière les autres UI
+        self.visualization_container.lower()  # Doit rester en fond
+
+        self.note_created.connect(self.add_note_visually)
+
+        # Créer le cluster widget une seule fois
+        self.graph_widget = ClusterModeWidget(self, self.visualization_container)
+
+        # Setup UI général (sauf graph_widget qui est déjà instancié)
         setup_ui(self, note_id="note_0001")
 
+        # Widgets de visualisation par mode
         self.visualization_widgets = {
-            "cluster": self.graph_widget,  # déjà instancié par setup_ui
-            "timeline": None,              # à instancier plus tard
-            "theme": None                  # à instancier plus tard
+            "cluster": self.graph_widget,
+            "timeline": TimelineModeWidget(self.visualization_container),
+            "theme": ThemeModeWidget(self.visualization_container)
         }
+
+        # Mode courant
         self.current_mode = "cluster"
-
-        self.visualization_widgets["cluster"] = ClusterModeWidget(self, self.visualization_container)
-        self.visualization_widgets["timeline"] = TimelineModeWidget(self.visualization_container)
-        self.visualization_widgets["theme"] = ThemeModeWidget(self.visualization_container)
-
         self.switch_note_mode("cluster")
         self.toggle_cluster()
+
+
+        
 
 
     def resizeEvent(self, event):
@@ -224,4 +237,55 @@ class NotesPageWidget(QWidget):
         updater.add_note(note_id, keywords)
         self.graph_widget.add_note_live(note_id, keywords)
         print(f"✨ Note ajoutée visuellement dans le graphe : {note_id}")
-        self.close_add_note_widget()
+
+    def validate_and_save_note(self):
+        title = self.title_input.text().strip()
+        date = self.date_input.text().strip()
+        project = self.project_selector.currentText().strip()
+        description = self.description_input.toPlainText().strip()
+        contenu = self.contenu_input.toPlainText().strip()
+        type_note = self.selected_note_type
+
+        if not title or not date or not project or not description or not type_note or not contenu:
+            print("❗ Tous les champs obligatoires ne sont pas remplis.")
+            return
+
+        note_data = NoteCreator.create_note(
+            title=title,
+            date_str=date,
+            note_type=type_note,
+            project=project,
+            description=description,
+            contenu=contenu
+        )
+
+        self.clear_fields()
+        self.note_created.emit(note_data["id"], note_data["keywords"])
+        self.cancelled.emit()
+        print("Note created")
+
+
+    def set_note_type(self, note_type):
+        self.selected_note_type = note_type
+        print(f"📝 Type de note sélectionné : {note_type}")
+
+        all_buttons = [
+            self.notetype_text, self.notetype_image, self.notetype_vidéo,
+            self.notetype_doc, self.notetype_lien, self.notetype_code,
+            self.notetype_dessin, self.notetype_son
+        ]
+        for btn in all_buttons:
+            btn.setObjectName("Button_Default")
+            btn.style().unpolish(btn)
+            btn.style().polish(btn)
+
+        selected_button = getattr(self, f"notetype_{note_type}", None)
+        if selected_button:
+            selected_button.setObjectName("Button_Default_Selected")
+            selected_button.style().unpolish(selected_button)
+            selected_button.style().polish(selected_button)
+
+    def clear_fields(self):
+        self.title_input.clear()
+        self.description_input.clear()
+        self.contenu_input.clear()

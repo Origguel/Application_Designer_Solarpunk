@@ -9,6 +9,8 @@ if TERMS_PATH.exists():
 else:
     termes_interdits = set()
 
+_nlp_model = None
+
 def get_nlp():
     global _nlp_model
     if _nlp_model is None:

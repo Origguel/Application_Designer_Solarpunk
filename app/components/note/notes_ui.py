@@ -13,9 +13,6 @@ from app.components.dropdowns.dropdown_default import Dropdown_Default
 
 
 def setup_ui(self, note_id):
-    self.graph_widget = ClusterModeWidget(self.visualization_container)
-    self.graph_widget.setGeometry(0, 0, self.width(), self.height())
-
     self.overlay = QWidget(self)
     self.overlay.setStyleSheet("background-color: rgba(255, 255, 255, 180);")
     self.overlay.hide()
@@ -98,7 +95,7 @@ def setup_ui(self, note_id):
 
 
     # Contenu du add note widget
-    self.name_input = Input_Default(placeholder="Nom de la note", x=370, parent=self)
+    self.title_input = Input_Default(placeholder="Nom de la note", x=370, parent=self)
     self.description_input = Input_Multiline(placeholder="Description rapide de la note", x=370, y=64, parent=self)
 
     self.date_input = Input_Default(placeholder="Date de création de la note", x=218)
@@ -123,7 +120,7 @@ def setup_ui(self, note_id):
     addnote_part1_1_layout = QVBoxLayout(self.addnote_part1_1)
     addnote_part1_1_layout.setSpacing(6)
     addnote_part1_1_layout.setContentsMargins(0, 0, 0, 0)
-    addnote_part1_1_layout.addWidget(self.name_input)
+    addnote_part1_1_layout.addWidget(self.title_input)
     addnote_part1_1_layout.addWidget(self.description_input)
 
     # Add note Widget part1_2 date projet
@@ -154,6 +151,16 @@ def setup_ui(self, note_id):
         row = index // 4 
         col = index % 4
         addnote_part1_2_nt_layout.addWidget(widget, row, col)
+    self.selected_note_type = None
+    self.notetype_text.clicked.connect(lambda: self.set_note_type("text"))
+    self.notetype_image.clicked.connect(lambda: self.set_note_type("image"))
+    self.notetype_vidéo.clicked.connect(lambda: self.set_note_type("video"))
+    self.notetype_doc.clicked.connect(lambda: self.set_note_type("doc"))
+    self.notetype_lien.clicked.connect(lambda: self.set_note_type("lien"))
+    self.notetype_code.clicked.connect(lambda: self.set_note_type("code"))
+    self.notetype_dessin.clicked.connect(lambda: self.set_note_type("dessin"))
+    self.notetype_son.clicked.connect(lambda: self.set_note_type("son"))
+
 
     # Add note Widget part1_2 date projet type
     self.addnote_part1_2 = QWidget(self)
@@ -178,6 +185,8 @@ def setup_ui(self, note_id):
     addnote_part2_layout.setContentsMargins(0, 0, 0, 0)
     addnote_part2_layout.addWidget(self.contenu_input)
     addnote_part2_layout.addWidget(self.createnote_button, alignment=Qt.AlignRight)
+    self.createnote_button.clicked.connect(self.validate_and_save_note)
+
     
     # Add note Widget
     self.addnote = QWidget(self)

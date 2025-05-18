@@ -17,6 +17,7 @@ class ClusterModeWidget(QGraphicsView):
     def __init__(self, notes_view, parent=None):
         super().__init__(parent)
         self.setObjectName("ClusterModeWidget")
+
         self.notes_view = notes_view
 
         self.interaction = TreeGraphInteraction(self)
@@ -189,7 +190,7 @@ class ClusterModeWidget(QGraphicsView):
                 note_id=note_id,
                 parent_ref=category_item,
                 scene=self.scene,
-                notes_view=self.parent(),
+                notes_view=self.notes_view,
                 angle_hint=random.uniform(0, 2 * math.pi)
             )
             category_item.note_items.append(note_item)

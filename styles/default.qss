@@ -2,10 +2,10 @@
 
 /* 🌎 Style global */
 QWidget {
-    background-color: #FFFFFF;
+    background-color: #FCF7F3;
     color: #2B2B2B;
     font-family: 'Arial';
-    font-size: 10pt;
+    font-size: 12pt;
 }
 
 

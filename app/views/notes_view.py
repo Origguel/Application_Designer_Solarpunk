@@ -39,20 +39,20 @@ class NotesView(QMainWindow):
 
         # === Navigation header personnalisé ===
         self.navbar = NavigationHeader(parent=self, on_nav_callback=self.navigate_to_section)
-        self.navbar.resize(400, 48)
-        self.navbar.move(self.width() - 416, 16)
+        self.navbar.resize(297, 32)
+        self.navbar.move(self.width() - 297, 16)
         self.navbar.raise_()
-        self.navbar.highlight("NOTES")
 
         self.showMaximized()
         self.stack_layout.setCurrentWidget(self.notes_page)
+        self.navbar.highlight("Notes")
 
     def navigate_to_section(self, label):
-        if label == "NOTES":
+        if label == "Notes":
             self.stack_layout.setCurrentWidget(self.notes_page)
-        elif label == "PROJETS":
+        elif label == "Projets":
             self.stack_layout.setCurrentWidget(self.projects_page)
-        elif label == "STATISTIQUES":
+        elif label == "Statistiques":
             self.stack_layout.setCurrentWidget(self.statistics_page)
 
         self.navbar.highlight(label)

@@ -1,30 +1,34 @@
-from PySide6.QtWidgets import QWidget, QPushButton, QHBoxLayout
-from PySide6.QtCore import QSize, Qt
+from PySide6.QtWidgets import QWidget, QHBoxLayout
+from PySide6.QtCore import Qt
+
+from app.components.buttons.button_text import ButtonText
+
 
 class NavigationHeader(QWidget):
     def __init__(self, parent=None, on_nav_callback=None):
         super().__init__(parent)
         self.setObjectName("NavigationHeader")
-
-        self.buttons = {}
         self.on_nav_callback = on_nav_callback
 
+        self.buttons = {}
 
         layout = QHBoxLayout(self)
         layout.setContentsMargins(0, 0, 0, 0)
-        layout.setSpacing(12)
+        layout.setSpacing(6)
         layout.setAlignment(Qt.AlignRight | Qt.AlignTop)
-        
 
-        sections = ["SOLARPUNK", "STATISTIQUES", "PROJETS", "NOTES"]
-        for section in sections:
-            button = QPushButton(section)
-            button.setObjectName(f"NavButton_{section}")
-            button.setCursor(Qt.PointingHandCursor)
-            button.setFlat(True)
-            button.clicked.connect(lambda checked, s=section: self.handle_click(s))
+        sections = [
+            ("Solarpunk", 78),
+            ("Statistiques", 87),
+            ("Projets", 61),
+            ("Notes", 53)
+        ]
+
+        for label, width in sections:
+            button = ButtonText(label, x=width, parent=self)
+            button.clicked.connect(lambda _, s=label: self.handle_click(s))
             layout.addWidget(button)
-            self.buttons[section] = button
+            self.buttons[label] = button
 
         self.setLayout(layout)
         self.setFixedHeight(48)
@@ -36,6 +40,10 @@ class NavigationHeader(QWidget):
     def highlight(self, section):
         for name, button in self.buttons.items():
             if name == section:
-                button.setStyleSheet("font-weight: bold; text-decoration: underline;")
+                button.setObjectName("Button_Default_Selected")
             else:
-                button.setStyleSheet("font-weight: normal; text-decoration: none;")
+                button.setObjectName("Button_Default")
+
+            button.style().unpolish(button)
+            button.style().polish(button)
+            button.update()

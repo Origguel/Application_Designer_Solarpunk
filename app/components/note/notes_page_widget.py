@@ -55,7 +55,7 @@ class NotesPageWidget(QWidget):
 
         self.leftbar.move(16, 16)
 
-        self.search_input.move(58, 16)
+        self.search_input.move(54, 16)
         if self.overlay.isVisible():
             self.overlay.setGeometry(0, 0, self.width(), self.height())
 

@@ -75,31 +75,15 @@ def setup_ui(self):
     leftbar_layout.addWidget(line2, alignment=Qt.AlignHCenter)
     leftbar_layout.addWidget(self.calender_button)
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-    self.search_input = Input_Default(
-        placeholder="Rechercher une note...",
-        x=400, y=36,
-        text_position="center-left",
-        parent=self
-    )
+    # Search bar
+    self.search_input = Input_Default(placeholder="Rechercher une note", x=230, parent=self)
     self.search_input.raise_()
     self.search_input.textChanged.connect(self.on_search_note)
 
+    # Add note widget
     self.add_note_widget = None
 
-    # Positionner dynamiquement le détail de note sur la gauche (dans open_note_detail)
+    # Note Detail
     self.note_detail_left_margin = 16  # à droite de la toolbar et search input
     self.note_detail_top_margin = 16 + self.toolbar.height() + 6
     self.note_detail_widget = None

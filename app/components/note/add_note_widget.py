@@ -39,9 +39,9 @@ class AddNoteWidget(QWidget):
         self.left_layout.setSpacing(12)
 
 
-        self.title_input = Input_Default(placeholder="Titre de la note", x=True, y=36)
+        self.title_input = Input_Default(placeholder="Titre de la note")
 
-        self.date_input = Input_Default(placeholder="Date de création de la note", x=True, y=36)
+        self.date_input = Input_Default(placeholder="Date de création de la note")
         today = datetime.now().strftime("%d/%m/%Y")
         self.date_input.setText(today)
 

@@ -3,7 +3,6 @@
 QLineEdit, #Input_Multiline {
     background-color: #FFFFFF;
     color: #2B2B2B;
-    border: 1px solid #2B2B2B;
     border-radius: 6px;
     padding: 12px 10px;
     font-size: 14px;
@@ -14,11 +13,10 @@ QLineEdit::placeholder {
     font-style: italic;
 }
 
-QLineEdit:focus , #Input_Multiline:focus {
-    border: 1px solid #2B2B2B;
-}
 
-
-#Input_Default {
-    border: 1px solid #CCCCCC;
+#Input_Research {
+    background-color: #EC831E;
+    color: #FCF7F3;
+    border-radius: 6px;
+    font-size: 12px;
 }

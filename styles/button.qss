@@ -28,3 +28,14 @@
     border-radius: 6px;
     font-size: 12px;
 }
+
+#Button_Orange {
+    background-color: #EC831E;
+    color: #FCF7F3;
+    border-radius: 6px;
+}
+
+#Button_Orange:hover {
+    background-color: #F4B67C;
+    color: #2B2B2B;
+}

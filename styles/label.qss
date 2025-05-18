@@ -1,6 +1,32 @@
 
-#Label_Default {
+#Label_Default, #H1, #H2, #Text, #Text_Small, #Sous_Text {
     background-color: #EC831E;
     color: #FCF7F3;
+    font-family: Arial, Helvetica, sans-serif;
+}
+
+#H1 {
+    font-size: 24px;
+    font-weight: bold;
+    line-height: 1;
+}
+
+#H2 {
+    font-size: 14px;
+    font-weight: bold;
+}
+
+#Text {
+    font-size: 14px;
+    font-weight: medium;
+}
+
+#Text_Small {
     font-size: 12px;
+    font-weight: medium;
+}
+
+#Sous_Text {
+    font-size: 12px;
+    font-weight: lighter;
 }

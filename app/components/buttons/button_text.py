@@ -2,7 +2,7 @@ from PySide6.QtWidgets import QPushButton, QSizePolicy
 from PySide6.QtCore import Qt
 
 class ButtonText(QPushButton):
-    def __init__(self, text="+", x=36, y=36, style="Button_Primary", parent=None):
+    def __init__(self, text="+", x=32, y=32, style="Button_Default", parent=None):
         super().__init__(parent)
         self.setText(text)
         self.setObjectName(style)

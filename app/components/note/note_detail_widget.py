@@ -13,7 +13,7 @@ class NoteDetailWidget(QFrame):
         self.setObjectName("NoteDetailWidget")
         layout = QVBoxLayout(self)
 
-        self.close_button = ButtonIcon(icon_name="arrow_big_Left", style="Button_Secondary_Icon", parent=self)
+        self.close_button = ButtonIcon(icon_name="arrow_big_Left", parent=self)
         self.close_button.move(460 - 30 - 3, 3)
         self.close_button.clicked.connect(self.close_detail)
         

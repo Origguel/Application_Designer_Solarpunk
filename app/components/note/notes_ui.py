@@ -25,9 +25,9 @@ def setup_ui(self):
     toolbar_layout.setContentsMargins(3, 3, 3, 3)
     toolbar_layout.setSpacing(4)
     # Toolbar Buttons
-    self.plus_button = ButtonIcon("add", style="Button_Secondary_Icon", parent=self.toolbar)
-    self.resetview_button = ButtonIcon("resize", style="Button_Secondary_Icon", parent=self.toolbar)
-    self.delete_button = ButtonIcon("trash", style="Button_Delete_Icon", parent=self.toolbar)
+    self.plus_button = ButtonIcon("add", parent=self.toolbar)
+    self.resetview_button = ButtonIcon("resize", parent=self.toolbar)
+    self.delete_button = ButtonIcon("trash", parent=self.toolbar)
 
     toolbar_layout.addWidget(self.plus_button)
     toolbar_layout.addWidget(self.resetview_button)
@@ -64,9 +64,9 @@ def setup_ui(self):
     note_mode_layout.setContentsMargins(3, 3, 3, 3)
     note_mode_layout.setSpacing(4)
 
-    self.note_mode_cluster = ButtonIcon("cluster", style="Button_Secondary_Icon", parent=self.note_mode)
-    self.note_mode_timeline = ButtonIcon("timeline", style="Button_Secondary_Icon", parent=self.note_mode)
-    self.note_mode_theme = ButtonIcon("theme", style="Button_Secondary_Icon", parent=self.note_mode)
+    self.note_mode_cluster = ButtonIcon("cluster", parent=self.note_mode)
+    self.note_mode_timeline = ButtonIcon("timeline", parent=self.note_mode)
+    self.note_mode_theme = ButtonIcon("theme", parent=self.note_mode)
 
     note_mode_layout.addWidget(self.note_mode_cluster)
     note_mode_layout.addWidget(self.note_mode_timeline)

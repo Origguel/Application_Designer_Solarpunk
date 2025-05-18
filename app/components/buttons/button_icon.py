@@ -4,10 +4,10 @@ from PySide6.QtCore import Qt, QSize
 import os
 
 class ButtonIcon(QPushButton):
-    def __init__(self, icon_name="add", x=30, y=30, style="Button_Secondary_Icon", parent=None):
+    def __init__(self, icon_name="add", style="Button_Default", parent=None):
         super().__init__(parent)
 
-        self.setFixedSize(x, y)
+        self.setFixedSize(32, 32)
         self.setObjectName(style)
         self.setCursor(Qt.PointingHandCursor)
 
@@ -15,6 +15,6 @@ class ButtonIcon(QPushButton):
 
         if os.path.exists(icon_path):
             self.setIcon(QIcon(icon_path))
-            self.setIconSize(QSize(x - 8, y - 8))  # Marges internes
+            self.setIconSize(QSize(24, 24))
         else:
             print(f"[ButtonIcon] ❌ Fichier icône introuvable : {icon_path}")

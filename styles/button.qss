@@ -1,57 +1,17 @@
-#Button_Primary {
-    background-color: #EC831E; /* Orange */
-    color: #FFFFFF;
-    border: none;
+
+#Button_Default {
+    background-color: #FCF7F3;
+    color: #2B2B2B;
     border-radius: 6px;
-    padding: 2px 2px;
-    font-size: 14px;
+    font-size: 12px;
 }
 
-/* Hover pour Valider */
-#Button_Primary:hover {
-    background-color: #9C520C; /* Orange foncé */
-    color: #FFFFFF;
-}
-
-
-
-/* 🆗 Style pour Annuler */
-#Button_Secondary, #Button_Delete {
-    background-color: #FFFFFF; /* Blanc */
-    color: #2B2B2B; /* Noir */
-    border: 1px solid #2B2B2B;
-    border-radius: 6px;
-    padding: 2px 2px;
-    font-size: 14px;
-}
-
-/* Hover pour Annuler */
-#Button_Secondary:hover {
-    background-color: #DDDDDD; /* Gris clair */
+#Button_Default:hover {
+    background-color: #DBDBDB;
     color: #2B2B2B;
 }
 
-/* Hover pour - */
-#Button_Delete:hover {
-    background-color: #FFCCCA;
-    color: #ffffff;
-}
-
-
-
-
-#Button_Secondary_Icon , #Button_Delete_Icon {
-    background-color: #FFFFFF;
-    color: #2B2B2B;
-    border-radius: 3px;
-    padding: 2px 2px;
-}
-
-#Button_Secondary_Icon:hover {
-    background-color: #DDDDDD;
-}
-
-#Button_Delete_Icon:hover {
-    background-color: #FFCCCA;
-    color: #ffffff;
+#Button_Default_Selected {
+    background-color: #EC831E;
+    color: #FCF7F3;
 }

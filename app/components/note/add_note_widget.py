@@ -52,7 +52,7 @@ class AddNoteWidget(QWidget):
         self.description_input = Input_Multiline(placeholder="Description rapide de la note", x=True, y=True, parent=self)
 
         # Bouton Annuler
-        self.cancel_button = ButtonText("Annuler", 120, 36, "Button_Secondary", self)
+        self.cancel_button = ButtonText("Annuler", 120, 36, self)
         self.cancel_button.clicked.connect(self.cancelled.emit)
 
         # Ajout des widgets
@@ -82,7 +82,7 @@ class AddNoteWidget(QWidget):
         self.contenu_editor = Input_Multiline(placeholder="Contenu principal de la note", x=True, y=True, parent=self)
 
         # Bouton Valider
-        self.validate_button = ButtonText("Valider", 120, 36, "Button_Primary", self)
+        self.validate_button = ButtonText("Valider", 120, 36, self)
         self.validate_button.clicked.connect(self.cancelled.emit)
         self.validate_button.clicked.connect(self.validate_and_save_note)
 

@@ -28,6 +28,9 @@ class NotesPageWidget(QWidget):
         # UI Variable
         self.searchbar_visible = False
         self.addnote_visible = False
+        self.cluster_visible = True
+        self.timeline_visible = False
+        self.theme_visible = False
         
         self.is_camera_animating = False
         self.visualization_container = QFrame(self)
@@ -47,6 +50,7 @@ class NotesPageWidget(QWidget):
         self.visualization_widgets["theme"] = ThemeModeWidget(self.visualization_container)
 
         self.switch_note_mode("cluster")
+        self.toggle_cluster()
 
 
     def resizeEvent(self, event):
@@ -108,25 +112,16 @@ class NotesPageWidget(QWidget):
         if mode not in self.visualization_widgets:
             print(f"❌ Mode inconnu : {mode}")
             return
-
-        # Cacher tous les widgets de visualisation
-        for widget in self.visualization_widgets.values():
+        for widget in self.visualization_widgets.values(): # Cacher tous les widgets
             if widget:
                 widget.hide()
 
-        # Si le widget du mode n’est pas encore créé, afficher un placeholder
-        if self.visualization_widgets[mode] is None:
-            placeholder = QLabel(f"Mode '{mode}' en cours de développement", self.visualization_container)
-            placeholder.setAlignment(Qt.AlignCenter)
-            placeholder.setStyleSheet("font-size: 24px; color: grey;")
-            placeholder.setGeometry(0, 0, self.width(), self.height())
-            placeholder.show()
-            self.visualization_widgets[mode] = placeholder
-        else:
-            self.visualization_widgets[mode].show()
+        widget = self.visualization_widgets[mode] # Afficher uniquement le mode demandé
+        widget.show()
 
         self.current_mode = mode
         print(f"🔁 Mode actif : {mode}")
+
 
     def toggle_search_input(self):
         self.searchbar_visible = not self.searchbar_visible
@@ -164,3 +159,46 @@ class NotesPageWidget(QWidget):
         self.plus_button.style().unpolish(self.plus_button)
         self.plus_button.style().polish(self.plus_button)
         self.plus_button.update()
+
+    def toggle_cluster(self):
+        self.cluster_visible = True
+        self.timeline_visible = False
+        self.theme_visible = False
+
+        self.switch_note_mode("cluster")
+
+        self.cluster_button.setObjectName("Button_Default_Selected")
+        self.timeline_button.setObjectName("Button_Default")
+        self.theme_button.setObjectName("Button_Default")
+        self.refresh_note_mode_button()
+
+    def toggle_timeline(self):
+        self.cluster_visible = False
+        self.timeline_visible = True
+        self.theme_visible = False
+
+        self.switch_note_mode("timeline")
+
+        self.cluster_button.setObjectName("Button_Default")
+        self.timeline_button.setObjectName("Button_Default_Selected")
+        self.theme_button.setObjectName("Button_Default")
+        self.refresh_note_mode_button()
+
+    def toggle_theme(self):
+        self.cluster_visible = False
+        self.timeline_visible = False
+        self.theme_visible = True
+
+        self.switch_note_mode("theme")
+
+        self.cluster_button.setObjectName("Button_Default")
+        self.timeline_button.setObjectName("Button_Default")
+        self.theme_button.setObjectName("Button_Default_Selected")
+        self.refresh_note_mode_button()
+
+    def refresh_note_mode_button(self):
+        # Rafraîchir tous les boutons
+        for btn in [self.cluster_button, self.timeline_button, self.theme_button]:
+            btn.style().unpolish(btn)
+            btn.style().polish(btn)
+            btn.update()

@@ -56,9 +56,9 @@ def setup_ui(self):
     note_mode_layout.addWidget(self.timeline_button)
     note_mode_layout.addWidget(self.theme_button)
     # Note_mode Buttons Click
-    self.cluster_button.clicked.connect(lambda: self.switch_note_mode("cluster"))
-    self.timeline_button.clicked.connect(lambda: self.switch_note_mode("timeline"))
-    self.theme_button.clicked.connect(lambda: self.switch_note_mode("theme"))
+    self.cluster_button.clicked.connect(self.toggle_cluster)
+    self.timeline_button.clicked.connect(self.toggle_timeline)
+    self.theme_button.clicked.connect(self.toggle_theme)
 
     # Calender
     self.calender_button = ButtonIcon("calendar", parent=self)

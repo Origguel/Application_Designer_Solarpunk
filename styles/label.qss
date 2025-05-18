@@ -1,0 +1,6 @@
+
+#Label_Default {
+    background-color: #EC831E;
+    color: #FCF7F3;
+    font-size: 12px;
+}

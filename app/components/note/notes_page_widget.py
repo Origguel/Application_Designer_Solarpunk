@@ -1,15 +1,9 @@
 from PySide6.QtWidgets import QWidget, QFrame, QLabel
 from PySide6.QtCore import Qt, QPointF
+import json
+from pathlib import Path
 
 from app.components.note.notes_ui import setup_ui
-from app.components.note.notes_interactions import (
-    open_note_detail,
-    open_add_note_widget,
-    close_add_note_widget,
-    add_note_visually,
-    on_delete_button_clicked,
-    close_note_detail
-)
 from app.components.note.notes_search_handler import (
     on_search_note,
     clear_search_highlights
@@ -19,6 +13,10 @@ from app.components.note.modes.cluster.cluster_camera_animation import animate_c
 from app.components.note.modes.cluster_mode_widget import ClusterModeWidget
 from app.components.note.modes.timeline_mode_widget import TimelineModeWidget
 from app.components.note.modes.theme_mode_widget import ThemeModeWidget
+from app.utils.categorie_manager.category_manager import CategoryManager
+from app.components.note.delete_note_handler import confirm_and_delete_note
+from app.utils.categorie_manager.category_tree_updater import CategoryTreeUpdater
+from app.components.note.note_detail_widget import NoteDetailWidget
 
 
 class NotesPageWidget(QWidget):
@@ -36,7 +34,7 @@ class NotesPageWidget(QWidget):
         self.visualization_container = QFrame(self)
         self.visualization_container.setGeometry(0, 0, self.width(), self.height())
         self.visualization_container.lower()  # reste derrière les autres UI
-        setup_ui(self)
+        setup_ui(self, note_id="note_0001")
 
         self.visualization_widgets = {
             "cluster": self.graph_widget,  # déjà instancié par setup_ui
@@ -64,16 +62,6 @@ class NotesPageWidget(QWidget):
         self.leftbar.move(16, 16)
         self.addnote.move(54, 54)
 
-        self.search_input.move(54, 16)
-        if self.overlay.isVisible():
-            self.overlay.setGeometry(0, 0, self.width(), self.height())
-
-        if self.add_note_widget:
-            self.add_note_widget.move(
-                (self.width() - self.add_note_widget.width()) // 2,
-                (self.height() - self.add_note_widget.height()) // 2
-            )
-
     def keyPressEvent(self, event):
         if event.key() == Qt.Key_Escape:
             clear_search_highlights(self)
@@ -84,12 +72,6 @@ class NotesPageWidget(QWidget):
             print("🔄 Vue recentrée via touche R.")
 
     # Liaison directe aux handlers
-    open_note_detail = open_note_detail
-    close_note_detail = close_note_detail
-    open_add_note_widget = open_add_note_widget
-    close_add_note_widget = close_add_note_widget
-    add_note_visually = add_note_visually
-    on_delete_button_clicked = on_delete_button_clicked
     on_search_note = on_search_note
     clear_search_highlights = clear_search_highlights
     animate_camera_to_center = animate_camera_to_center
@@ -202,3 +184,44 @@ class NotesPageWidget(QWidget):
             btn.style().unpolish(btn)
             btn.style().polish(btn)
             btn.update()
+
+    def on_delete_button_clicked(self):
+        selected_note_id = self.graph_widget.get_selected_note_id()
+        if selected_note_id:
+            confirm_and_delete_note(self, selected_note_id)
+            CategoryManager().update()
+            self.graph_widget.delete_note_live(selected_note_id)
+        else:
+            print("❌ Aucune note sélectionnée pour suppression.")
+
+    def open_note_detail(self, note_id):
+        note_path = Path(f"data/notes/{note_id}.json")
+        if not note_path.exists():
+            print(f"❌ Fichier de note introuvable : {note_path}")
+            return
+
+        with open(note_path, "r", encoding="utf-8") as f:
+            note_data = json.load(f)
+
+        self.close_note_detail()
+
+
+        note_detail_x = 408
+        note_detail_y = self.height() - 54 - 16
+        self.note_detail_widget = NoteDetailWidget(note_data, x=note_detail_x, y=note_detail_y, parent=self)
+        self.note_detail_widget.move(self.width() - note_detail_x - 16, 54)
+        self.note_detail_widget.raise_()
+        self.note_detail_widget.show()
+
+    def close_note_detail(self):
+        if hasattr(self, 'note_detail_widget') and self.note_detail_widget:
+            self.note_detail_widget.setParent(None)
+            self.note_detail_widget.deleteLater()
+            self.note_detail_widget = None
+
+    def add_note_visually(self, note_id, keywords):
+        updater = CategoryTreeUpdater()
+        updater.add_note(note_id, keywords)
+        self.graph_widget.add_note_live(note_id, keywords)
+        print(f"✨ Note ajoutée visuellement dans le graphe : {note_id}")
+        self.close_add_note_widget()

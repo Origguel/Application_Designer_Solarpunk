@@ -16,6 +16,7 @@ from app.components.note.modes.cluster.cluster_camera_animation import animate_c
 class ClusterModeWidget(QGraphicsView):
     def __init__(self, notes_view, parent=None):
         super().__init__(parent)
+        self.setObjectName("ClusterModeWidget")
         self.notes_view = notes_view
 
         self.interaction = TreeGraphInteraction(self)

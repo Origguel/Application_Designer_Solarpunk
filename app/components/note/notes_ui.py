@@ -12,7 +12,7 @@ from app.components.dropdowns.dropdown_default import Dropdown_Default
 
 
 
-def setup_ui(self):
+def setup_ui(self, note_id):
     self.graph_widget = ClusterModeWidget(self.visualization_container)
     self.graph_widget.setGeometry(0, 0, self.width(), self.height())
 
@@ -89,14 +89,6 @@ def setup_ui(self):
     self.search_input.textChanged.connect(self.on_search_note)
     self.search_input.hide()
     self.search_input.setEnabled(False)
-
-    # Add note widget
-    self.add_note_widget = None
-
-    # Note Detail
-    self.note_detail_left_margin = 16  # à droite de la toolbar et search input
-    self.note_detail_top_margin = 16 + self.toolbar.height() + 6
-    self.note_detail_widget = None
 
     
 

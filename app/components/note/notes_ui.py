@@ -1,10 +1,15 @@
 from PySide6.QtWidgets import QVBoxLayout, QFrame, QWidget
 from PySide6.QtCore import Qt
 
-
+# Components
 from app.components.note.modes.cluster_mode_widget import ClusterModeWidget
 from app.components.buttons.button_icon import ButtonIcon
+from app.components.buttons.button_text import ButtonText
 from app.components.inputs.input_default import Input_Default
+from app.components.inputs.input_multiline import Input_Multiline
+from app.components.dropdowns.dropdown_default import Dropdown_Default
+
+
 
 def setup_ui(self):
     self.graph_widget = ClusterModeWidget(self.visualization_container)
@@ -31,6 +36,7 @@ def setup_ui(self):
     toolbar_layout.addWidget(self.resetview_button)
     toolbar_layout.addWidget(self.delete_button)
     # Toolbar Buttons Click
+    self.search_button.clicked.connect(self.toggle_search_input)
     self.plus_button.clicked.connect(self.open_add_note_widget)
     self.resetview_button.clicked.connect(self.on_reset_view_button_clicked)
     self.delete_button.clicked.connect(self.on_delete_button_clicked)
@@ -79,6 +85,8 @@ def setup_ui(self):
     self.search_input = Input_Default(placeholder="Rechercher une note", x=370, parent=self)
     self.search_input.raise_()
     self.search_input.textChanged.connect(self.on_search_note)
+    self.search_input.hide()
+    self.search_input.setEnabled(False)
 
     # Add note widget
     self.add_note_widget = None
@@ -87,8 +95,5 @@ def setup_ui(self):
     self.note_detail_left_margin = 16  # à droite de la toolbar et search input
     self.note_detail_top_margin = 16 + self.toolbar.height() + 6
     self.note_detail_widget = None
-
-
-
 
     

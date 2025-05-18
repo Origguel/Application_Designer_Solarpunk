@@ -24,6 +24,10 @@ from app.components.note.modes.theme_mode_widget import ThemeModeWidget
 class NotesPageWidget(QWidget):
     def __init__(self):
         super().__init__()
+
+        # UI Variable
+        self.searchbar_visible = False
+        self.addnote_visible = False
         
         self.is_camera_animating = False
         self.visualization_container = QFrame(self)
@@ -122,3 +126,21 @@ class NotesPageWidget(QWidget):
 
         self.current_mode = mode
         print(f"🔁 Mode actif : {mode}")
+
+    def toggle_search_input(self):
+        self.searchbar_visible = not self.searchbar_visible
+
+        if self.searchbar_visible:
+            self.search_input.show()
+            self.search_input.setEnabled(True)
+            self.search_input.setFocus()
+            self.search_button.setObjectName("Button_Default_Selected")
+        else:
+            self.search_input.hide()
+            self.search_input.setEnabled(False)
+            self.search_button.setObjectName("Button_Default")
+
+        # Rafraîchir le style pour que le changement soit visible
+        self.search_button.style().unpolish(self.search_button)
+        self.search_button.style().polish(self.search_button)
+        self.search_button.update()

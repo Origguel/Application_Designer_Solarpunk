@@ -3,13 +3,14 @@ from PySide6.QtGui import QTextOption
 from PySide6.QtCore import Qt
 
 class Input_Multiline(QTextEdit):
-    def __init__(self, placeholder="", object_name="Input_Multiline", x=300, y=100, align="top", parent=None):
+    def __init__(self, placeholder="", object_name="Input_Multiline", x=128, y=64, parent=None):
         super().__init__(parent)
 
         self.setObjectName(object_name)
         self.setPlaceholderText(placeholder)
         self.setAcceptRichText(False)
         self.setWordWrapMode(QTextOption.WrapAtWordBoundaryOrAnywhere)
+        self.setAlignment(Qt.AlignVCenter | Qt.AlignLeft)
 
         # Gestion responsive ou fixe
         if x is True:
@@ -31,9 +32,3 @@ class Input_Multiline(QTextEdit):
             raise ValueError("y doit être un int ou True")
 
         self.setSizePolicy(horizontal_policy, vertical_policy)
-
-        # Alignement du texte
-        if align == "center":
-            self.setAlignment(Qt.AlignVCenter | Qt.AlignLeft)
-        else:  # default to top
-            self.setAlignment(Qt.AlignTop | Qt.AlignLeft)

@@ -20,3 +20,11 @@
 #Button_Default_Selected:hover {
     background-color: #F4B67C;
 }
+
+
+#Button_Medium {
+    background-color: #F4B67C;
+    color: #2B2B2B;
+    border-radius: 6px;
+    font-size: 12px;
+}

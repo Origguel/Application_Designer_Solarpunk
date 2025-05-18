@@ -107,24 +107,24 @@ def setup_ui(self):
 
     # Contenu du add note widget
     self.name_input = Input_Default(placeholder="Nom de la note", x=370, parent=self)
-    self.description_input = Input_Multiline(placeholder="Description rapide de la note", x=True, y=True, parent=self)
+    self.description_input = Input_Multiline(placeholder="Description rapide de la note", x=370, y=64, parent=self)
 
-    self.date_input = Input_Default(placeholder="Date de création de la note")
+    self.date_input = Input_Default(placeholder="Date de création de la note", x=218)
     today = datetime.now().strftime("%d/%m/%Y")
     self.date_input.setText(today)
-    self.project_selector = Dropdown_Default(style="Dropdown_Default", items=["Projet 1", "Projet 2", "Projet 3", "Projet 4"], parent=self)
+    self.project_selector = Dropdown_Default(x=218, style="Dropdown_Default", items=["Projet 1", "Projet 2", "Projet 3", "Projet 4"], parent=self)
 
     self.notetype_text = ButtonIcon("note_text", parent=self)
     self.notetype_image = ButtonIcon("note_image", parent=self)
-    self.notetype_vidéo = ButtonIcon("note_vidéo", parent=self)
+    self.notetype_vidéo = ButtonIcon("note_video", parent=self)
     self.notetype_doc = ButtonIcon("note_doc", parent=self)
     self.notetype_lien = ButtonIcon("note_lien", parent=self)
     self.notetype_code = ButtonIcon("note_code", parent=self)
     self.notetype_dessin = ButtonIcon("note_dessin", parent=self)
     self.notetype_son = ButtonIcon("note_son", parent=self)
 
-    self.contenu_input = Input_Multiline(placeholder="Contenu principal de la note", x=True, y=True, parent=self)
-    self.createnote_button = ButtonText("note_text", parent=self)
+    self.contenu_input = Input_Multiline(placeholder="Contenu principal de la note", x=370, y=128, parent=self)
+    self.createnote_button = ButtonText("Créer la note", x=94, parent=self)
     
     # Add note Widget part1_1 name description
     self.addnote_part1_1 = QWidget(self)
@@ -178,7 +178,7 @@ def setup_ui(self):
     addnote_part2_layout.setSpacing(6)
     addnote_part2_layout.setContentsMargins(0, 0, 0, 0)
     addnote_part2_layout.addWidget(self.contenu_input)
-    addnote_part2_layout.addWidget(self.createnote_button)
+    addnote_part2_layout.addWidget(self.createnote_button, alignment=Qt.AlignRight)
     
     # Add note Widget
     self.addnote = QWidget(self)

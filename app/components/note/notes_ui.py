@@ -76,7 +76,7 @@ def setup_ui(self):
     leftbar_layout.addWidget(self.calender_button)
 
     # Search bar
-    self.search_input = Input_Default(placeholder="Rechercher une note", x=230, parent=self)
+    self.search_input = Input_Default(placeholder="Rechercher une note", x=370, parent=self)
     self.search_input.raise_()
     self.search_input.textChanged.connect(self.on_search_note)
 

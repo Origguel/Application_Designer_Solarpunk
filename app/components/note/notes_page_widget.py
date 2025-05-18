@@ -145,3 +145,22 @@ class NotesPageWidget(QWidget):
         self.search_button.style().unpolish(self.search_button)
         self.search_button.style().polish(self.search_button)
         self.search_button.update()
+
+
+    def toggle_addnote_input(self):
+        self.addnote_visible = not self.addnote_visible
+
+        if self.addnote_visible:
+            self.addnote.show()
+            self.addnote.setEnabled(True)
+            self.addnote.setFocus()
+            self.plus_button.setObjectName("Button_Default_Selected")
+        else:
+            self.addnote.hide()
+            self.addnote.setEnabled(False)
+            self.plus_button.setObjectName("Button_Default")
+
+        # Rafraîchir le style pour que le changement soit visible
+        self.plus_button.style().unpolish(self.plus_button)
+        self.plus_button.style().polish(self.plus_button)
+        self.plus_button.update()

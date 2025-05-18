@@ -15,7 +15,7 @@ class Input_Multiline(QTextEdit):
         # Gestion responsive ou fixe
         if x is True:
             horizontal_policy = QSizePolicy.Expanding
-            self.setMinimumWidth(150)
+            self.setMinimumWidth(128)
         elif isinstance(x, int):
             self.setFixedWidth(x)
             horizontal_policy = QSizePolicy.Fixed
@@ -24,7 +24,7 @@ class Input_Multiline(QTextEdit):
 
         if y is True:
             vertical_policy = QSizePolicy.Expanding
-            self.setMinimumHeight(80)
+            self.setMinimumHeight(64)
         elif isinstance(y, int):
             self.setFixedHeight(y)
             vertical_policy = QSizePolicy.Fixed

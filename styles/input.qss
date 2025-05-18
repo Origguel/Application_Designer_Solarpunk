@@ -12,5 +12,12 @@ QLineEdit::placeholder {
     color: #FCF7F3;
     border-radius: 6px;
     font-size: 12px;
-    padding: 12px;
+}
+
+#Input_Research {
+    padding: 0px 10px;
+}
+
+#Input_Multiline {
+    padding: 8px;
 }

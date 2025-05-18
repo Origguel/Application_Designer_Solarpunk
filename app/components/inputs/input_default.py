@@ -9,6 +9,3 @@ class Input_Default(QLineEdit):
         # Taille fixe
         self.setFixedSize(x, 32)
         self.setSizePolicy(QSizePolicy.Fixed, QSizePolicy.Fixed)
-
-        # Padding pour texte aligné "center-left"
-        self.setStyleSheet("padding: 0px 10px;")

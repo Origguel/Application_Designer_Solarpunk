@@ -8,7 +8,8 @@
 }
 
 #Dropdown_Default:hover {
-    background-color: #EC831E;
+    background-color: #F4B67C;
+    color: #2B2B2B;
 }
 
 /* === Menu déroulant interne === */

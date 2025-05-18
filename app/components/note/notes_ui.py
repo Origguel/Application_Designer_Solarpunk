@@ -1,4 +1,4 @@
-from PySide6.QtWidgets import QVBoxLayout, QHBoxLayout, QFrame, QWidget
+from PySide6.QtWidgets import QVBoxLayout, QHBoxLayout, QGridLayout, QFrame, QWidget
 from PySide6.QtCore import Qt
 from datetime import datetime
 
@@ -38,7 +38,7 @@ def setup_ui(self):
     toolbar_layout.addWidget(self.delete_button)
     # Toolbar Buttons Click
     self.search_button.clicked.connect(self.toggle_search_input)
-    self.plus_button.clicked.connect(self.open_add_note_widget)
+    self.plus_button.clicked.connect(self.toggle_addnote_input)
     self.resetview_button.clicked.connect(self.on_reset_view_button_clicked)
     self.delete_button.clicked.connect(self.on_delete_button_clicked)
 
@@ -144,17 +144,24 @@ def setup_ui(self):
 
     # Add note Widget part1_2 note type
     self.addnote_part1_2_nt = QWidget(self)
-    addnote_part1_2_nt_layout = QHBoxLayout(self.addnote_part1_2_nt)
-    addnote_part1_2_nt_layout.setSpacing(6)
+    addnote_part1_2_nt_layout = QGridLayout(self.addnote_part1_2_nt)
+    addnote_part1_2_nt_layout.setHorizontalSpacing(6)
+    addnote_part1_2_nt_layout.setVerticalSpacing(6)
     addnote_part1_2_nt_layout.setContentsMargins(0, 0, 0, 0)
-    addnote_part1_2_nt_layout.addWidget(self.notetype_text)
-    addnote_part1_2_nt_layout.addWidget(self.notetype_image)
-    addnote_part1_2_nt_layout.addWidget(self.notetype_vidéo)
-    addnote_part1_2_nt_layout.addWidget(self.notetype_doc)
-    addnote_part1_2_nt_layout.addWidget(self.notetype_lien)
-    addnote_part1_2_nt_layout.addWidget(self.notetype_code)
-    addnote_part1_2_nt_layout.addWidget(self.notetype_dessin)
-    addnote_part1_2_nt_layout.addWidget(self.notetype_son)
+    note_types = [
+        self.notetype_text,
+        self.notetype_image,
+        self.notetype_vidéo,
+        self.notetype_doc,
+        self.notetype_lien,
+        self.notetype_code,
+        self.notetype_dessin,
+        self.notetype_son
+    ]
+    for index, widget in enumerate(note_types):
+        row = index // 4 
+        col = index % 4
+        addnote_part1_2_nt_layout.addWidget(widget, row, col)
 
     # Add note Widget part1_2 date projet type
     self.addnote_part1_2 = QWidget(self)
@@ -187,3 +194,5 @@ def setup_ui(self):
     addnote_layout.setContentsMargins(0, 0, 0, 0)
     addnote_layout.addWidget(self.addnote_part1)
     addnote_layout.addWidget(self.addnote_part2)
+    self.addnote.hide()
+    self.addnote.setEnabled(False)

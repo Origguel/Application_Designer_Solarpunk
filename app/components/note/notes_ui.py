@@ -1,5 +1,6 @@
-from PySide6.QtWidgets import QVBoxLayout, QFrame, QWidget
+from PySide6.QtWidgets import QVBoxLayout, QHBoxLayout, QFrame, QWidget
 from PySide6.QtCore import Qt
+from datetime import datetime
 
 # Components
 from app.components.note.modes.cluster_mode_widget import ClusterModeWidget
@@ -75,6 +76,7 @@ def setup_ui(self):
     leftbar_layout = QVBoxLayout(self.leftbar)
     leftbar_layout.setContentsMargins(0, 0, 0, 0)
     leftbar_layout.setSpacing(6)
+    # Left Bar contenu
     leftbar_layout.addWidget(self.toolbar)
     leftbar_layout.addWidget(line1, alignment=Qt.AlignHCenter)
     leftbar_layout.addWidget(self.note_mode)
@@ -97,3 +99,91 @@ def setup_ui(self):
     self.note_detail_widget = None
 
     
+
+
+
+
+
+
+    # Contenu du add note widget
+    self.name_input = Input_Default(placeholder="Nom de la note", x=370, parent=self)
+    self.description_input = Input_Multiline(placeholder="Description rapide de la note", x=True, y=True, parent=self)
+
+    self.date_input = Input_Default(placeholder="Date de création de la note")
+    today = datetime.now().strftime("%d/%m/%Y")
+    self.date_input.setText(today)
+    self.project_selector = Dropdown_Default(style="Dropdown_Default", items=["Projet 1", "Projet 2", "Projet 3", "Projet 4"], parent=self)
+
+    self.notetype_text = ButtonIcon("note_text", parent=self)
+    self.notetype_image = ButtonIcon("note_image", parent=self)
+    self.notetype_vidéo = ButtonIcon("note_vidéo", parent=self)
+    self.notetype_doc = ButtonIcon("note_doc", parent=self)
+    self.notetype_lien = ButtonIcon("note_lien", parent=self)
+    self.notetype_code = ButtonIcon("note_code", parent=self)
+    self.notetype_dessin = ButtonIcon("note_dessin", parent=self)
+    self.notetype_son = ButtonIcon("note_son", parent=self)
+
+    self.contenu_input = Input_Multiline(placeholder="Contenu principal de la note", x=True, y=True, parent=self)
+    self.createnote_button = ButtonText("note_text", parent=self)
+    
+    # Add note Widget part1_1 name description
+    self.addnote_part1_1 = QWidget(self)
+    addnote_part1_1_layout = QVBoxLayout(self.addnote_part1_1)
+    addnote_part1_1_layout.setSpacing(6)
+    addnote_part1_1_layout.setContentsMargins(0, 0, 0, 0)
+    addnote_part1_1_layout.addWidget(self.name_input)
+    addnote_part1_1_layout.addWidget(self.description_input)
+
+    # Add note Widget part1_2 date projet
+    self.addnote_part1_2_dp = QWidget(self)
+    addnote_part1_2_dp_layout = QVBoxLayout(self.addnote_part1_2_dp)
+    addnote_part1_2_dp_layout.setSpacing(6)
+    addnote_part1_2_dp_layout.setContentsMargins(0, 0, 0, 0)
+    addnote_part1_2_dp_layout.addWidget(self.date_input)
+    addnote_part1_2_dp_layout.addWidget(self.project_selector)
+
+    # Add note Widget part1_2 note type
+    self.addnote_part1_2_nt = QWidget(self)
+    addnote_part1_2_nt_layout = QHBoxLayout(self.addnote_part1_2_nt)
+    addnote_part1_2_nt_layout.setSpacing(6)
+    addnote_part1_2_nt_layout.setContentsMargins(0, 0, 0, 0)
+    addnote_part1_2_nt_layout.addWidget(self.notetype_text)
+    addnote_part1_2_nt_layout.addWidget(self.notetype_image)
+    addnote_part1_2_nt_layout.addWidget(self.notetype_vidéo)
+    addnote_part1_2_nt_layout.addWidget(self.notetype_doc)
+    addnote_part1_2_nt_layout.addWidget(self.notetype_lien)
+    addnote_part1_2_nt_layout.addWidget(self.notetype_code)
+    addnote_part1_2_nt_layout.addWidget(self.notetype_dessin)
+    addnote_part1_2_nt_layout.addWidget(self.notetype_son)
+
+    # Add note Widget part1_2 date projet type
+    self.addnote_part1_2 = QWidget(self)
+    addnote_part1_2_layout = QHBoxLayout(self.addnote_part1_2)
+    addnote_part1_2_layout.setSpacing(6)
+    addnote_part1_2_layout.setContentsMargins(0, 0, 0, 0)
+    addnote_part1_2_layout.addWidget(self.addnote_part1_2_dp)
+    addnote_part1_2_layout.addWidget(self.addnote_part1_2_nt)
+
+    # Add note Widget part 1
+    self.addnote_part1 = QWidget(self)
+    addnote_part1_layout = QVBoxLayout(self.addnote_part1)
+    addnote_part1_layout.setSpacing(6)
+    addnote_part1_layout.setContentsMargins(0, 0, 0, 0)
+    addnote_part1_layout.addWidget(self.addnote_part1_1)
+    addnote_part1_layout.addWidget(self.addnote_part1_2)
+
+    # Add note Widget part 2
+    self.addnote_part2 = QWidget(self)
+    addnote_part2_layout = QVBoxLayout(self.addnote_part2)
+    addnote_part2_layout.setSpacing(6)
+    addnote_part2_layout.setContentsMargins(0, 0, 0, 0)
+    addnote_part2_layout.addWidget(self.contenu_input)
+    addnote_part2_layout.addWidget(self.createnote_button)
+    
+    # Add note Widget
+    self.addnote = QWidget(self)
+    addnote_layout = QVBoxLayout(self.addnote)
+    addnote_layout.setSpacing(6)
+    addnote_layout.setContentsMargins(0, 0, 0, 0)
+    addnote_layout.addWidget(self.addnote_part1)
+    addnote_layout.addWidget(self.addnote_part2)

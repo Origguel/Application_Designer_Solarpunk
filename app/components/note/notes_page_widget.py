@@ -53,9 +53,7 @@ class NotesPageWidget(QWidget):
             if widget:
                 widget.setGeometry(0, 0, self.width(), self.height())
 
-        self.toolbar.move(16, 16)
-
-        self.note_mode.move(500, 500)
+        self.leftbar.move(16, 16)
 
         self.search_input.move(58, 16)
         if self.overlay.isVisible():
@@ -66,12 +64,6 @@ class NotesPageWidget(QWidget):
                 (self.width() - self.add_note_widget.width()) // 2,
                 (self.height() - self.add_note_widget.height()) // 2
             )
-        if hasattr(self, "note_mode"):
-            widget_width = self.note_mode.width()
-            widget_height = self.note_mode.height()
-            x = (self.width() - widget_width) // 2
-            y = self.height() - widget_height - 16
-            self.note_mode.move(x, y)
 
     def keyPressEvent(self, event):
         if event.key() == Qt.Key_Escape:

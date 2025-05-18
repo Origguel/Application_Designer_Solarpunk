@@ -1,4 +1,4 @@
-from PySide6.QtWidgets import QVBoxLayout, QHBoxLayout, QWidget
+from PySide6.QtWidgets import QVBoxLayout, QFrame, QWidget
 from PySide6.QtCore import Qt
 
 
@@ -17,25 +17,76 @@ def setup_ui(self):
 
     # Toolbar
     self.toolbar = QWidget(self)
-    self.toolbar.setObjectName("Note_ToolsBar")
-    self.toolbar.setFixedWidth(36)
-    self.toolbar.setFixedHeight(104)
-
     toolbar_layout = QVBoxLayout(self.toolbar)
-    toolbar_layout.setContentsMargins(3, 3, 3, 3)
-    toolbar_layout.setSpacing(4)
+    toolbar_layout.setContentsMargins(0, 0, 0, 0)
+    toolbar_layout.setSpacing(6)
     # Toolbar Buttons
+    self.search_button = ButtonIcon("search", parent=self.toolbar)
     self.plus_button = ButtonIcon("add", parent=self.toolbar)
     self.resetview_button = ButtonIcon("resize", parent=self.toolbar)
     self.delete_button = ButtonIcon("trash", parent=self.toolbar)
-
+    # Toolbar Buttons Order
+    toolbar_layout.addWidget(self.search_button)
     toolbar_layout.addWidget(self.plus_button)
     toolbar_layout.addWidget(self.resetview_button)
     toolbar_layout.addWidget(self.delete_button)
-
+    # Toolbar Buttons Click
     self.plus_button.clicked.connect(self.open_add_note_widget)
     self.resetview_button.clicked.connect(self.on_reset_view_button_clicked)
     self.delete_button.clicked.connect(self.on_delete_button_clicked)
+
+    # Note_mode
+    self.note_mode = QWidget(self)
+    note_mode_layout = QVBoxLayout(self.note_mode)
+    note_mode_layout.setContentsMargins(0, 0, 0, 0)
+    note_mode_layout.setSpacing(6)
+    # Note_mode Buttons
+    self.cluster_button = ButtonIcon("cluster", parent=self.note_mode)
+    self.timeline_button = ButtonIcon("timeline", parent=self.note_mode)
+    self.theme_button = ButtonIcon("theme", parent=self.note_mode)
+    # Note_mode Buttons Order
+    note_mode_layout.addWidget(self.cluster_button)
+    note_mode_layout.addWidget(self.timeline_button)
+    note_mode_layout.addWidget(self.theme_button)
+    # Note_mode Buttons Click
+    self.cluster_button.clicked.connect(lambda: self.switch_note_mode("cluster"))
+    self.timeline_button.clicked.connect(lambda: self.switch_note_mode("timeline"))
+    self.theme_button.clicked.connect(lambda: self.switch_note_mode("theme"))
+
+    # Calender
+    self.calender_button = ButtonIcon("calendar", parent=self)
+
+    # Lines
+    line1 = QFrame()
+    line1.setFixedSize(6, 1)
+    line1.setStyleSheet("background-color: #2B2B2B; border: none;")
+    line2 = QFrame()
+    line2.setFixedSize(6, 1)
+    line2.setStyleSheet("background-color: #2B2B2B; border: none;")
+
+    # Left Bar
+    self.leftbar = QWidget(self)
+    leftbar_layout = QVBoxLayout(self.leftbar)
+    leftbar_layout.setContentsMargins(0, 0, 0, 0)
+    leftbar_layout.setSpacing(6)
+    leftbar_layout.addWidget(self.toolbar)
+    leftbar_layout.addWidget(line1, alignment=Qt.AlignHCenter)
+    leftbar_layout.addWidget(self.note_mode)
+    leftbar_layout.addWidget(line2, alignment=Qt.AlignHCenter)
+    leftbar_layout.addWidget(self.calender_button)
+
+
+
+
+
+
+
+
+
+
+
+
+
 
     self.search_input = Input_Default(
         placeholder="Rechercher une note...",
@@ -55,23 +106,5 @@ def setup_ui(self):
 
 
 
-    self.note_mode = QWidget(self)
-    self.note_mode.setObjectName("Note_Mode_Bar")
-    self.note_mode.setFixedWidth(104)
-    self.note_mode.setFixedHeight(36)
 
-    note_mode_layout = QHBoxLayout(self.note_mode)
-    note_mode_layout.setContentsMargins(3, 3, 3, 3)
-    note_mode_layout.setSpacing(4)
-
-    self.note_mode_cluster = ButtonIcon("cluster", parent=self.note_mode)
-    self.note_mode_timeline = ButtonIcon("timeline", parent=self.note_mode)
-    self.note_mode_theme = ButtonIcon("theme", parent=self.note_mode)
-
-    note_mode_layout.addWidget(self.note_mode_cluster)
-    note_mode_layout.addWidget(self.note_mode_timeline)
-    note_mode_layout.addWidget(self.note_mode_theme)
-
-    self.note_mode_cluster.clicked.connect(lambda: self.switch_note_mode("cluster"))
-    self.note_mode_timeline.clicked.connect(lambda: self.switch_note_mode("timeline"))
-    self.note_mode_theme.clicked.connect(lambda: self.switch_note_mode("theme"))
+    

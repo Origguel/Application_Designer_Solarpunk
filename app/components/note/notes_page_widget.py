@@ -74,6 +74,7 @@ class NotesPageWidget(QWidget):
             if widget:
                 widget.setGeometry(0, 0, self.width(), self.height())
 
+        self.search_input.move(54, 16)
         self.leftbar.move(16, 16)
         self.addnote.move(54, 54)
 

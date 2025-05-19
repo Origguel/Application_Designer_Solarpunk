@@ -9,6 +9,7 @@ from pathlib import Path
 from .project_ui import Project_UI
 from .prise_de_note import PriseDeNote
 from app.components.buttons.button_text import ButtonText
+from app.utils.project.project_ui_animation import animate_project_ui
 
 
 
@@ -222,9 +223,14 @@ class ProjectsPageWidget(QWidget):
 
             print(f"✅ Projet sélectionné : {project_id}")
 
-            # 🔄 Recharger les boutons pour mettre à jour leur style
-            self.load_project_buttons()
+            self.load_project_buttons()  # Met à jour les styles visuels
+            self.toggle_project_list() # Ferme la list de note
+
+            # ✅ Recharge dynamiquement le contenu de la prise de note
+            if hasattr(self, 'prisedenote_widget'):
+                self.prisedenote_widget.load_selected_project()
 
         except Exception as e:
             print(f"❌ Erreur lors de la mise à jour du fichier : {e}")
+
 

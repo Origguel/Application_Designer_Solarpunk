@@ -9,7 +9,11 @@ from pathlib import Path
 from .project_ui import Project_UI
 from .prise_de_note import PriseDeNote
 from app.components.buttons.button_text import ButtonText
-from app.utils.project.project_ui_animation import animate_project_ui
+from app.utils.project.project_ui_animation import (
+    play_enter_exit_sequence,
+    get_leave_animation,
+    get_enter_animation,
+)
 
 
 
@@ -228,7 +232,13 @@ class ProjectsPageWidget(QWidget):
 
             # ✅ Recharge dynamiquement le contenu de la prise de note
             if hasattr(self, 'prisedenote_widget'):
-                self.prisedenote_widget.load_selected_project()
+                self.animation = play_enter_exit_sequence(
+                    self.prisedenote_widget,
+                    self.width(),
+                    self.prisedenote_widget.load_selected_project
+                )
+
+
 
         except Exception as e:
             print(f"❌ Erreur lors de la mise à jour du fichier : {e}")

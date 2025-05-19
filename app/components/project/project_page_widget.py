@@ -11,6 +11,7 @@ class ProjectsPageWidget(QWidget):
         super().__init__()
 
         self.prisedenote_visible = True
+        self.photo_visible = False
         self.notation_visible = False
         self.finalisation_visible = False
         self.project_list_visible = False
@@ -34,33 +35,50 @@ class ProjectsPageWidget(QWidget):
 
     def toggle_prisedenote(self):
         self.prisedenote_visible = True
+        self.photo_visible = False
         self.notation_visible = False
         self.finalisation_visible = False
         self.prisedenote_button.setObjectName("Button_Default_Selected")
+        self.photo_button.setObjectName("Button_Default")
+        self.notation_button.setObjectName("Button_Default")
+        self.finalisation_button.setObjectName("Button_Default")
+        self.refresh_note_mode_button()
+    
+    def toggle_photo(self):
+        self.prisedenote_visible = False
+        self.photo_visible = True
+        self.notation_visible = False
+        self.finalisation_visible = False
+        self.prisedenote_button.setObjectName("Button_Default")
+        self.photo_button.setObjectName("Button_Default_Selected")
         self.notation_button.setObjectName("Button_Default")
         self.finalisation_button.setObjectName("Button_Default")
         self.refresh_note_mode_button()
 
     def toggle_notation(self):
         self.prisedenote_visible = False
+        self.photo_visible = False
         self.notation_visible = True
         self.finalisation_visible = False
         self.prisedenote_button.setObjectName("Button_Default")
+        self.photo_button.setObjectName("Button_Default")
         self.notation_button.setObjectName("Button_Default_Selected")
         self.finalisation_button.setObjectName("Button_Default")
         self.refresh_note_mode_button()
 
     def toggle_finalisation(self):
         self.prisedenote_visible = False
+        self.photo_visible = False
         self.notation_visible = False
         self.finalisation_visible = True
         self.prisedenote_button.setObjectName("Button_Default")
+        self.photo_button.setObjectName("Button_Default")
         self.notation_button.setObjectName("Button_Default")
         self.finalisation_button.setObjectName("Button_Default_Selected")
         self.refresh_note_mode_button()
 
     def refresh_note_mode_button(self):
-        for btn in [self.prisedenote_button, self.notation_button, self.finalisation_button]:
+        for btn in [self.prisedenote_button, self.photo_button, self.notation_button, self.finalisation_button]:
             btn.style().unpolish(btn)
             btn.style().polish(btn)
             btn.update()

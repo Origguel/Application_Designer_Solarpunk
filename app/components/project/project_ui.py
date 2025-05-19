@@ -37,14 +37,17 @@ def Project_UI(self):
     project_mode_layout.setSpacing(6)
     # Project_mode Buttons
     self.prisedenote_button = ButtonIcon("prise_de_note", parent=self.project_mode)
+    self.photo_button = ButtonIcon("photo", parent=self.project_mode)
     self.notation_button = ButtonIcon("notation", parent=self.project_mode)
     self.finalisation_button = ButtonIcon("finalisation", parent=self.project_mode)
     # Project_mode Buttons Order
     project_mode_layout.addWidget(self.prisedenote_button)
+    project_mode_layout.addWidget(self.photo_button)
     project_mode_layout.addWidget(self.notation_button)
     project_mode_layout.addWidget(self.finalisation_button)
     # Project_mode Buttons Click
     self.prisedenote_button.clicked.connect(self.toggle_prisedenote)
+    self.photo_button.clicked.connect(self.toggle_photo)
     self.notation_button.clicked.connect(self.toggle_notation)
     self.finalisation_button.clicked.connect(self.toggle_finalisation)
 

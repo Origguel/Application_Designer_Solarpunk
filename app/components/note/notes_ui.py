@@ -13,11 +13,6 @@ from app.components.dropdowns.dropdown_default import Dropdown_Default
 
 
 def setup_ui(self, note_id):
-    self.overlay = QWidget(self)
-    self.overlay.setStyleSheet("background-color: rgba(255, 255, 255, 180);")
-    self.overlay.hide()
-    self.overlay.setAttribute(Qt.WA_TransparentForMouseEvents, False)
-
     # Toolbar
     self.toolbar = QWidget(self)
     toolbar_layout = QVBoxLayout(self.toolbar)

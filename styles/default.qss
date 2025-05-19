@@ -1,6 +1,6 @@
 
 
-#ClusterModeWidget {
+#ClusterModeWidget, #NotesView, #ProjectView {
     background-color: #FCF7F3;
 }
 

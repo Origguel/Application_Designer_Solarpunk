@@ -12,7 +12,6 @@ class NotesView(QMainWindow):
         super().__init__()
         self.setWindowTitle("Designer Solarpunk")
         self.setObjectName("NotesView")
-        self.setStyleSheet("QMainWindow#NotesView { background: white; }")
 
         # === Conteneur central ===
         self.central_widget = QWidget(self)

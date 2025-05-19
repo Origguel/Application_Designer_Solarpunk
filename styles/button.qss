@@ -43,6 +43,8 @@
     color: #FCF7F3;
     border-radius: 6px;
     font-size: 12px;
+    text-align: left;
+    padding-left: 12px;
 }
 
 #Button_Default_Left_Selected:hover {

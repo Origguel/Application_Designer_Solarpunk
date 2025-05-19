@@ -1,6 +1,8 @@
 from PySide6.QtWidgets import QVBoxLayout, QHBoxLayout, QGridLayout, QFrame, QWidget
 from PySide6.QtCore import Qt
-from datetime import datetime
+import os
+import json
+from pathlib import Path
 
 # Components
 from app.components.buttons.button_icon import ButtonIcon
@@ -73,21 +75,14 @@ def Project_UI(self):
 
 
 
-    # Project List
-    self.project_list_item1 = ButtonText("Projet 1", style="Button_Default_Left", x=370, parent=self)
-    self.project_list_item2 = ButtonText("Projet 2", style="Button_Default_Left", x=370, parent=self)
-    self.project_list_item3 = ButtonText("Projet 3", style="Button_Default_Left", x=370, parent=self)
-    self.project_list_item4 = ButtonText("Projet 4", style="Button_Default_Left", x=370, parent=self)
-    
+    # Project List     
     self.project_list = QWidget(self)
-    project_list_layout = QVBoxLayout(self.project_list)
+    project_list_layout = QVBoxLayout()
     project_list_layout.setContentsMargins(0, 0, 0, 0)
-    project_list_layout.setSpacing(6)
+    project_list_layout.setSpacing(0)
 
-    project_list_layout.addWidget(self.project_list_item1)
-    project_list_layout.addWidget(self.project_list_item2)
-    project_list_layout.addWidget(self.project_list_item3)
-    project_list_layout.addWidget(self.project_list_item4)
+    self.project_list.setLayout(project_list_layout)  # ✅ fix critique ici
+    self.project_list_layout = project_list_layout
 
     self.project_list.hide()
     self.project_list.setEnabled(False)

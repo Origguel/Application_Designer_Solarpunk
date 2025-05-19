@@ -11,34 +11,23 @@ class InteractiveNoteCircleItem(QGraphicsEllipseItem):
         self.notes_view = notes_view
         self.setAcceptHoverEvents(True)
         self.setCursor(QCursor(Qt.PointingHandCursor))
-        self.setScale(1.0)  # ✅ important pour pouvoir reset
-        self.setBrush(QBrush(Qt.black))  # ✅ reste noir à l’état hover
+        self.setScale(1.0)
+        self.setBrush(QBrush(Qt.black))
 
     def hoverEnterEvent(self, event):
-        if self.note and not self.note._selected:
-            self.note.circle.setScale(2.0)
-            self.note.label.setScale(1.4)
-            self.note.refresh_brush()
+        if self.note and not self.note.is_selected():
+            self.note.highlight()
         super().hoverEnterEvent(event)
 
     def hoverLeaveEvent(self, event):
-        if self.note and not self.note._selected:
-            self.note.circle.setScale(1.0)
-            self.note.label.setScale(1.0)
-        if self.note:
-            self.note.refresh_brush()
+        if self.note and not self.note.is_selected():
+            self.note.remove_highlight()
         super().hoverLeaveEvent(event)
+
 
     def mousePressEvent(self, event):
         print(f"🖱️ Note cliquée : {self.note_id}")
         set_selected_note_id(self.note_id)
         self.notes_view.graph_widget.refresh_selection_visual()
-
-        if self.note:
-            for item in self.notes_view.graph_widget.note_items:
-                item.deselect()
-            self.note.select()
         self.notes_view.open_note_detail(self.note_id)
         super().mousePressEvent(event)
-
-    

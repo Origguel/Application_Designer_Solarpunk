@@ -11,6 +11,7 @@ from app.components.note.modes.cluster.cluster_graph_interaction import TreeGrap
 from app.components.note.modes.cluster.items.cluster_category_item import CategoryItem
 from app.components.note.modes.cluster.items.cluster_note_item import NoteItem
 from app.components.note.modes.cluster.cluster_camera_animation import animate_camera_to_center
+from app.utils.note_selection_manager import get_selected_note_id
 
 
 class ClusterModeWidget(QGraphicsView):
@@ -284,8 +285,14 @@ class ClusterModeWidget(QGraphicsView):
         animate_camera_to_center(self)
 
     def refresh_selection_visual(self):
+        selected_id = get_selected_note_id()
         for note in self.note_items:
-            note.refresh_selection_state()
+            # Supprime tous les highlight à chaque mise à jour
+            note.remove_highlight()
+
+            # Met à jour la sélection proprement
+            note.set_selected(note.note_id == selected_id)
+
 
 
 

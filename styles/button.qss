@@ -63,6 +63,14 @@
     font-size: 12px;
 }
 
+#Button_Medium:hover {
+    background-color: #EC831E;
+}
+
+
+
+
+
 #Button_Orange {
     background-color: #EC831E;
     color: #FCF7F3;

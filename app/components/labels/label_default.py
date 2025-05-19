@@ -9,9 +9,12 @@ class LabelDefault(QLabel):
         self.setWordWrap(True)
         self.setAlignment(Qt.AlignTop | Qt.AlignLeft)
 
-        self.setFixedWidth(x)
-
         if y is not None:
             self.setFixedHeight(y)
+        else:
+            self.setSizePolicy(QSizePolicy.Preferred, QSizePolicy.Minimum)
+
+        if x is not None:
+            self.setFixedWidth(x)
         else:
             self.setSizePolicy(QSizePolicy.Preferred, QSizePolicy.Minimum)

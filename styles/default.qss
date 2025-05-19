@@ -5,7 +5,7 @@
 }
 
 /* Style global pour NoteDetailWidget */
-#NoteDetailWidget {
+#NoteDetailWidget, #PriseDeNote {
     background-color: #EC831E;
     border-radius: 6px;
 }

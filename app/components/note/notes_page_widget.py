@@ -1,5 +1,5 @@
 from PySide6.QtWidgets import QWidget, QFrame, QLabel
-from PySide6.QtCore import Qt, QPointF, Signal, QObject
+from PySide6.QtCore import Qt, QPointF, Signal, QObject, QTimer
 import json
 from pathlib import Path
 
@@ -39,6 +39,10 @@ class NotesPageWidget(QWidget):
         self.timeline_visible = False
         self.theme_visible = False
         self.is_camera_animating = False
+
+        self.reset_view_timer = QTimer()
+        self.reset_view_timer.setSingleShot(True)
+        self.reset_view_timer.timeout.connect(self.reset_reset_button_style)
 
         self.visualization_container = QFrame(self)
         self.visualization_container.setGeometry(0, 0, self.width(), self.height())
@@ -145,12 +149,30 @@ class NotesPageWidget(QWidget):
         if self.is_camera_animating:
             print("⏳ Animation déjà en cours.")
             return
+
         current_widget = self.visualization_widgets.get(self.current_mode)
         if hasattr(current_widget, "reset_view"):
             current_widget.reset_view()
             print(f"🔄 Vue recentrée pour le mode {self.current_mode}.")
         else:
             print(f"❌ Le mode {self.current_mode} ne supporte pas encore la réinitialisation.")
+
+        # ✅ Changer le style du bouton temporairement
+        self.resetview_button.setObjectName("Button_Default_Selected")
+        self.resetview_button.style().unpolish(self.resetview_button)
+        self.resetview_button.style().polish(self.resetview_button)
+        self.resetview_button.update()
+
+        # ✅ Lancer le timer pour revenir au style normal après 2 secondes
+        self.reset_view_timer.start(2500)
+
+    def reset_reset_button_style(self):
+        self.resetview_button.setObjectName("Button_Default")
+        self.resetview_button.style().unpolish(self.resetview_button)
+        self.resetview_button.style().polish(self.resetview_button)
+        self.resetview_button.update()
+
+
 
     # ──────────────────────────────────────────────
     # ▶ Recherche & Ajout de notes

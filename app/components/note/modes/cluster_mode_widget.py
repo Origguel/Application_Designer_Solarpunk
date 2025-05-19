@@ -283,6 +283,10 @@ class ClusterModeWidget(QGraphicsView):
     def reset_view(self):
         animate_camera_to_center(self)
 
+    def refresh_selection_visual(self):
+        for note in self.note_items:
+            note.refresh_selection_state()
+
 
 
 

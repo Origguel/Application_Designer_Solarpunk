@@ -7,6 +7,7 @@ import json
 from pathlib import Path
 
 from app.components.note.modes.cluster.items.cluster_interactive_note_circle_item import InteractiveNoteCircleItem
+from app.utils.note_selection_manager import get_selected_note_id
 
 
 class NoteItem(QGraphicsItem):
@@ -255,3 +256,10 @@ class NoteItem(QGraphicsItem):
     
     def is_selected(self):
         return self._selected
+    
+    def refresh_selection_state(self):
+        selected_id = get_selected_note_id()
+        if self.note_id == selected_id:
+            self.select()
+        else:
+            self.deselect()

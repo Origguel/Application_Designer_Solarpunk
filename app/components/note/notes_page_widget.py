@@ -18,6 +18,7 @@ from app.components.note.delete_note_handler import confirm_and_delete_note
 from app.utils.categorie_manager.category_tree_updater import CategoryTreeUpdater
 from app.components.note.note_detail_widget import NoteDetailWidget
 from app.components.note.note_creator import NoteCreator
+from app.utils.note_selection_manager import set_selected_note_id, get_selected_note_id
 
 
 class NotesPageWidget(QWidget):
@@ -59,6 +60,7 @@ class NotesPageWidget(QWidget):
         self.current_mode = "cluster"
         self.switch_note_mode("cluster")
         self.toggle_cluster()
+
 
 
         
@@ -207,7 +209,14 @@ class NotesPageWidget(QWidget):
         else:
             print("❌ Aucune note sélectionnée pour suppression.")
 
-    def open_note_detail(self, note_id):
+    def open_note_detail(self, note_id=None):
+        if note_id is None:
+            note_id = get_selected_note_id()
+
+        if not note_id:
+            print("❌ Aucune note sélectionnée (ni paramètre, ni JSON).")
+            return
+
         note_path = Path(f"data/notes/{note_id}.json")
         if not note_path.exists():
             print(f"❌ Fichier de note introuvable : {note_path}")
@@ -217,7 +226,6 @@ class NotesPageWidget(QWidget):
             note_data = json.load(f)
 
         self.close_note_detail()
-
 
         note_detail_x = 408
         note_detail_y = self.height() - 54 - 16

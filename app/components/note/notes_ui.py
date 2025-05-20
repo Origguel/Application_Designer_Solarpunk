@@ -75,12 +75,22 @@ def setup_ui(self, note_id):
     leftbar_layout.addWidget(line2, alignment=Qt.AlignHCenter)
     leftbar_layout.addWidget(self.calender_button)
 
-    # Search bar
-    self.search_input = Input_Default(placeholder="Rechercher une note", x=370, parent=self)
-    self.search_input.raise_()
+
+
+
+
+    self.search_input = Input_Default(placeholder="Rechercher une note", x=None, y=32, parent=self)
     self.search_input.textChanged.connect(self.on_search_note)
-    self.search_input.hide()
-    self.search_input.setEnabled(False)
+
+    self.searchbar_widget = QWidget(self)
+    self.searchbar_widget_layout = QVBoxLayout(self.searchbar_widget)
+    self.searchbar_widget_layout.setContentsMargins(0, 0, 0, 0)
+    self.searchbar_widget_layout.addWidget(self.search_input)
+    self.searchbar_widget.resize(32, 32)
+    self.searchbar_widget.move(54, 16)
+    self.searchbar_widget.hide()
+    self.searchbar_widget.setEnabled(False)
+
 
     
 
@@ -104,8 +114,6 @@ def setup_ui(self, note_id):
     self.notetype_doc = ButtonIcon("note_doc", parent=self)
     self.notetype_lien = ButtonIcon("note_lien", parent=self)
     self.notetype_code = ButtonIcon("note_code", parent=self)
-    self.notetype_dessin = ButtonIcon("note_dessin", parent=self)
-    self.notetype_son = ButtonIcon("note_son", parent=self)
 
     self.contenu_input = Input_Multiline(placeholder="Contenu principal de la note", x=370, y=128, parent=self)
     self.createnote_button = ButtonText("Créer la note", x=94, parent=self)
@@ -138,13 +146,11 @@ def setup_ui(self, note_id):
         self.notetype_vidéo,
         self.notetype_doc,
         self.notetype_lien,
-        self.notetype_code,
-        self.notetype_dessin,
-        self.notetype_son
+        self.notetype_code
     ]
     for index, widget in enumerate(note_types):
-        row = index // 4 
-        col = index % 4
+        row = index // 3
+        col = index % 3
         addnote_part1_2_nt_layout.addWidget(widget, row, col)
     self.selected_note_type = None
     self.notetype_text.clicked.connect(lambda: self.set_note_type("text"))
@@ -153,9 +159,6 @@ def setup_ui(self, note_id):
     self.notetype_doc.clicked.connect(lambda: self.set_note_type("doc"))
     self.notetype_lien.clicked.connect(lambda: self.set_note_type("lien"))
     self.notetype_code.clicked.connect(lambda: self.set_note_type("code"))
-    self.notetype_dessin.clicked.connect(lambda: self.set_note_type("dessin"))
-    self.notetype_son.clicked.connect(lambda: self.set_note_type("son"))
-
 
     # Add note Widget part1_2 date projet type
     self.addnote_part1_2 = QWidget(self)

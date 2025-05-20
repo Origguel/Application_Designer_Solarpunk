@@ -9,7 +9,7 @@ from pathlib import Path
 from .project_ui import Project_UI
 from .prise_de_note import PriseDeNote
 from app.components.buttons.button_text import ButtonText
-from app.utils.project.project_ui_animation import (
+from app.utils.animations.project_ui_animation import (
     play_enter_exit_sequence,
     get_leave_animation,
     get_enter_animation,

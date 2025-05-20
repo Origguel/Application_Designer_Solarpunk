@@ -1,5 +1,5 @@
 from PySide6.QtWidgets import QWidget, QFrame, QLabel
-from PySide6.QtCore import Qt, QPointF, Signal, QObject, QTimer
+from PySide6.QtCore import Qt, QPointF, Signal, QObject, QTimer, QPoint, QSize
 import json
 from pathlib import Path
 
@@ -192,12 +192,19 @@ class NotesPageWidget(QWidget):
 
     def toggle_addnote_input(self):
         self.addnote_visible = not self.addnote_visible
-        self.addnote.setVisible(self.addnote_visible)
-        self.addnote.setEnabled(self.addnote_visible)
+
+        self.animation = play_toolbar_animation(
+            widget=self.addnote,
+            visible=self.addnote_visible,
+            target_pos=QPoint(54, 54),
+            target_size=QSize(370, 350)  # taille finale de ton addnote widget
+        )
+
         self.plus_button.setObjectName("Button_Default_Selected" if self.addnote_visible else "Button_Default")
         self.plus_button.style().unpolish(self.plus_button)
         self.plus_button.style().polish(self.plus_button)
         self.plus_button.update()
+
 
     def validate_and_save_note(self):
         title = self.title_input.text().strip()

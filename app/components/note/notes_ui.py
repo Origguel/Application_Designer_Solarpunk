@@ -193,5 +193,7 @@ def setup_ui(self, note_id):
     addnote_layout.setContentsMargins(0, 0, 0, 0)
     addnote_layout.addWidget(self.addnote_part1)
     addnote_layout.addWidget(self.addnote_part2)
+    self.addnote.resize(32, 500)
+    self.addnote.move(54, 54)
     self.addnote.hide()
     self.addnote.setEnabled(False)

@@ -139,6 +139,7 @@ class ProjectsPageWidget(QWidget):
         self.list_button.setObjectName("Button_Default_Selected" if self.project_list_visible else "Button_Default")
         self.list_button.style().unpolish(self.list_button)
         self.list_button.style().polish(self.list_button)
+        self.list_button.update_icon()
         self.list_button.update()
 
 

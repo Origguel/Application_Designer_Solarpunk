@@ -105,3 +105,4 @@ class PhotoModeWidget(QWidget):
         except Exception as e:
             print(f"❌ Erreur lecture projet sélectionné : {e}")
             return None
+        

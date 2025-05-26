@@ -13,6 +13,8 @@ from .photo_mode_widget import PhotoModeWidget
 
 from app.components.buttons.button_text import ButtonText
 from app.utils.animations.project_ui_animation import (play_enter_exit_sequence, get_leave_animation, get_enter_animation)
+from app.utils.animations.project_mode_animation import (animate_mode_leave, animate_mode_enter, animate_container_resize)
+
 
 
 
@@ -67,31 +69,86 @@ class ProjectsPageWidget(QWidget):
     # ──────────────────────────────────────────────
 
     def toggle_mode(self, mode_name: str):
-        # Définir les flags dynamiquement
+        # Dictionnaire des widgets disponibles
+        mode_widgets = {
+            "prisedenote": getattr(self, "prisedenote_widget", None),
+            "photo": getattr(self, "photo_widget", None)
+        }
+
+        # Widget entrant
+        incoming = mode_widgets.get(mode_name)
+        if not incoming:
+            print(f"❌ Incoming mode '{mode_name}' non reconnu.")
+            return
+
+        # Widget sortant : on vérifie qui est visible actuellement
+        outgoing = None
+        for name, widget in mode_widgets.items():
+            if widget and widget.isVisible():
+                outgoing = widget
+                break
+
+        print(f"Mode actuel : {mode_name}")
+        print(f"Outgoing : {getattr(outgoing, 'objectName', lambda: 'None')()}, Visible: {outgoing.isVisible() if outgoing else 'N/A'}")
+        print(f"Incoming : {getattr(incoming, 'objectName', lambda: 'None')()}")
+
+        if not outgoing:
+            print("⚠️ Aucun widget visible actuellement, pas d'animation.")
+            incoming.show()
+            self.update_mode_flags(mode_name)
+            self.update_project_container_size()
+            return
+
+        # Préparer les nouveaux flags
+        self.update_mode_flags(mode_name)
+
+        # Si mode photo, on charge les photos
+        if mode_name == "photo":
+            self.photo_widget.load_photos()
+
+        # Taille cible
+        target_width = 902 if mode_name == "photo" else 427
+        target_height = self.height() - 72 - 16
+
+        # Animation
+        def after_leave():
+            outgoing.hide()
+            self.animation = animate_container_resize(
+                container=self.project_container,
+                target_width=target_width,
+                target_height=target_height,
+                callback=lambda: self.start_enter_animation(incoming)
+            )
+
+        self.animation = animate_mode_leave(
+            widget_out=outgoing,
+            container_width=self.project_container.width(),
+            callback=after_leave
+        )
+
+    def update_mode_flags(self, mode_name: str):
         self.prisedenote_visible = (mode_name == "prisedenote")
         self.photo_visible       = (mode_name == "photo")
         self.notation_visible    = (mode_name == "notation")
         self.finalisation_visible= (mode_name == "finalisation")
 
-        self.prisedenote_widget.setVisible(self.prisedenote_visible)
-        self.photo_widget.setVisible(self.photo_visible)
 
 
-        # Mettre à jour les boutons
-        buttons = {
-            "prisedenote": self.prisedenote_button,
-            "photo": self.photo_button,
-            "notation": self.notation_button,
-            "finalisation": self.finalisation_button
-        }
 
-        for name, button in buttons.items():
-            selected = "Button_Default_Selected" if name == mode_name else "Button_Default"
-            button.setObjectName(selected)
-            button.update_icon()
+    def start_enter_animation(self, widget_in):
+        for w in [self.prisedenote_widget, self.photo_widget]:
+            if w != widget_in:
+                w.hide()
 
-        self.refresh_note_mode_button()
-        self.update_project_container_size()
+        widget_in.move(self.project_container.width(), widget_in.y())
+        widget_in.raise_()
+        widget_in.show()
+
+        self.animation = animate_mode_enter(
+            widget_in,
+            self.project_container
+        )
+
 
 
     def refresh_note_mode_button(self):
@@ -115,7 +172,6 @@ class ProjectsPageWidget(QWidget):
 
         elif self.photo_visible:
             container_size_x = 902
-
         else:
             container_size_x = 427
 

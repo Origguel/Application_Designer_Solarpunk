@@ -18,10 +18,8 @@ class ButtonIcon(QPushButton):
     def update_icon(self):
         style = self.objectName()
         if "Selected" in style or self.icon_color == "white":
-            print("icon_white")
             icon_path = os.path.join("assets", "icons", "white", f"{self.icon_name}.svg")
         else:
-            print("icon_black")
             icon_path = os.path.join("assets", "icons", "black", f"{self.icon_name}.svg")
 
         if os.path.exists(icon_path):

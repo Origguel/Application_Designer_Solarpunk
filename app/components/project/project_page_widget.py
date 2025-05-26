@@ -9,6 +9,7 @@ from pathlib import Path
 from .project_ui import Project_UI
 from .project_title import Project_Title
 from .prise_de_note import Prise_de_Note
+from .photo_mode_widget import PhotoModeWidget
 
 from app.components.buttons.button_text import ButtonText
 from app.utils.animations.project_ui_animation import (play_enter_exit_sequence, get_leave_animation, get_enter_animation)
@@ -29,9 +30,11 @@ class ProjectsPageWidget(QWidget):
         Project_UI(self)
         
         self.title_widget = Project_Title(self)
-        self.prisedenote_widget = Prise_de_Note(self)
         self.title_widget.show()
-        self.prisedenote_widget.show()
+
+        self.prisedenote_widget = Prise_de_Note(self)
+        self.photo_widget = PhotoModeWidget(self)
+        
 
         # 🧱 Conteneur indépendant pour le bloc "project"
         self.project_container = QWidget(self)
@@ -41,6 +44,7 @@ class ProjectsPageWidget(QWidget):
         self.project_layout.setSpacing(12)
         self.project_layout.addWidget(self.title_widget)
         self.project_layout.addWidget(self.prisedenote_widget)
+        self.project_layout.addWidget(self.photo_widget)
         self.project_layout.addStretch()
 
         self.toggle_mode("prisedenote")
@@ -51,20 +55,12 @@ class ProjectsPageWidget(QWidget):
 
     def resizeEvent(self, event):
         super().resizeEvent(event)
-
         self.leftbar.move(16, 16)
         self.project_list.move(54, 16)
         self.project_list.setFixedWidth(370)
+        self.update_project_container_size()
 
-        # Positionnement du container du bloc projet lors de la PRISE DE NOTES
-        container_size_x = 427
-        container_size_y = int(self.height() - 72 - 16)
-        
-        move_x = int(self.width() - 16 - container_size_x)
-        move_y = 72
 
-        self.project_container.move(move_x, move_y)
-        self.project_container.resize(container_size_x, container_size_y)
 
     # ──────────────────────────────────────────────
     # ▶ Contrôle des modes de visualisation
@@ -77,11 +73,9 @@ class ProjectsPageWidget(QWidget):
         self.notation_visible    = (mode_name == "notation")
         self.finalisation_visible= (mode_name == "finalisation")
 
-        # Afficher ou cacher le widget principal
-        if self.prisedenote_visible:
-            self.prisedenote_widget.show()
-        else:
-            self.prisedenote_widget.hide()
+        self.prisedenote_widget.setVisible(self.prisedenote_visible)
+        self.photo_widget.setVisible(self.photo_visible)
+
 
         # Mettre à jour les boutons
         buttons = {
@@ -97,6 +91,8 @@ class ProjectsPageWidget(QWidget):
             button.update_icon()
 
         self.refresh_note_mode_button()
+        self.update_project_container_size()
+
 
     def refresh_note_mode_button(self):
         buttons = [
@@ -110,6 +106,23 @@ class ProjectsPageWidget(QWidget):
             btn.style().unpolish(btn)
             btn.style().polish(btn)
             btn.update()
+
+    def update_project_container_size(self):
+        container_size_y = self.height() - 72 - 16
+
+        if self.prisedenote_visible:
+            container_size_x = 427
+        elif self.photo_visible:
+            container_size_x = 902  # 2 images + 1 gap horizontal : 443 * 2 + 16
+        else:
+            container_size_x = 427
+
+        move_x = self.width() - container_size_x - 16
+        move_y = 72
+
+        self.project_container.move(move_x, move_y)
+        self.project_container.resize(container_size_x, container_size_y)
+
 
 
 

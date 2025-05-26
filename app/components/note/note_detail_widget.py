@@ -14,10 +14,9 @@ class NoteDetailWidget(QFrame):
         self.setSizePolicy(QSizePolicy.Fixed, QSizePolicy.Minimum)
 
         note_name = LabelDefault(style="H1", text=note_data.get("title", ""), x=None)
-        note_name.setStyleSheet("background-color: rgba(0, 255, 0, 0.1);")
         self.note_close_button = ButtonIcon(icon_name="arrow_big_right", icon_color="white", style="Button_Orange")
-        note_contenu = LabelDefault(style="Text", text=note_data.get("contenu", ""), x=None)
-        note_contenu.setStyleSheet("background-color: rgba(0, 0, 255, 0.1);")
+        contenu_clean = note_data.get("contenu", "").strip()
+        note_contenu = LabelDefault(style="Text", text=contenu_clean, x=None)
         note_more_button = ButtonTextSmall(text="Voir plus d'information")
         note_projet = LabelDefault(style="Text", text=note_data.get("project", ""))
         note_date = LabelDefault(style="Text",text=note_data.get("date", ""))

@@ -239,7 +239,7 @@ class ProjectsPageWidget(QWidget):
             # ✅ Recharge dynamiquement le contenu de la prise de note
             if hasattr(self, 'prisedenote_widget'):
                 self.animation = play_enter_exit_sequence(
-                    self.title_widget,
+                    self.project_container,
                     self.width(),
                     self.title_widget.load_selected_project
                 )

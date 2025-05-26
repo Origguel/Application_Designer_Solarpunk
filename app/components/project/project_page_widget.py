@@ -71,6 +71,7 @@ class ProjectsPageWidget(QWidget):
         self.photo_button.setObjectName("Button_Default")
         self.notation_button.setObjectName("Button_Default")
         self.finalisation_button.setObjectName("Button_Default")
+        self.update_icon_color()
         self.refresh_note_mode_button()
     
     def toggle_photo(self):
@@ -83,6 +84,7 @@ class ProjectsPageWidget(QWidget):
         self.photo_button.setObjectName("Button_Default_Selected")
         self.notation_button.setObjectName("Button_Default")
         self.finalisation_button.setObjectName("Button_Default")
+        self.update_icon_color()
         self.refresh_note_mode_button()
 
     def toggle_notation(self):
@@ -95,6 +97,7 @@ class ProjectsPageWidget(QWidget):
         self.photo_button.setObjectName("Button_Default")
         self.notation_button.setObjectName("Button_Default_Selected")
         self.finalisation_button.setObjectName("Button_Default")
+        self.update_icon_color()
         self.refresh_note_mode_button()
 
     def toggle_finalisation(self):
@@ -107,6 +110,7 @@ class ProjectsPageWidget(QWidget):
         self.photo_button.setObjectName("Button_Default")
         self.notation_button.setObjectName("Button_Default")
         self.finalisation_button.setObjectName("Button_Default_Selected")
+        self.update_icon_color()
         self.refresh_note_mode_button()
 
     def refresh_note_mode_button(self):
@@ -114,6 +118,12 @@ class ProjectsPageWidget(QWidget):
             btn.style().unpolish(btn)
             btn.style().polish(btn)
             btn.update()
+
+    def update_icon_color(self):
+        self.prisedenote_button.update_icon()
+        self.photo_button.update_icon()
+        self.notation_button.update_icon()
+        self.finalisation_button.update_icon()
 
     def toggle_project_list(self):
         self.project_list_visible = not self.project_list_visible

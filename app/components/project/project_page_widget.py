@@ -19,9 +19,7 @@ class ProjectsPageWidget(QWidget):
     def __init__(self):
         super().__init__()
 
-        
-
-        self.prisedenote_visible = True
+        self.prisedenote_visible = False
         self.photo_visible = False
         self.notation_visible = False
         self.finalisation_visible = False
@@ -45,7 +43,7 @@ class ProjectsPageWidget(QWidget):
         self.project_layout.addWidget(self.prisedenote_widget)
         self.project_layout.addStretch()
 
-        self.toggle_prisedenote()
+        self.toggle_mode("prisedenote")
 
     # ──────────────────────────────────────────────
     # ▶ Événements Qt
@@ -72,69 +70,48 @@ class ProjectsPageWidget(QWidget):
     # ▶ Contrôle des modes de visualisation
     # ──────────────────────────────────────────────
 
-    def toggle_prisedenote(self):
-        self.prisedenote_visible = True
-        self.photo_visible = False
-        self.notation_visible = False
-        self.finalisation_visible = False
-        self.prisedenote_widget.show()
-        self.prisedenote_button.setObjectName("Button_Default_Selected")
-        self.photo_button.setObjectName("Button_Default")
-        self.notation_button.setObjectName("Button_Default")
-        self.finalisation_button.setObjectName("Button_Default")
-        self.update_icon_color()
-        self.refresh_note_mode_button()
-    
-    def toggle_photo(self):
-        self.prisedenote_visible = False
-        self.photo_visible = True
-        self.notation_visible = False
-        self.finalisation_visible = False
-        self.prisedenote_widget.hide()
-        self.prisedenote_button.setObjectName("Button_Default")
-        self.photo_button.setObjectName("Button_Default_Selected")
-        self.notation_button.setObjectName("Button_Default")
-        self.finalisation_button.setObjectName("Button_Default")
-        self.update_icon_color()
-        self.refresh_note_mode_button()
+    def toggle_mode(self, mode_name: str):
+        # Définir les flags dynamiquement
+        self.prisedenote_visible = (mode_name == "prisedenote")
+        self.photo_visible       = (mode_name == "photo")
+        self.notation_visible    = (mode_name == "notation")
+        self.finalisation_visible= (mode_name == "finalisation")
 
-    def toggle_notation(self):
-        self.prisedenote_visible = False
-        self.photo_visible = False
-        self.notation_visible = True
-        self.finalisation_visible = False
-        self.prisedenote_widget.hide()
-        self.prisedenote_button.setObjectName("Button_Default")
-        self.photo_button.setObjectName("Button_Default")
-        self.notation_button.setObjectName("Button_Default_Selected")
-        self.finalisation_button.setObjectName("Button_Default")
-        self.update_icon_color()
-        self.refresh_note_mode_button()
+        # Afficher ou cacher le widget principal
+        if self.prisedenote_visible:
+            self.prisedenote_widget.show()
+        else:
+            self.prisedenote_widget.hide()
 
-    def toggle_finalisation(self):
-        self.prisedenote_visible = False
-        self.photo_visible = False
-        self.notation_visible = False
-        self.finalisation_visible = True
-        self.prisedenote_widget.hide()
-        self.prisedenote_button.setObjectName("Button_Default")
-        self.photo_button.setObjectName("Button_Default")
-        self.notation_button.setObjectName("Button_Default")
-        self.finalisation_button.setObjectName("Button_Default_Selected")
-        self.update_icon_color()
+        # Mettre à jour les boutons
+        buttons = {
+            "prisedenote": self.prisedenote_button,
+            "photo": self.photo_button,
+            "notation": self.notation_button,
+            "finalisation": self.finalisation_button
+        }
+
+        for name, button in buttons.items():
+            selected = "Button_Default_Selected" if name == mode_name else "Button_Default"
+            button.setObjectName(selected)
+            button.update_icon()
+
         self.refresh_note_mode_button()
 
     def refresh_note_mode_button(self):
-        for btn in [self.prisedenote_button, self.photo_button, self.notation_button, self.finalisation_button]:
+        buttons = [
+            self.prisedenote_button,
+            self.photo_button,
+            self.notation_button,
+            self.finalisation_button
+        ]
+
+        for btn in buttons:
             btn.style().unpolish(btn)
             btn.style().polish(btn)
             btn.update()
 
-    def update_icon_color(self):
-        self.prisedenote_button.update_icon()
-        self.photo_button.update_icon()
-        self.notation_button.update_icon()
-        self.finalisation_button.update_icon()
+
 
     def toggle_project_list(self):
         self.project_list_visible = not self.project_list_visible

@@ -48,10 +48,10 @@ def Project_UI(self):
     project_mode_layout.addWidget(self.notation_button)
     project_mode_layout.addWidget(self.finalisation_button)
     # Project_mode Buttons Click
-    self.prisedenote_button.clicked.connect(self.toggle_prisedenote)
-    self.photo_button.clicked.connect(self.toggle_photo)
-    self.notation_button.clicked.connect(self.toggle_notation)
-    self.finalisation_button.clicked.connect(self.toggle_finalisation)
+    self.prisedenote_button.clicked.connect(lambda: self.toggle_mode("prisedenote"))
+    self.photo_button.clicked.connect(lambda: self.toggle_mode("photo"))
+    self.notation_button.clicked.connect(lambda: self.toggle_mode("notation"))
+    self.finalisation_button.clicked.connect(lambda: self.toggle_mode("finalisation"))
 
     # Lines
     line1 = QFrame()

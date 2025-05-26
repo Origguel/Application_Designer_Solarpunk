@@ -4,10 +4,10 @@ from PySide6.QtCore import Qt, QSize
 import os
 
 class ButtonIcon(QPushButton):
-    def __init__(self, icon_name="add", icon_color="black", style="Button_Default", parent=None):
+    def __init__(self, icon_name="add", icon_color="black", style="Button_Default", x=32, y=32, parent=None):
         super().__init__(parent)
 
-        self.setFixedSize(32, 32)
+        self.setFixedSize(x, y)
         self.setCursor(Qt.PointingHandCursor)
         self.icon_name = icon_name
         self.icon_color = icon_color

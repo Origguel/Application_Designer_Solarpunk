@@ -1,5 +1,5 @@
 from PySide6.QtWidgets import QWidget, QFrame, QLabel
-from PySide6.QtCore import Qt, QPointF, Signal, QObject, QTimer
+from PySide6.QtCore import Qt, QPointF, Signal, QObject, QTimer, QPoint, QSize
 import json
 from pathlib import Path
 
@@ -18,6 +18,7 @@ from app.utils.categorie_manager.category_tree_updater import CategoryTreeUpdate
 from app.components.note.note_detail_widget import NoteDetailWidget
 from app.components.note.note_creator import NoteCreator
 from app.utils.note_selection_manager import set_selected_note_id, get_selected_note_id
+from app.utils.animations.note_ui_animation import play_toolbar_animation
 
 
 class NotesPageWidget(QWidget):
@@ -75,9 +76,12 @@ class NotesPageWidget(QWidget):
             if widget:
                 widget.setGeometry(0, 0, self.width(), self.height())
 
-        self.search_input.move(54, 16)
+        self.searchbar_widget.move(54, 16)
         self.leftbar.move(16, 16)
         self.addnote.move(54, 54)
+
+        self.leftbar.raise_()
+        self.searchbar_widget.raise_()
 
     def keyPressEvent(self, event):
         if event.key() == Qt.Key_Escape:
@@ -87,6 +91,7 @@ class NotesPageWidget(QWidget):
         elif event.key() == Qt.Key_R:
             self.on_reset_view_button_clicked()
             print("🔄 Vue recentrée via touche R.")
+            
 
     # ──────────────────────────────────────────────
     # ▶ Liaison des handlers globaux
@@ -190,8 +195,7 @@ class NotesPageWidget(QWidget):
     # ──────────────────────────────────────────────
     def toggle_search_input(self):
         self.searchbar_visible = not self.searchbar_visible
-        self.search_input.setVisible(self.searchbar_visible)
-        self.search_input.setEnabled(self.searchbar_visible)
+        self.animation = play_toolbar_animation(self.searchbar_widget, self.searchbar_visible)
         self.search_button.setObjectName("Button_Default_Selected" if self.searchbar_visible else "Button_Default")
         self.search_button.style().unpolish(self.search_button)
         self.search_button.style().polish(self.search_button)
@@ -200,13 +204,20 @@ class NotesPageWidget(QWidget):
 
     def toggle_addnote_input(self):
         self.addnote_visible = not self.addnote_visible
-        self.addnote.setVisible(self.addnote_visible)
-        self.addnote.setEnabled(self.addnote_visible)
+
+        self.animation = play_toolbar_animation(
+            widget=self.addnote,
+            visible=self.addnote_visible,
+            target_pos=QPoint(54, 54),
+            target_size=QSize(370, 350)  # taille finale de ton addnote widget
+        )
+
         self.plus_button.setObjectName("Button_Default_Selected" if self.addnote_visible else "Button_Default")
         self.plus_button.style().unpolish(self.plus_button)
         self.plus_button.style().polish(self.plus_button)
         self.plus_button.update_icon()
         self.plus_button.update()
+
 
     def validate_and_save_note(self):
         title = self.title_input.text().strip()

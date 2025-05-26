@@ -75,12 +75,22 @@ def setup_ui(self, note_id):
     leftbar_layout.addWidget(line2, alignment=Qt.AlignHCenter)
     leftbar_layout.addWidget(self.calender_button)
 
-    # Search bar
-    self.search_input = Input_Default(placeholder="Rechercher une note", x=370, parent=self)
-    self.search_input.raise_()
+
+
+
+
+    self.search_input = Input_Default(placeholder="Rechercher une note", x=None, y=32, parent=self)
     self.search_input.textChanged.connect(self.on_search_note)
-    self.search_input.hide()
-    self.search_input.setEnabled(False)
+
+    self.searchbar_widget = QWidget(self)
+    self.searchbar_widget_layout = QVBoxLayout(self.searchbar_widget)
+    self.searchbar_widget_layout.setContentsMargins(0, 0, 0, 0)
+    self.searchbar_widget_layout.addWidget(self.search_input)
+    self.searchbar_widget.resize(32, 32)
+    self.searchbar_widget.move(54, 16)
+    self.searchbar_widget.hide()
+    self.searchbar_widget.setEnabled(False)
+
 
     
 
@@ -184,5 +194,7 @@ def setup_ui(self, note_id):
     addnote_layout.setContentsMargins(0, 0, 0, 0)
     addnote_layout.addWidget(self.addnote_part1)
     addnote_layout.addWidget(self.addnote_part2)
+    self.addnote.resize(32, 500)
+    self.addnote.move(54, 54)
     self.addnote.hide()
     self.addnote.setEnabled(False)

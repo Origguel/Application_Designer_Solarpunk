@@ -112,8 +112,12 @@ class ProjectsPageWidget(QWidget):
 
         if self.prisedenote_visible:
             container_size_x = 427
+
         elif self.photo_visible:
-            container_size_x = 902  # 2 images + 1 gap horizontal : 443 * 2 + 16
+            # ⚠️ Nouvelle logique : 902px si images, 443 si vide
+            photo_count = self.photo_widget.get_image_count() if hasattr(self, 'photo_widget') else 0
+            container_size_x = 902 if photo_count > 0 else 443
+
         else:
             container_size_x = 427
 
@@ -122,6 +126,7 @@ class ProjectsPageWidget(QWidget):
 
         self.project_container.move(move_x, move_y)
         self.project_container.resize(container_size_x, container_size_y)
+
 
 
 
@@ -244,6 +249,20 @@ class ProjectsPageWidget(QWidget):
                     self.width(),
                     self.title_widget.load_selected_project
                 )
+
+            if hasattr(self, 'photo_widget'):
+                self.animation = play_enter_exit_sequence(
+                    self.project_container,
+                    self.width(),
+                    lambda: [
+                        self.title_widget.load_selected_project(),
+                        self.photo_widget.load_photos()
+                    ]
+                )
+            else:
+                self.title_widget.load_selected_project()
+
+
 
 
 

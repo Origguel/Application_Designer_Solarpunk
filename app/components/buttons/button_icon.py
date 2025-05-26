@@ -4,19 +4,20 @@ from PySide6.QtCore import Qt, QSize
 import os
 
 class ButtonIcon(QPushButton):
-    def __init__(self, icon_name="add", style="Button_Default", parent=None):
+    def __init__(self, icon_name="add", icon_color="black", style="Button_Default", parent=None):
         super().__init__(parent)
 
         self.setFixedSize(32, 32)
         self.setCursor(Qt.PointingHandCursor)
         self.icon_name = icon_name
+        self.icon_color = icon_color
         self.setObjectName(style)
 
         self.update_icon()
 
     def update_icon(self):
         style = self.objectName()
-        if "Selected" in style:
+        if "Selected" in style or self.icon_color == "white":
             print("icon_white")
             icon_path = os.path.join("assets", "icons", "white", f"{self.icon_name}.svg")
         else:

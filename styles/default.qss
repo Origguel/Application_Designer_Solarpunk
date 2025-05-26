@@ -9,3 +9,13 @@
     background-color: #EC831E;
     border-radius: 6px;
 }
+
+
+#Keyword_Badge {
+    background-color: #EC831E;
+    color: #FCF7F3;
+    font-size: 12px;
+    padding: 2px 10px;
+    border-radius: 6px;
+    border: 1px solid #FCF7F3;
+}

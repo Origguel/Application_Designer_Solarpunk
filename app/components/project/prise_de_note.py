@@ -52,7 +52,7 @@ class PriseDeNote(QWidget):
         bottom_widget = QWidget()
         bottom_widget.setObjectName("PriseDeNote")
         bottom_layout = QVBoxLayout(bottom_widget)
-        bottom_layout.setContentsMargins(16, 16, 16, 16)
+        bottom_layout.setContentsMargins(0, 0, 0, 0)
         bottom_layout.addWidget(self.prisedenote_input)
 
         # -------- ASSEMBLAGE --------

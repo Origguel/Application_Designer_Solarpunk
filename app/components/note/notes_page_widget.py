@@ -284,17 +284,24 @@ class NotesPageWidget(QWidget):
     def set_note_type(self, note_type):
         self.selected_note_type = note_type
         print(f"📜 Type de note sélectionné : {note_type}")
+        
         all_buttons = [
-            self.notetype_text, self.notetype_image, self.notetype_vidéo,
-            self.notetype_doc, self.notetype_lien, self.notetype_code,
-            self.notetype_dessin, self.notetype_son
+            self.notetype_text, self.notetype_image, self.notetype_video,
+            self.notetype_doc, self.notetype_lien, self.notetype_code
         ]
+
+        # Réinitialiser tous les boutons
         for btn in all_buttons:
             btn.setObjectName("Button_Default")
             btn.style().unpolish(btn)
             btn.style().polish(btn)
+            btn.update_icon()  # 🔁 Mise à jour de l'icône après le style
+
+        # Appliquer le style "selected" au bon bouton
         selected_button = getattr(self, f"notetype_{note_type}", None)
         if selected_button:
             selected_button.setObjectName("Button_Default_Selected")
             selected_button.style().unpolish(selected_button)
             selected_button.style().polish(selected_button)
+            selected_button.update_icon()  # 🔁 Mise à jour icône sélectionnée
+

@@ -273,8 +273,7 @@ class NotesPageWidget(QWidget):
             note_data = json.load(f)
         self.close_note_detail()
         note_detail_x = 408
-        note_detail_y = self.height() - 54 - 16
-        self.note_detail_widget = NoteDetailWidget(note_data, x=note_detail_x, y=note_detail_y, parent=self)
+        self.note_detail_widget = NoteDetailWidget(note_data, x=408, parent=self)
         self.note_detail_widget.move(self.width() - note_detail_x - 16, 54)
         self.note_detail_widget.raise_()
         self.note_detail_widget.show()

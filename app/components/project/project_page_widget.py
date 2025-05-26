@@ -1,4 +1,4 @@
-from PySide6.QtWidgets import QWidget, QFrame, QLabel
+from PySide6.QtWidgets import QWidget, QVBoxLayout, QFrame, QLabel
 from PySide6.QtCore import Qt, QPointF, Signal, QObject, QTimer
 import json
 from pathlib import Path
@@ -7,19 +7,19 @@ from pathlib import Path
 
 # Components
 from .project_ui import Project_UI
-from .prise_de_note import PriseDeNote
+from .project_title import Project_Title
+from .prise_de_note import Prise_de_Note
+
 from app.components.buttons.button_text import ButtonText
-from app.utils.animations.project_ui_animation import (
-    play_enter_exit_sequence,
-    get_leave_animation,
-    get_enter_animation,
-)
+from app.utils.animations.project_ui_animation import (play_enter_exit_sequence, get_leave_animation, get_enter_animation)
 
 
 
 class ProjectsPageWidget(QWidget):
     def __init__(self):
         super().__init__()
+
+        
 
         self.prisedenote_visible = True
         self.photo_visible = False
@@ -28,10 +28,21 @@ class ProjectsPageWidget(QWidget):
         self.project_list_visible = False
         self.add_project_visible = False
 
-        Project_UI(self)               # initialise les boutons, etc.
-        self.init_prisedenote()       # crée prisedenote_widget proprement
-
+        Project_UI(self)
         
+        self.title_widget = Project_Title(self)
+        self.prisedenote_widget = Prise_de_Note(self)
+        self.title_widget.show()
+        self.prisedenote_widget.show()
+
+        # 🧱 Conteneur indépendant pour le bloc "project"
+        self.project_container = QWidget(self)
+        self.project_container.setObjectName("ProjectContainer")
+        self.project_layout = QVBoxLayout(self.project_container)
+        self.project_layout.setContentsMargins(0, 0, 0, 0)
+        self.project_layout.setSpacing(12)
+        self.project_layout.addWidget(self.title_widget)
+        self.project_layout.addWidget(self.prisedenote_widget)
 
         self.toggle_prisedenote()
 
@@ -43,18 +54,12 @@ class ProjectsPageWidget(QWidget):
         super().resizeEvent(event)
 
         self.leftbar.move(16, 16)
-
-        # Positionnement de la liste des projets
         self.project_list.move(54, 16)
         self.project_list.setFixedWidth(370)
 
-        # Positionnement du widget de note
-        if hasattr(self, 'prisedenote_widget') and self.prisedenote_widget:
-            x = int(self.width() * 0.865)
-            y = int(self.height() - 105 - 16)
-            move_x = int(self.width() - x - 16)
-            self.prisedenote_widget.move(move_x, 105)
-            self.prisedenote_widget.resize(x, y)
+        # Positionnement du container du bloc projet
+        self.project_container.move(64, 72)
+        self.project_container.resize(427, self.height() - 72 - 16)
 
 
     # ──────────────────────────────────────────────
@@ -124,7 +129,7 @@ class ProjectsPageWidget(QWidget):
             self.load_project_buttons()  # ✅ charger les projets ici
             self.project_list.raise_()
         else:
-            self.prisedenote_widget.raise_()
+            self.title_widget.raise_()
 
         self.list_button.setObjectName("Button_Default_Selected" if self.project_list_visible else "Button_Default")
         self.list_button.style().unpolish(self.list_button)
@@ -146,11 +151,6 @@ class ProjectsPageWidget(QWidget):
 
     def delete_project(self):
         print("delete projet")
-
-    def init_prisedenote(self):
-        self.prisedenote_widget = PriseDeNote(self)
-        self.prisedenote_widget.raise_()
-        self.prisedenote_widget.show()
 
 
     # ──────────────────────────────────────────────
@@ -233,9 +233,9 @@ class ProjectsPageWidget(QWidget):
             # ✅ Recharge dynamiquement le contenu de la prise de note
             if hasattr(self, 'prisedenote_widget'):
                 self.animation = play_enter_exit_sequence(
-                    self.prisedenote_widget,
+                    self.title_widget,
                     self.width(),
-                    self.prisedenote_widget.load_selected_project
+                    self.title_widget.load_selected_project
                 )
 
 

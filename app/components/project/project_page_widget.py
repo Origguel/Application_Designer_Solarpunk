@@ -43,6 +43,7 @@ class ProjectsPageWidget(QWidget):
         self.project_layout.setSpacing(12)
         self.project_layout.addWidget(self.title_widget)
         self.project_layout.addWidget(self.prisedenote_widget)
+        self.project_layout.addStretch()
 
         self.toggle_prisedenote()
 
@@ -60,7 +61,6 @@ class ProjectsPageWidget(QWidget):
         # Positionnement du container du bloc projet
         self.project_container.move(64, 72)
         self.project_container.resize(427, self.height() - 72 - 16)
-
 
     # ──────────────────────────────────────────────
     # ▶ Contrôle des modes de visualisation

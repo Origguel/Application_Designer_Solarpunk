@@ -6,10 +6,9 @@ class LabelDefault(QLabel):
         super().__init__(parent)
         self.setText(text)
         self.setObjectName(style)
-        self.setWordWrap(True)
+        self.setWordWrap(False)
         self.setAlignment(Qt.AlignTop | Qt.AlignLeft)
 
-        # Taille
         size_policy = QSizePolicy(QSizePolicy.Preferred, QSizePolicy.Minimum)
 
         if x is not None:
@@ -22,6 +21,6 @@ class LabelDefault(QLabel):
 
         self.setSizePolicy(size_policy)
 
-        # 🔍 Limite pour éviter l’expansion visuelle
-        self.setMinimumHeight(0)
-        self.setMaximumHeight(self.sizeHint().height())
+        # 🔥 Important : dire à Qt que la taille dépend du contenu
+        self.setMinimumSize(0, 0)
+        self.adjustSize()

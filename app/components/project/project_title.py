@@ -12,12 +12,17 @@ class Project_Title(QWidget):
 
         # -------- TITLE COMPONENTS --------
         self.title_label = LabelDefault(text="Pulp'Cycle", style="H1_WB", x=427)
+        self.title_label.setStyleSheet("color: #EC831E;")
         self.client_label = LabelDefault(text="Google", style="H2_WB", x=427)
         self.date_label = LabelDefault(text="Du 6 janvier 2025 au 23 mai 2025", style="Sous_Text_WB", x=427)
         self.see_note_button = ButtonTextSmall(text="Voir les notes de Pulp’Cycle", x=173)
 
+        self.load_selected_project()
+
+
         # CLIENT DATE
         client_date_widget = QWidget()
+        client_date_widget.setSizePolicy(QSizePolicy.Preferred, QSizePolicy.Minimum)
         client_date_widget_layout = QVBoxLayout(client_date_widget)
         client_date_widget_layout.setContentsMargins(0, 0, 0, 0)
         client_date_widget_layout.setSpacing(2)
@@ -32,10 +37,6 @@ class Project_Title(QWidget):
         layout.addWidget(client_date_widget)
         layout.addWidget(self.see_note_button)
         self.setSizePolicy(QSizePolicy.Preferred, QSizePolicy.Minimum)
-
-        self.setStyleSheet("background-color: rgba(0, 255, 0, 0.2);")
-
-        self.load_selected_project()
 
 
     def load_selected_project(self):

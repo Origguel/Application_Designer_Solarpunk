@@ -14,7 +14,7 @@ class Dropdown_Default(QComboBox):
             items = ["choix 1", "choix 2", "choix 3", "choix 4"]
         self.addItems(items)
 
-        icon_path = os.path.join("assets/icons/", f"{icon_name}.svg")
+        icon_path = os.path.join("assets/icons/white/", f"{icon_name}.svg")
 
         if os.path.exists(icon_path):
             self.setStyleSheet(f"""

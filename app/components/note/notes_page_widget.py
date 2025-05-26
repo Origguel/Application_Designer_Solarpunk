@@ -117,6 +117,9 @@ class NotesPageWidget(QWidget):
         self.cluster_button.setObjectName("Button_Default_Selected")
         self.timeline_button.setObjectName("Button_Default")
         self.theme_button.setObjectName("Button_Default")
+        self.cluster_button.update_icon()
+        self.timeline_button.update_icon()
+        self.theme_button.update_icon()
         self.refresh_note_mode_button()
 
     def toggle_timeline(self):
@@ -127,6 +130,9 @@ class NotesPageWidget(QWidget):
         self.cluster_button.setObjectName("Button_Default")
         self.timeline_button.setObjectName("Button_Default_Selected")
         self.theme_button.setObjectName("Button_Default")
+        self.cluster_button.update_icon()
+        self.timeline_button.update_icon()
+        self.theme_button.update_icon()
         self.refresh_note_mode_button()
 
     def toggle_theme(self):
@@ -137,6 +143,9 @@ class NotesPageWidget(QWidget):
         self.cluster_button.setObjectName("Button_Default")
         self.timeline_button.setObjectName("Button_Default")
         self.theme_button.setObjectName("Button_Default_Selected")
+        self.cluster_button.update_icon()
+        self.timeline_button.update_icon()
+        self.theme_button.update_icon()
         self.refresh_note_mode_button()
 
     def refresh_note_mode_button(self):
@@ -184,6 +193,7 @@ class NotesPageWidget(QWidget):
         self.search_button.setObjectName("Button_Default_Selected" if self.searchbar_visible else "Button_Default")
         self.search_button.style().unpolish(self.search_button)
         self.search_button.style().polish(self.search_button)
+        self.search_button.update_icon()
         self.search_button.update()
 
     def toggle_addnote_input(self):
@@ -193,6 +203,7 @@ class NotesPageWidget(QWidget):
         self.plus_button.setObjectName("Button_Default_Selected" if self.addnote_visible else "Button_Default")
         self.plus_button.style().unpolish(self.plus_button)
         self.plus_button.style().polish(self.plus_button)
+        self.plus_button.update_icon()
         self.plus_button.update()
 
     def validate_and_save_note(self):

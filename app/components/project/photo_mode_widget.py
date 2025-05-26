@@ -91,7 +91,7 @@ class PhotoModeWidget(QWidget):
         col = total_photos % 2
 
         add_button = ButtonIcon(icon_name="image", icon_color="black", style="Button_Medium", x=443, y=266)
-        self.layout.addWidget(add_button, row, col)
+        self.layout.addWidget(add_button, row, col, alignment=Qt.AlignLeft)
 
     def get_selected_project_id(self):
         selection_path = Path("assets/project/project_selected.json")
@@ -105,17 +105,3 @@ class PhotoModeWidget(QWidget):
         except Exception as e:
             print(f"❌ Erreur lecture projet sélectionné : {e}")
             return None
-
-
-    def get_image_count(self):
-        # Vérifie combien d'images sont actuellement chargées
-        selected_project_id = self.get_selected_project_id()
-        if not selected_project_id:
-            return 0
-
-        folder = Path(f"data/projets/Photos/{selected_project_id}")
-        if not folder.exists():
-            return 0
-
-        image_paths = list(folder.glob("*.png"))
-        return len(image_paths)

@@ -114,9 +114,7 @@ class ProjectsPageWidget(QWidget):
             container_size_x = 427
 
         elif self.photo_visible:
-            # ⚠️ Nouvelle logique : 902px si images, 443 si vide
-            photo_count = self.photo_widget.get_image_count() if hasattr(self, 'photo_widget') else 0
-            container_size_x = 902 if photo_count > 0 else 443
+            container_size_x = 902
 
         else:
             container_size_x = 427

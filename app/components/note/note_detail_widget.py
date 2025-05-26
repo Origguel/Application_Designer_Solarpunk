@@ -65,11 +65,13 @@ class NoteDetailWidget(QFrame):
         note_description = LabelDefault(style="Text", text=note_data.get("description", ""))
 
         # --- "Voir plus d'info" + détails
-        note_more_button = ButtonTextSmall(text="Voir plus d'information")
+        note_more_button = ButtonTextSmall(text="plus de détails")
+        note_more_button.setStyleSheet("color: #FCF7F3;")
         self.note_more_detail = QWidget(self)
         note_more_detail_layout = QVBoxLayout(self.note_more_detail)
         note_more_detail_layout.setSpacing(6)
         note_more_detail_layout.setContentsMargins(0, 0, 0, 0)
+        
         note_more_detail_layout.addWidget(project_date_widget)
         note_more_detail_layout.addWidget(note_keywords_widget)
         note_more_detail_layout.addWidget(note_description)

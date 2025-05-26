@@ -83,3 +83,24 @@
     background-color: #F4B67C;
     color: #2B2B2B;
 }
+
+
+
+
+
+
+#Button_Text_Small {
+    background-color: transparent;
+    color: #2B2B2B;
+    font-size: 12px;
+    font-weight: lighter;
+    text-align: left;
+    text-decoration: underline;
+    border: none;
+    padding: 0px;
+}
+
+#Button_Text_Small:hover {
+    text-decoration: none;
+    background-color: transparent;
+}

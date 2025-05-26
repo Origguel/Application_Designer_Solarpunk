@@ -14,7 +14,7 @@ class NoteDetailWidget(QFrame):
         self.setFixedHeight(y)
 
         note_name = LabelDefault(style="H1", text=note_data.get("title", ""), x=330)
-        self.note_close_button = ButtonIcon(icon_name="arrow_big_right", style="Button_Orange")
+        self.note_close_button = ButtonIcon(icon_name="arrow_big_right", icon_color="white", style="Button_Orange")
         note_contenu = LabelDefault(style="Text", text=note_data.get("contenu", ""))
         note_more_button = ButtonTextSmall(text="Voir plus d'information")
         note_projet = LabelDefault(style="Text", text=note_data.get("project", ""))

@@ -170,6 +170,7 @@ class NotesPageWidget(QWidget):
         self.resetview_button.setObjectName("Button_Default_Selected")
         self.resetview_button.style().unpolish(self.resetview_button)
         self.resetview_button.style().polish(self.resetview_button)
+        self.resetview_button.update_icon()
         self.resetview_button.update()
 
         # ✅ Lancer le timer pour revenir au style normal après 2 secondes
@@ -179,6 +180,7 @@ class NotesPageWidget(QWidget):
         self.resetview_button.setObjectName("Button_Default")
         self.resetview_button.style().unpolish(self.resetview_button)
         self.resetview_button.style().polish(self.resetview_button)
+        self.resetview_button.update_icon()
         self.resetview_button.update()
 
 

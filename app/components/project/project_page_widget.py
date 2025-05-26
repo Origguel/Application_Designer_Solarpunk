@@ -58,9 +58,15 @@ class ProjectsPageWidget(QWidget):
         self.project_list.move(54, 16)
         self.project_list.setFixedWidth(370)
 
-        # Positionnement du container du bloc projet
-        self.project_container.move(64, 72)
-        self.project_container.resize(427, self.height() - 72 - 16)
+        # Positionnement du container du bloc projet lors de la PRISE DE NOTES
+        container_size_x = 427
+        container_size_y = int(self.height() - 72 - 16)
+        
+        move_x = int(self.width() - 16 - container_size_x)
+        move_y = 72
+
+        self.project_container.move(move_x, move_y)
+        self.project_container.resize(container_size_x, container_size_y)
 
     # ──────────────────────────────────────────────
     # ▶ Contrôle des modes de visualisation

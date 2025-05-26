@@ -132,6 +132,22 @@ class ProjectsPageWidget(QWidget):
         self.notation_visible    = (mode_name == "notation")
         self.finalisation_visible= (mode_name == "finalisation")
 
+        # Mise à jour visuelle des boutons
+        button_map = {
+            "prisedenote": self.prisedenote_button,
+            "photo": self.photo_button,
+            "notation": self.notation_button,
+            "finalisation": self.finalisation_button,
+        }
+
+        for name, button in button_map.items():
+            style = "Button_Default_Selected" if name == mode_name else "Button_Default"
+            button.setObjectName(style)
+            button.update_icon()
+
+        self.refresh_note_mode_button()
+
+
 
 
 

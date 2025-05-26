@@ -20,8 +20,8 @@ def setup_ui(self, note_id):
     toolbar_layout.setSpacing(6)
     # Toolbar Buttons
     self.search_button = ButtonIcon("search", parent=self.toolbar)
-    self.plus_button = ButtonIcon("add", parent=self.toolbar)
-    self.resetview_button = ButtonIcon("resize", parent=self.toolbar)
+    self.plus_button = ButtonIcon("toolbar_add", parent=self.toolbar)
+    self.resetview_button = ButtonIcon("toolbar_resize", parent=self.toolbar)
     self.delete_button = ButtonIcon("trash", parent=self.toolbar)
     # Toolbar Buttons Order
     toolbar_layout.addWidget(self.search_button)
@@ -40,9 +40,9 @@ def setup_ui(self, note_id):
     note_mode_layout.setContentsMargins(0, 0, 0, 0)
     note_mode_layout.setSpacing(6)
     # Note_mode Buttons
-    self.cluster_button = ButtonIcon("cluster", parent=self.note_mode)
-    self.timeline_button = ButtonIcon("timeline", parent=self.note_mode)
-    self.theme_button = ButtonIcon("theme", parent=self.note_mode)
+    self.cluster_button = ButtonIcon("toolbar_cluster", parent=self.note_mode)
+    self.timeline_button = ButtonIcon("toolbar_timeline", parent=self.note_mode)
+    self.theme_button = ButtonIcon("toolbar_theme", parent=self.note_mode)
     # Note_mode Buttons Order
     note_mode_layout.addWidget(self.cluster_button)
     note_mode_layout.addWidget(self.timeline_button)
@@ -53,7 +53,7 @@ def setup_ui(self, note_id):
     self.theme_button.clicked.connect(self.toggle_theme)
 
     # Calender
-    self.calender_button = ButtonIcon("calendar", parent=self)
+    self.calender_button = ButtonIcon("toolbar_calendrier", parent=self)
 
     # Lines
     line1 = QFrame()

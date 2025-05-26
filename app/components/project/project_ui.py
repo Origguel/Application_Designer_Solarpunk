@@ -20,8 +20,8 @@ def Project_UI(self):
     toolbar_layout.setContentsMargins(0, 0, 0, 0)
     toolbar_layout.setSpacing(6)
     # Toolbar Buttons
-    self.list_button = ButtonIcon("list", parent=self.toolbar)
-    self.plus_button = ButtonIcon("add", parent=self.toolbar)
+    self.list_button = ButtonIcon("toolbar_list", parent=self.toolbar)
+    self.plus_button = ButtonIcon("toolbar_add", parent=self.toolbar)
     self.delete_button = ButtonIcon("trash", parent=self.toolbar)
     # Toolbar Buttons Order
     toolbar_layout.addWidget(self.list_button)
@@ -38,10 +38,10 @@ def Project_UI(self):
     project_mode_layout.setContentsMargins(0, 0, 0, 0)
     project_mode_layout.setSpacing(6)
     # Project_mode Buttons
-    self.prisedenote_button = ButtonIcon("prise_de_note", parent=self.project_mode)
-    self.photo_button = ButtonIcon("photo", parent=self.project_mode)
-    self.notation_button = ButtonIcon("notation", parent=self.project_mode)
-    self.finalisation_button = ButtonIcon("finalisation", parent=self.project_mode)
+    self.prisedenote_button = ButtonIcon("toolbar_prisedenote", parent=self.project_mode)
+    self.photo_button = ButtonIcon("toolbar_image", parent=self.project_mode)
+    self.notation_button = ButtonIcon("toolbar_notation", parent=self.project_mode)
+    self.finalisation_button = ButtonIcon("toolbar_finalisation", parent=self.project_mode)
     # Project_mode Buttons Order
     project_mode_layout.addWidget(self.prisedenote_button)
     project_mode_layout.addWidget(self.photo_button)

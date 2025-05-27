@@ -8,8 +8,10 @@ from pathlib import Path
 # Components
 from .project_ui import Project_UI
 from .project_title import Project_Title
-from .prise_de_note import Prise_de_Note
+
+from .prise_de_note_widget import Prise_de_Note
 from .photo_mode_widget import PhotoModeWidget
+from .mode_finalisation_widget import Mode_Finalisation
 
 from app.components.buttons.button_text import ButtonText
 from app.utils.animations.project_ui_animation import (play_enter_exit_sequence, get_leave_animation, get_enter_animation)
@@ -36,6 +38,11 @@ class ProjectsPageWidget(QWidget):
 
         self.prisedenote_widget = Prise_de_Note(self)
         self.photo_widget = PhotoModeWidget(self)
+        self.mode_finalisation_widget = Mode_Finalisation(self)
+
+        self.prisedenote_widget.hide()
+        self.photo_widget.hide()
+        self.mode_finalisation_widget.hide()
         
 
         # 🧱 Conteneur indépendant pour le bloc "project"
@@ -47,6 +54,7 @@ class ProjectsPageWidget(QWidget):
         self.project_layout.addWidget(self.title_widget)
         self.project_layout.addWidget(self.prisedenote_widget)
         self.project_layout.addWidget(self.photo_widget)
+        self.project_layout.addWidget(self.mode_finalisation_widget)
         self.project_layout.addStretch()
 
         self.toggle_mode("prisedenote")
@@ -69,48 +77,38 @@ class ProjectsPageWidget(QWidget):
     # ──────────────────────────────────────────────
 
     def toggle_mode(self, mode_name: str):
-        # Dictionnaire des widgets disponibles
         mode_widgets = {
-            "prisedenote": getattr(self, "prisedenote_widget", None),
-            "photo": getattr(self, "photo_widget", None)
+            "prisedenote": self.prisedenote_widget,
+            "photo": self.photo_widget,
+            "finalisation": self.mode_finalisation_widget
         }
 
-        # Widget entrant
         incoming = mode_widgets.get(mode_name)
         if not incoming:
-            print(f"❌ Incoming mode '{mode_name}' non reconnu.")
+            print(f"❌ Mode inconnu : {mode_name}")
             return
 
-        # Widget sortant : on vérifie qui est visible actuellement
-        outgoing = None
-        for name, widget in mode_widgets.items():
-            if widget and widget.isVisible():
-                outgoing = widget
-                break
+        outgoing = next((w for w in mode_widgets.values() if w and w.isVisible()), None)
 
-        print(f"Mode actuel : {mode_name}")
-        print(f"Outgoing : {getattr(outgoing, 'objectName', lambda: 'None')()}, Visible: {outgoing.isVisible() if outgoing else 'N/A'}")
-        print(f"Incoming : {getattr(incoming, 'objectName', lambda: 'None')()}")
-
-        if not outgoing:
-            print("⚠️ Aucun widget visible actuellement, pas d'animation.")
-            incoming.show()
-            self.update_mode_flags(mode_name)
-            self.update_project_container_size()
-            return
-
-        # Préparer les nouveaux flags
         self.update_mode_flags(mode_name)
 
-        # Si mode photo, on charge les photos
         if mode_name == "photo":
             self.photo_widget.load_photos()
 
-        # Taille cible
-        target_width = 902 if mode_name == "photo" else 427
+        mode_target_sizes = {
+            "prisedenote": 427,
+            "photo": 902,
+            "finalisation": 1184
+        }
+        target_width = mode_target_sizes.get(mode_name, 427)
         target_height = self.height() - 72 - 16
 
-        # Animation
+        if not outgoing:
+            print("⚠️ Aucun widget visible actuellement")
+            incoming.show()
+            self.update_project_container_size()  # ✅ uniquement ici
+            return
+
         def after_leave():
             outgoing.hide()
             self.animation = animate_container_resize(
@@ -125,6 +123,7 @@ class ProjectsPageWidget(QWidget):
             container_width=self.project_container.width(),
             callback=after_leave
         )
+
 
     def update_mode_flags(self, mode_name: str):
         self.prisedenote_visible = (mode_name == "prisedenote")
@@ -152,9 +151,10 @@ class ProjectsPageWidget(QWidget):
 
 
     def start_enter_animation(self, widget_in):
-        for w in [self.prisedenote_widget, self.photo_widget]:
+        for w in [self.prisedenote_widget, self.photo_widget, self.mode_finalisation_widget]:
             if w != widget_in:
                 w.hide()
+
 
         widget_in.move(self.project_container.width(), widget_in.y())
         widget_in.raise_()
@@ -185,9 +185,10 @@ class ProjectsPageWidget(QWidget):
 
         if self.prisedenote_visible:
             container_size_x = 427
-
         elif self.photo_visible:
             container_size_x = 902
+        elif self.finalisation_visible:
+            container_size_x = 1184
         else:
             container_size_x = 427
 

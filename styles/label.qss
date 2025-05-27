@@ -13,27 +13,41 @@
     line-height: 1;
 }
 
-#H1, #H1_WB {
+#Label_Default, #H1_WNB, #H2_WNB, #Text_WNB, #Text_Small_WNB, #Sous_Text_WNB {
+    background-color: transparent;
+    color: #ffffff;
+    font-family: Arial, Helvetica, sans-serif;
+    line-height: 1;
+}
+
+#H1, #H1_WB, #H1_WNB {
     font-size: 24px;
     font-weight: bold;
 }
 
-#H2, #H2_WB {
+#H2, #H2_WB, #H2_WNB {
     font-size: 14px;
     font-weight: bold;
 }
 
-#Text, #Text_WB {
+#Text, #Text_WB, #Text_WNB {
     font-size: 14px;
     font-weight: medium;
 }
 
-#Text_Small, #Text_Small_WB {
+#Text_Small, #Text_Small_WB, #Text_Small_WNB {
     font-size: 12px;
     font-weight: medium;
 }
 
-#Sous_Text, #Sous_Text_WB {
+#Sous_Text, #Sous_Text_WB, #Sous_Text_WNB {
     font-size: 12px;
     font-weight: lighter;
+}
+
+#Notation_Solarpunk {
+    color: #FCF7F3;
+    font-size: 36px;
+    font-weight: bold;
+    line-height: 1;
 }

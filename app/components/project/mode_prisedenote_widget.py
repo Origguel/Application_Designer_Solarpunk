@@ -68,12 +68,31 @@ class Mode_Prisedenote(QWidget):
         try:
             with open(project_path, "r", encoding="utf-8") as f:
                 project_data = json.load(f)
-                text = project_data.get("prise_de_note", "")
-                print(f"📥 Texte récupéré : {text}")
-                self.prisedenote_input.setText(text)
+                raw_text = project_data.get("prise_de_note", "")
+                print(f"📥 Texte brut récupéré : {repr(raw_text)}")
+
+                # Nettoyage initial une seule fois
+                cleaned_text = raw_text.rstrip()
+                if cleaned_text.strip() == "":
+                    cleaned_text = ""
+                    print("🔧 Texte vidé car uniquement espaces/retours")
+                else:
+                    if cleaned_text != raw_text:
+                        print("🔧 Texte nettoyé (espaces/retours enlevés en fin)")
+                    cleaned_text += "\n"
+                    print("➕ Ligne vide ajoutée à la fin")
+
+                # Mise à jour du JSON une seule fois
+                project_data["prise_de_note"] = cleaned_text
+                with open(project_path, "w", encoding="utf-8") as f:
+                    json.dump(project_data, f, indent=4, ensure_ascii=False)
+                    print("🧼 Correction sauvegardée une seule fois.")
+
+                self.prisedenote_input.setText(cleaned_text)
 
         except Exception as e:
             print(f"❌ Erreur lecture projet : {e}")
+
 
 
     def save_data(self):
@@ -88,7 +107,8 @@ class Mode_Prisedenote(QWidget):
             with open(project_path, "r", encoding="utf-8") as f:
                 data = json.load(f)
 
-            data["prise_de_note"] = self.prisedenote_input.toPlainText()
+            texte = self.prisedenote_input.toPlainText()
+            data["prise_de_note"] = texte
 
             with open(project_path, "w", encoding="utf-8") as f:
                 json.dump(data, f, indent=4, ensure_ascii=False)

@@ -9,7 +9,7 @@ class Prise_de_Note(QWidget):
         self.prisedenote_input = Input_Multiline(
             object_name="Input_Multiline_Prisedenote",
             placeholder="Prise de note",
-            x=427,
+            x=384,
             y=True
         )
 

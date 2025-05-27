@@ -45,10 +45,10 @@ class PhotoModeWidget(QWidget):
 
         for i, path in enumerate(image_paths):
             frame = PhotoFrame()
-            frame.setFixedSize(443, 266)
+            frame.setFixedSize(384, 230)
 
             label = QLabel(frame)
-            label.setFixedSize(443, 266)
+            label.setFixedSize(384, 230)
             label.setAlignment(Qt.AlignCenter)
 
             if path.exists():
@@ -71,21 +71,21 @@ class PhotoModeWidget(QWidget):
                 label.setText("📸")
 
             delete_button = ButtonIcon(icon_name="trash", icon_color="white", style="Button_EveryBackground", parent=frame)
-            delete_button.move(443 - 32 - 6, 6)
+            delete_button.move(384 - 32 - 6, 6)
             delete_button.clicked.connect(lambda _, p=path: self.delete_photo(p))
 
             frame.set_delete_button(delete_button)
 
-            row = i // 2
-            col = i % 2
+            row = i // 3
+            col = i % 3
             self.layout.addWidget(frame, row, col)
 
         # ➕ Ajouter bouton "ajouter"
         total_photos = len(image_paths)
-        row = total_photos // 2
-        col = total_photos % 2
+        row = total_photos // 3
+        col = total_photos % 3
 
-        add_button = ButtonIcon(icon_name="image", icon_color="black", style="Button_Medium", x=443, y=266)
+        add_button = ButtonIcon(icon_name="image", icon_color="black", style="Button_Medium", x=384, y=230)
         add_button.clicked.connect(self.handle_add_photo)
         self.layout.addWidget(add_button, row, col, alignment=Qt.AlignLeft)
 

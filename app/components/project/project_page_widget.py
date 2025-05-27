@@ -96,8 +96,8 @@ class ProjectsPageWidget(QWidget):
             self.photo_widget.load_photos()
 
         mode_target_sizes = {
-            "prisedenote": 427,
-            "photo": 902,
+            "prisedenote": 384,
+            "photo": 1184,
             "finalisation": 1184
         }
         target_width = mode_target_sizes.get(mode_name, 427)
@@ -186,11 +186,11 @@ class ProjectsPageWidget(QWidget):
         if self.prisedenote_visible:
             container_size_x = 427
         elif self.photo_visible:
-            container_size_x = 902
+            container_size_x = 1184
         elif self.finalisation_visible:
             container_size_x = 1184
         else:
-            container_size_x = 427
+            container_size_x = 1184
 
         move_x = self.width() - container_size_x - 16
         move_y = 72

@@ -9,9 +9,9 @@ from pathlib import Path
 from .project_ui import Project_UI
 from .project_title import Project_Title
 
-from .mode_prisedenote_widget import Mode_Prisedenote
-from .mode_photo_widget import Mode_Photo
-from .mode_finalisation_widget import Mode_Finalisation
+from .mode.mode_prisedenote_widget import Mode_Prisedenote
+from .mode.mode_photo_widget import Mode_Photo
+from .mode.mode_finalisation_widget import Mode_Finalisation
 
 from app.components.buttons.button_text import ButtonText
 from app.utils.animations.project_ui_animation import (play_enter_exit_sequence, get_leave_animation, get_enter_animation)

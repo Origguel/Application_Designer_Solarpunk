@@ -57,6 +57,7 @@ class ProjectsPageWidget(QWidget):
         self.project_layout.addWidget(self.mode_finalisation_widget)
         self.project_layout.addStretch()
 
+        self.mode_prisedenote_widget.load_data()
         self.toggle_mode("prisedenote")
 
     # ──────────────────────────────────────────────
@@ -310,34 +311,20 @@ class ProjectsPageWidget(QWidget):
 
             print(f"✅ Projet sélectionné : {project_id}")
 
-            self.load_project_buttons()  # Met à jour les styles visuels
-            self.toggle_project_list() # Ferme la list de note
+            self.load_project_buttons()
+            self.toggle_project_list()
 
-            # ✅ Recharge dynamiquement le contenu de la prise de note
-            if hasattr(self, 'prisedenote_widget'):
-                self.animation = play_enter_exit_sequence(
-                    self.project_container,
-                    self.width(),
-                    self.title_widget.load_selected_project
-                )
+            # MAJ des différents composants
+            self.title_widget.load_selected_project()
 
-            if hasattr(self, 'photo_widget'):
-                self.animation = play_enter_exit_sequence(
-                    self.project_container,
-                    self.width(),
-                    lambda: [
-                        self.title_widget.load_selected_project(),
-                        self.mode_photo_widget.load_photos()
-                    ]
-                )
-            else:
-                self.title_widget.load_selected_project()
+            if hasattr(self, 'mode_prisedenote_widget'):
+                self.mode_prisedenote_widget.load_data()
 
+            if hasattr(self, 'mode_photo_widget'):
+                self.mode_photo_widget.load_photos()
 
-
-
+            if hasattr(self, 'mode_finalisation_widget'):
+                self.mode_finalisation_widget.load_data()  # À faire si besoin
 
         except Exception as e:
             print(f"❌ Erreur lors de la mise à jour du fichier : {e}")
-
-

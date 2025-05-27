@@ -58,6 +58,7 @@ class ProjectsPageWidget(QWidget):
         self.project_layout.addStretch()
 
         self.mode_prisedenote_widget.load_data()
+        self.mode_finalisation_widget.load_data()
         self.toggle_mode("prisedenote")
 
     # ──────────────────────────────────────────────

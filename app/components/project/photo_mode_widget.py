@@ -1,14 +1,11 @@
-from PySide6.QtWidgets import QWidget, QLabel, QGridLayout
+from PySide6.QtWidgets import QWidget, QLabel, QGridLayout, QVBoxLayout, QHBoxLayout, QFrame, QFileDialog
 from PySide6.QtGui import QPixmap, QPainter, QPainterPath
 from PySide6.QtCore import Qt
-from PySide6.QtWidgets import QVBoxLayout, QHBoxLayout, QFrame
-from PySide6.QtCore import QSize
 from app.components.buttons.button_icon import ButtonIcon
 
 import os
 import json
 from pathlib import Path
-from PySide6.QtWidgets import QFileDialog
 import shutil
 
 
@@ -47,17 +44,11 @@ class PhotoModeWidget(QWidget):
         image_paths = sorted(folder.glob("*.png"))
 
         for i, path in enumerate(image_paths):
-            container = QFrame()
-            container.setFixedSize(443, 266)
-            container.setStyleSheet("background-color: transparent;")
+            frame = PhotoFrame()
+            frame.setFixedSize(443, 266)
 
-            layout = QVBoxLayout(container)
-            layout.setContentsMargins(0, 0, 0, 0)
-
-            # Image
-            label = QLabel()
+            label = QLabel(frame)
             label.setFixedSize(443, 266)
-            label.setStyleSheet("border-radius: 6px; background-color: #F4B67C;")
             label.setAlignment(Qt.AlignCenter)
 
             if path.exists():
@@ -79,27 +70,15 @@ class PhotoModeWidget(QWidget):
             else:
                 label.setText("📸")
 
-            # Bouton delete
-            delete_button = ButtonIcon(icon_name="trash", icon_color="white", style="Button_Default")
+            delete_button = ButtonIcon(icon_name="trash", icon_color="white", style="Button_EveryBackground", parent=frame)
+            delete_button.move(443 - 32 - 6, 6)
             delete_button.clicked.connect(lambda _, p=path: self.delete_photo(p))
 
-            # Overlay bouton
-            overlay = QWidget()
-            overlay_layout = QHBoxLayout(overlay)
-            overlay_layout.setContentsMargins(0, 0, 0, 0)
-            overlay_layout.addStretch()
-            overlay_layout.addWidget(delete_button, alignment=Qt.AlignRight | Qt.AlignTop)
+            frame.set_delete_button(delete_button)
 
-            frame = QWidget()
-            frame_layout = QVBoxLayout(frame)
-            frame_layout.setContentsMargins(6, 6, 6, 6)
-            frame_layout.addWidget(label)
-            frame_layout.addWidget(overlay)
-
-            layout.addWidget(frame)
             row = i // 2
             col = i % 2
-            self.layout.addWidget(container, row, col)
+            self.layout.addWidget(frame, row, col)
 
         # ➕ Ajouter bouton "ajouter"
         total_photos = len(image_paths)
@@ -122,7 +101,7 @@ class PhotoModeWidget(QWidget):
         except Exception as e:
             print(f"❌ Erreur lecture projet sélectionné : {e}")
             return None
-        
+
     def handle_add_photo(self):
         selected_project_id = self.get_selected_project_id()
         if not selected_project_id:
@@ -142,7 +121,6 @@ class PhotoModeWidget(QWidget):
         folder = Path(f"data/projets/Photos/{selected_project_id}")
         folder.mkdir(parents=True, exist_ok=True)
 
-        # Compter les fichiers actuels pour générer les noms suivants
         existing = sorted(folder.glob("*.*"))
         start_index = len(existing) + 1
 
@@ -151,7 +129,7 @@ class PhotoModeWidget(QWidget):
             target = folder / f"{i:04}{extension}"
             shutil.copy(file_path, target)
 
-        self.load_photos()  # 🔁 Recharger les images
+        self.load_photos()
 
     def delete_photo(self, path: Path):
         try:
@@ -160,3 +138,24 @@ class PhotoModeWidget(QWidget):
             self.load_photos()
         except Exception as e:
             print(f"❌ Erreur suppression {path}: {e}")
+
+
+class PhotoFrame(QFrame):
+    def __init__(self, parent=None):
+        super().__init__(parent)
+        self.delete_button = None
+
+    def set_delete_button(self, button):
+        self.delete_button = button
+        if self.delete_button:
+            self.delete_button.hide()
+
+    def enterEvent(self, event):
+        if self.delete_button:
+            self.delete_button.show()
+        super().enterEvent(event)
+
+    def leaveEvent(self, event):
+        if self.delete_button:
+            self.delete_button.hide()
+        super().leaveEvent(event)

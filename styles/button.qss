@@ -104,3 +104,18 @@
     text-decoration: none;
     background-color: transparent;
 }
+
+
+
+
+
+#Button_EveryBackground {
+    background-color: transparent;
+    color: #FCF7F3;
+    border-radius: 6px;
+}
+
+#Button_EveryBackground:hover {
+    background-color: #F4B67C;
+    color: #2B2B2B;
+}

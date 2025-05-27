@@ -1,11 +1,15 @@
 from PySide6.QtWidgets import QWidget, QLabel, QGridLayout
 from PySide6.QtGui import QPixmap, QPainter, QPainterPath
 from PySide6.QtCore import Qt
+from PySide6.QtWidgets import QVBoxLayout, QHBoxLayout, QFrame
+from PySide6.QtCore import QSize
 from app.components.buttons.button_icon import ButtonIcon
 
 import os
 import json
 from pathlib import Path
+from PySide6.QtWidgets import QFileDialog
+import shutil
 
 
 class PhotoModeWidget(QWidget):
@@ -33,37 +37,31 @@ class PhotoModeWidget(QWidget):
     def load_photos(self):
         self.clear_photos()
 
-        # 🧩 Obtenir l’ID du projet sélectionné
         selected_project_id = self.get_selected_project_id()
         if not selected_project_id:
             print("❌ Aucun projet sélectionné.")
             return
 
-        # 📂 Construire le chemin vers le dossier des photos
         folder = Path(f"data/projets/Photos/{selected_project_id}")
-        if not folder.exists():
-            print(f"📁 Dossier photos introuvable pour {selected_project_id}, création automatique.")
-            try:
-                folder.mkdir(parents=True, exist_ok=True)
-            except Exception as e:
-                print(f"❌ Impossible de créer le dossier : {e}")
-                return
+        folder.mkdir(parents=True, exist_ok=True)
+        image_paths = sorted(folder.glob("*.png"))
 
-
-        # 📸 Lister les fichiers image valides
-        image_paths = sorted([
-            str(p) for p in folder.glob("*.png")
-        ])
-
-        # 🧱 Afficher les photos
         for i, path in enumerate(image_paths):
+            container = QFrame()
+            container.setFixedSize(443, 266)
+            container.setStyleSheet("background-color: transparent;")
+
+            layout = QVBoxLayout(container)
+            layout.setContentsMargins(0, 0, 0, 0)
+
+            # Image
             label = QLabel()
             label.setFixedSize(443, 266)
             label.setStyleSheet("border-radius: 6px; background-color: #F4B67C;")
             label.setAlignment(Qt.AlignCenter)
 
-            if os.path.exists(path):
-                original = QPixmap(path)
+            if path.exists():
+                original = QPixmap(str(path))
                 scaled = original.scaled(label.size(), Qt.KeepAspectRatioByExpanding, Qt.SmoothTransformation)
 
                 rounded = QPixmap(label.size())
@@ -81,16 +79,35 @@ class PhotoModeWidget(QWidget):
             else:
                 label.setText("📸")
 
+            # Bouton delete
+            delete_button = ButtonIcon(icon_name="trash", icon_color="white", style="Button_Default")
+            delete_button.clicked.connect(lambda _, p=path: self.delete_photo(p))
+
+            # Overlay bouton
+            overlay = QWidget()
+            overlay_layout = QHBoxLayout(overlay)
+            overlay_layout.setContentsMargins(0, 0, 0, 0)
+            overlay_layout.addStretch()
+            overlay_layout.addWidget(delete_button, alignment=Qt.AlignRight | Qt.AlignTop)
+
+            frame = QWidget()
+            frame_layout = QVBoxLayout(frame)
+            frame_layout.setContentsMargins(6, 6, 6, 6)
+            frame_layout.addWidget(label)
+            frame_layout.addWidget(overlay)
+
+            layout.addWidget(frame)
             row = i // 2
             col = i % 2
-            self.layout.addWidget(label, row, col)
+            self.layout.addWidget(container, row, col)
 
-        # ➕ Ajouter le bouton en dernier
+        # ➕ Ajouter bouton "ajouter"
         total_photos = len(image_paths)
         row = total_photos // 2
         col = total_photos % 2
 
         add_button = ButtonIcon(icon_name="image", icon_color="black", style="Button_Medium", x=443, y=266)
+        add_button.clicked.connect(self.handle_add_photo)
         self.layout.addWidget(add_button, row, col, alignment=Qt.AlignLeft)
 
     def get_selected_project_id(self):
@@ -106,3 +123,40 @@ class PhotoModeWidget(QWidget):
             print(f"❌ Erreur lecture projet sélectionné : {e}")
             return None
         
+    def handle_add_photo(self):
+        selected_project_id = self.get_selected_project_id()
+        if not selected_project_id:
+            print("❌ Aucun projet sélectionné pour l'ajout d'image.")
+            return
+
+        files, _ = QFileDialog.getOpenFileNames(
+            self,
+            "Ajouter des images au projet",
+            "",
+            "Images (*.png *.jpg *.jpeg *.bmp)"
+        )
+
+        if not files:
+            return
+
+        folder = Path(f"data/projets/Photos/{selected_project_id}")
+        folder.mkdir(parents=True, exist_ok=True)
+
+        # Compter les fichiers actuels pour générer les noms suivants
+        existing = sorted(folder.glob("*.*"))
+        start_index = len(existing) + 1
+
+        for i, file_path in enumerate(files, start=start_index):
+            extension = Path(file_path).suffix.lower()
+            target = folder / f"{i:04}{extension}"
+            shutil.copy(file_path, target)
+
+        self.load_photos()  # 🔁 Recharger les images
+
+    def delete_photo(self, path: Path):
+        try:
+            os.remove(path)
+            print(f"🗑️ Supprimé : {path}")
+            self.load_photos()
+        except Exception as e:
+            print(f"❌ Erreur suppression {path}: {e}")

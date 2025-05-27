@@ -9,8 +9,8 @@ from pathlib import Path
 from .project_ui import Project_UI
 from .project_title import Project_Title
 
-from .prise_de_note_widget import Prise_de_Note
-from .photo_mode_widget import PhotoModeWidget
+from .mode_prisedenote_widget import Mode_Prisedenote
+from .mode_photo_widget import Mode_Photo
 from .mode_finalisation_widget import Mode_Finalisation
 
 from app.components.buttons.button_text import ButtonText
@@ -36,12 +36,12 @@ class ProjectsPageWidget(QWidget):
         self.title_widget = Project_Title(self)
         self.title_widget.show()
 
-        self.prisedenote_widget = Prise_de_Note(self)
-        self.photo_widget = PhotoModeWidget(self)
+        self.mode_prisedenote_widget = Mode_Prisedenote(self)
+        self.mode_photo_widget = Mode_Photo(self)
         self.mode_finalisation_widget = Mode_Finalisation(self)
 
-        self.prisedenote_widget.hide()
-        self.photo_widget.hide()
+        self.mode_prisedenote_widget.hide()
+        self.mode_photo_widget.hide()
         self.mode_finalisation_widget.hide()
         
 
@@ -52,8 +52,8 @@ class ProjectsPageWidget(QWidget):
         self.project_layout.setContentsMargins(0, 0, 0, 0)
         self.project_layout.setSpacing(12)
         self.project_layout.addWidget(self.title_widget)
-        self.project_layout.addWidget(self.prisedenote_widget)
-        self.project_layout.addWidget(self.photo_widget)
+        self.project_layout.addWidget(self.mode_prisedenote_widget)
+        self.project_layout.addWidget(self.mode_photo_widget)
         self.project_layout.addWidget(self.mode_finalisation_widget)
         self.project_layout.addStretch()
 
@@ -78,8 +78,8 @@ class ProjectsPageWidget(QWidget):
 
     def toggle_mode(self, mode_name: str):
         mode_widgets = {
-            "prisedenote": self.prisedenote_widget,
-            "photo": self.photo_widget,
+            "prisedenote": self.mode_prisedenote_widget,
+            "photo": self.mode_photo_widget,
             "finalisation": self.mode_finalisation_widget
         }
 
@@ -93,7 +93,7 @@ class ProjectsPageWidget(QWidget):
         self.update_mode_flags(mode_name)
 
         if mode_name == "photo":
-            self.photo_widget.load_photos()
+            self.mode_photo_widget.load_photos()
 
         mode_target_sizes = {
             "prisedenote": 384,
@@ -151,7 +151,7 @@ class ProjectsPageWidget(QWidget):
 
 
     def start_enter_animation(self, widget_in):
-        for w in [self.prisedenote_widget, self.photo_widget, self.mode_finalisation_widget]:
+        for w in [self.mode_prisedenote_widget, self.mode_photo_widget, self.mode_finalisation_widget]:
             if w != widget_in:
                 w.hide()
 
@@ -327,7 +327,7 @@ class ProjectsPageWidget(QWidget):
                     self.width(),
                     lambda: [
                         self.title_widget.load_selected_project(),
-                        self.photo_widget.load_photos()
+                        self.mode_photo_widget.load_photos()
                     ]
                 )
             else:

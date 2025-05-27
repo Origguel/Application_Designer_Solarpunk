@@ -2,7 +2,7 @@ from PySide6.QtWidgets import QWidget, QVBoxLayout, QSizePolicy
 from PySide6.QtCore import Qt
 from app.components.inputs.input_multiline import Input_Multiline
 
-class Prise_de_Note(QWidget):
+class Mode_Prisedenote(QWidget):
     def __init__(self, parent=None):
         super().__init__(parent)
 

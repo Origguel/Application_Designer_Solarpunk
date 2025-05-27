@@ -9,7 +9,7 @@ from pathlib import Path
 import shutil
 
 
-class PhotoModeWidget(QWidget):
+class Mode_Photo(QWidget):
     def __init__(self, parent=None):
         super().__init__(parent)
         self.setObjectName("PhotoModeWidget")

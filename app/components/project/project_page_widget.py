@@ -318,14 +318,36 @@ class ProjectsPageWidget(QWidget):
             # MAJ des différents composants
             self.title_widget.load_selected_project()
 
-            if hasattr(self, 'mode_prisedenote_widget'):
-                self.mode_prisedenote_widget.load_data()
+            if self.prisedenote_visible:
+                self.animation = play_enter_exit_sequence(
+                    self.project_container,
+                    self.width(),
+                    lambda: [
+                        self.title_widget.load_selected_project(),
+                        self.mode_prisedenote_widget.load_data()
+                    ]
+                )
+            elif self.photo_visible:
+                self.animation = play_enter_exit_sequence(
+                    self.project_container,
+                    self.width(),
+                    lambda: [
+                        self.title_widget.load_selected_project(),
+                        self.mode_photo_widget.load_photos()
+                    ]
+                )
+            elif self.finalisation_visible:
+                self.animation = play_enter_exit_sequence(
+                    self.project_container,
+                    self.width(),
+                    lambda: [
+                        self.title_widget.load_selected_project(),
+                        self.mode_finalisation_widget.load_data()
+                    ]
+                )
+            else:
+                self.title_widget.load_selected_project()
 
-            if hasattr(self, 'mode_photo_widget'):
-                self.mode_photo_widget.load_photos()
-
-            if hasattr(self, 'mode_finalisation_widget'):
-                self.mode_finalisation_widget.load_data()  # À faire si besoin
 
         except Exception as e:
             print(f"❌ Erreur lors de la mise à jour du fichier : {e}")

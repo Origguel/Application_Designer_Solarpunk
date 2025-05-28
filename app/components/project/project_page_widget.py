@@ -12,6 +12,7 @@ from .project_title import Project_Title
 from .mode.mode_prisedenote_widget import Mode_Prisedenote
 from .mode.mode_photo_widget import Mode_Photo
 from .mode.mode_finalisation_widget import Mode_Finalisation
+from .mode.mode_notation_widget import Mode_Notation
 
 from app.components.buttons.button_text import ButtonText
 from app.utils.animations.project_ui_animation import (play_enter_exit_sequence, get_leave_animation, get_enter_animation)
@@ -39,10 +40,12 @@ class ProjectsPageWidget(QWidget):
         self.mode_prisedenote_widget = Mode_Prisedenote(self)
         self.mode_photo_widget = Mode_Photo(self)
         self.mode_finalisation_widget = Mode_Finalisation(self)
+        self.mode_notation_widget = Mode_Notation(self)
 
         self.mode_prisedenote_widget.hide()
         self.mode_photo_widget.hide()
         self.mode_finalisation_widget.hide()
+        self.mode_notation_widget.hide()
         
 
         # 🧱 Conteneur indépendant pour le bloc "project"
@@ -55,6 +58,7 @@ class ProjectsPageWidget(QWidget):
         self.project_layout.addWidget(self.mode_prisedenote_widget)
         self.project_layout.addWidget(self.mode_photo_widget)
         self.project_layout.addWidget(self.mode_finalisation_widget)
+        self.project_layout.addWidget(self.mode_notation_widget)
         self.project_layout.addStretch()
 
         self.mode_prisedenote_widget.load_data()
@@ -82,6 +86,7 @@ class ProjectsPageWidget(QWidget):
         mode_widgets = {
             "prisedenote": self.mode_prisedenote_widget,
             "photo": self.mode_photo_widget,
+            "notation": self.mode_notation_widget,
             "finalisation": self.mode_finalisation_widget
         }
 
@@ -100,6 +105,7 @@ class ProjectsPageWidget(QWidget):
         mode_target_sizes = {
             "prisedenote": 384,
             "photo": 1184,
+            "notation": 1184,
             "finalisation": 1184
         }
         target_width = mode_target_sizes.get(mode_name, 427)
@@ -189,10 +195,11 @@ class ProjectsPageWidget(QWidget):
             container_size_x = 427
         elif self.photo_visible:
             container_size_x = 1184
+        elif self.notation_visible:
+            container_size_x = 1184
         elif self.finalisation_visible:
             container_size_x = 1184
-        else:
-            container_size_x = 1184
+        
 
         move_x = self.width() - container_size_x - 16
         move_y = 72

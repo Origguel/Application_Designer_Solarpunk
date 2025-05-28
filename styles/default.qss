@@ -19,3 +19,9 @@
     border-radius: 6px;
     border: 1px solid #FCF7F3;
 }
+
+
+#Note_Layout {
+    background-color: #EC831E;
+    border-radius: 6px;
+}
